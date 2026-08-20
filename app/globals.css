@@ -1,49 +1,340 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "tailwindcss";
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #171717;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0a0a0a;
+      --foreground: #ededed;
+    }
+  }
+
+  html {
+    height: 100%;
+  }
+
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    color: var(--foreground);
+    background: var(--background);
+    font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Text selection uses the two brand colours, inverted against whatever the
+     text sits on. On the beige page a navy block with beige letters; inside a
+     dark section the pair swaps. Selecting with the *same* colour as the
+     background would leave no visible highlight at all. */
+  ::selection {
+    background-color: #2d2a49;
+    color: #f5eee8;
+  }
+
+  [data-dark-section]::selection,
+  [data-dark-section] ::selection {
+    background-color: #f5eee8;
+    color: #2d2a49;
+  }
+
+  /* Scrollbar. `data-view` is set on <html> by the ViewportTheme component —
+     the scrollbar belongs to the document, not to a section, so it cannot be
+     recoloured per-section in CSS alone. */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #2d2a49 transparent;
+  }
+
+  html[data-view="dark"] {
+    scrollbar-color: #f5eee8 transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #2d2a49;
+    border-radius: 999px;
+    /* Transparent border + content-box clip insets the thumb, so it reads as a
+       slim pill rather than filling the whole gutter. */
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+
+  html[data-view="dark"] ::-webkit-scrollbar-thumb {
+    background-color: #f5eee8;
+  }
+
+  /* Site-wide pointing-hand cursor. `cursor` inherits, so setting it on html
+     covers every element. The trailing keyword is the fallback for browsers
+     that decline SVG cursors; the two numbers are the hotspot — the pixel that
+     actually points, here the fingertip rather than the top-left corner. */
+  html {
+    cursor: url("/cursor-hand.svg") 13 2, pointer;
+  }
+
+  /* Buttons carry their own `cursor: default` from the UA/preflight styles,
+     which beats inheritance — they need to be opted back in explicitly. */
+  button,
+  a,
+  label,
+  summary,
+  [role="button"] {
+    cursor: inherit;
+  }
+
+  /* Typing still needs a caret, or text fields become unusable. */
+  input,
+  textarea,
+  select,
+  [contenteditable] {
+    cursor: auto;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html {
+      color-scheme: dark;
+    }
   }
 }
 
-html {
-  height: 100%;
+@keyframes blob-morph {
+  0% {
+    border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  }
+  25% {
+    border-radius: 58% 42% 38% 62% / 55% 40% 60% 45%;
+  }
+  50% {
+    border-radius: 46% 54% 50% 50% / 60% 45% 55% 40%;
+  }
+  75% {
+    border-radius: 63% 37% 55% 45% / 42% 58% 42% 58%;
+  }
+  100% {
+    border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  }
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+.blob-shape {
+  animation: blob-morph 5.4s ease-in-out infinite;
+  will-change: transform, border-radius;
 }
 
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.blob-shape-trail {
+  animation-duration: 6.1s;
+  animation-direction: reverse;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+@media (prefers-reduced-motion: reduce) {
+  .blob-shape {
+    animation: none;
+  }
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* Hero entrance. The four lines arrive in the order they are read, a beat
+   apart, so the block resolves top to bottom instead of landing all at once.
+   Opacity and a short rise only — no scale, no blur — so the motion sits under
+   the content rather than competing with it.
+
+   `both` is what holds each element invisible through its delay. Without it
+   they would all paint in place first and only then animate. */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.hero-in {
+  animation: hero-in 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Plain classes rather than Tailwind arbitrary values: `.hero-in` is unlayered,
+   and unlayered CSS beats a layered utility whatever its specificity — an
+   `[animation-delay:…]` utility would silently lose to the shorthand above.
+   These sit after it at equal specificity, so they win on the longhand. */
+.hero-in-1 {
+  animation-delay: 60ms;
+}
+
+.hero-in-2 {
+  animation-delay: 180ms;
+}
+
+.hero-in-3 {
+  animation-delay: 300ms;
+}
+
+.hero-in-4 {
+  animation-delay: 400ms;
+}
+
+.hero-in-5 {
+  animation-delay: 480ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-in {
+    animation: none;
+  }
+}
+
+/* The vlog pop-out inverts over a dark section, the same way the wordmark and
+   the scrollbar do.
+
+   It reads `data-view` rather than running its own scroll listener: that flag
+   is set from the viewport's midpoint, and the tab is pinned to the viewport's
+   midpoint, so the sample is already taken at exactly the right place.
+
+   Both colours come from a pair of custom properties, so inverting is two
+   declarations rather than one per painted property — and the panel's contents
+   inherit them, which is how the inner link's focus ring flips too.
+
+   These rules are unlayered, so they beat any Tailwind utility regardless of
+   specificity. That is why the hover and focus colours live here as well: a
+   `hover:bg-…` utility would be silently overridden by the background-color
+   below. */
+.vlog-surface {
+  --vlog-bg: #2d2a49;
+  --vlog-fg: #f5eee8;
+
+  background-color: var(--vlog-bg);
+  color: var(--vlog-fg);
+  /* Inset, so it reads as a hairline edge without adding to the element's box
+     the way a real border would. */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--vlog-fg) 25%, transparent);
+  transition:
+    background-color 300ms ease,
+    color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+html[data-view="dark"] .vlog-surface {
+  --vlog-bg: #f5eee8;
+  --vlog-fg: #2d2a49;
+}
+
+/* Nudged toward the text colour, so one rule works in both directions. */
+.vlog-tab:hover {
+  background-color: color-mix(in srgb, var(--vlog-bg) 88%, var(--vlog-fg));
+}
+
+/* The tab is outlined against the page, so it takes the page's own contrast
+   colour; the link is outlined against the panel, so it takes the panel's. */
+.vlog-surface:focus-visible {
+  outline-color: var(--vlog-bg);
+}
+
+.vlog-link:focus-visible {
+  outline-color: var(--vlog-fg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vlog-surface {
+    transition: none;
+  }
+}
+
+/* Contact intro — each word lands with a short blur-in so the fast early
+   flashes still register as separate words rather than a flicker. */
+@keyframes intro-word {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+.intro-word {
+  animation: intro-word 130ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.intro-word-final {
+  animation-duration: 620ms;
+}
+
+/* The rule the whole sequence exists to set up: the last word settles slowly. */
+@keyframes intro-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.intro-rule {
+  transform-origin: center;
+  animation: intro-rule 620ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+}
+
+/* The form arrives just after the word starts rising, so the two read as one
+   movement rather than two separate events. */
+@keyframes intro-form-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.intro-form {
+  animation: intro-form-in 620ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-word,
+  .intro-rule,
+  .intro-form {
+    animation: none;
+  }
+
+  /* A transition, not an animation, so the rule above does not reach it — the
+     form opens instantly instead of unfolding. The word sequence itself still
+     runs; it is paced more slowly in JS rather than being skipped. */
+  .intro-form-row {
+    transition: none;
   }
 }
