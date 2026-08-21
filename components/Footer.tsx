@@ -177,14 +177,19 @@ export function Footer() {
             only ever subtracts: 11% at the top averages out to roughly the
             weight 8% had across the whole word.
 
-            `leading-[0.72]` crops the font's built-in leading. Caps have no
-            descenders, so without the crop the letters would float above a band
-            of empty space instead of sitting on the bottom edge. */}
+            The font's own ascent-plus-descent measures 1.3em; the leading is a
+            shade over that on purpose. It has to clear it, because the mask
+            clips to this box and a shorter line would slice the tops off the
+            letters — and at exactly 1.3 the sub-pixel rounding put some
+            breakpoints a pixel from that edge. The band of empty space this
+            leaves under the baseline is taken back by the negative bottom
+            margin, in `em` so it tracks the clamped size, which is what keeps
+            the word sitting low on the page rather than floating. */}
         <p
           aria-hidden
-          className="brandmark-fog mt-14 select-none whitespace-nowrap text-center font-extrabold
-                     uppercase leading-[0.72] tracking-[-0.04em] text-[clamp(2.5rem,15vw,13rem)]
-                     text-[#f5eee8]/[0.11] lg:mt-20"
+          className="brandmark-fog mt-6 mb-[-0.24em] select-none whitespace-nowrap text-center
+                     font-extrabold uppercase leading-[1.34] tracking-[-0.04em]
+                     text-[clamp(2.5rem,15vw,13rem)] text-[#f5eee8]/[0.11] lg:mt-10"
         >
           One More
         </p>

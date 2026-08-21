@@ -280,10 +280,25 @@ html[data-view="dark"] .vlog-surface {
 
    Opaque through the top third so the word still reads, gone by the baseline.
    Unprefixed `mask-image` is the standard property; the WebKit one is kept
-   beside it for Safari before 15.4. */
+   beside it for Safari before 15.4.
+
+   The geometry needs care. A mask brings `mask-clip: border-box` with it, which
+   clips the element's painting to its own box — so any glyph overflowing that
+   box is cut off at a hard flat edge. With the leading cropped tight the word
+   overflowed badly (measured at 208px: a 150px box holding 270px of letters),
+   and the top of the O came back with a bite taken out of it.
+
+   `mask-clip: no-clip` would say "do not do that", but support for the keyword
+   is patchier than the mask itself, and a fallback that silently clips is the
+   bug all over again. So the line box is sized to hold the glyphs instead
+   (see the `leading` on the element) and there is nothing left to clip. The
+   mask then lines up with the letters by default, which is also what makes the
+   stops below mean what they look like they mean. */
 .brandmark-fog {
-  -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent 96%);
-  mask-image: linear-gradient(to bottom, #000 30%, transparent 96%);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 76%);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent 76%);
 }
 
 /* Contact intro — each word lands with a short blur-in so the fast early
