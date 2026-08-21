@@ -87,8 +87,45 @@ export function VideoTestimonial({ className = "" }: { className?: string }) {
         )}
       </div>
 
-      <figcaption className="mt-3 text-center text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[#2d2a49]/60">
-        Témoignage en vidéo
+      {/* The written pull-out. A play button on its own asks someone to commit
+          forty minutes to find out whether it is worth forty minutes, and most
+          people decline that trade. The quote answers the question first, so
+          pressing play becomes a choice to hear more rather than a gamble.
+
+          The middle clause is set at full strength and the rest a shade lighter.
+          It is the line that carries the whole story — ate more, got leaner —
+          and letting the eye land there first means a visitor who only skims
+          still leaves with the point. */}
+      <figcaption className="mt-5 text-center sm:mt-6">
+        <span className="block text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[#2d2a49]/50">
+          Témoignage en vidéo
+        </span>
+
+        {/* Held to a reading measure rather than the video's full width: at
+            860px the eye loses the start of the next line and a paragraph this
+            long stops being skimmable, which is the one job it has. */}
+        <blockquote className="mx-auto mt-4 max-w-[54ch] text-[1.15rem] leading-[1.55] text-[#2d2a49]/75 sm:text-[1.35rem]">
+          &laquo;&nbsp;Je me fixais 1600 calories par jour, et je sentais que mon corps avait
+          besoin de plus. J&rsquo;avais même peur d&rsquo;aller au restaurant : quand on me le
+          proposait, je disais non, je ne m&rsquo;autorisais pas à y aller. Aujourd&rsquo;hui, je
+          crois que{" "}
+          <strong className="font-semibold text-[#2d2a49]">
+            je n&rsquo;ai jamais autant mangé de ma vie, et je n&rsquo;ai jamais été aussi affinée
+          </strong>
+          . Franchement, tout est ouvert.&nbsp;&raquo;
+        </blockquote>
+
+        {/* Two lines rather than one joined by punctuation: the name and the
+            credential are separate facts, and stacking them says so without
+            needing a dash or a third comma in a line that already has one. */}
+        <cite className="mt-5 block not-italic">
+          <span className="block text-[0.86rem] font-semibold uppercase tracking-[0.1em] text-[#2d2a49]/80">
+            Aurore
+          </span>
+          <span className="mt-1 block text-[0.84rem] text-[#2d2a49]/50">
+            2 ans de coaching, top 3 catégorie Fit Model au Fibo
+          </span>
+        </cite>
       </figcaption>
     </figure>
   );

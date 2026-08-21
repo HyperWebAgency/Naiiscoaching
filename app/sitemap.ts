@@ -5,9 +5,10 @@ import { SITE_URL } from "@/lib/site";
 /**
  * Served at /sitemap.xml.
  *
- * Listed by hand rather than crawled from the filesystem: there are two routes,
- * and an explicit list means a new page has to be added deliberately instead of
- * appearing in the sitemap the moment someone drops a file in `app/`.
+ * Listed by hand rather than crawled from the filesystem: there are three
+ * routes, and an explicit list means a new page has to be added deliberately
+ * instead of appearing in the sitemap the moment someone drops a file in
+ * `app/`.
  *
  * `lastModified` is the build time. That is honest for a site whose content
  * ships with the deploy — it changes exactly when the pages do.
@@ -27,6 +28,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "yearly",
       priority: 0.8,
+    },
+    {
+      // Low priority on purpose. It has to be crawlable — the identity details
+      // on it are part of how a business site is judged — but it is not a page
+      // anyone should be sent to from a search result.
+      url: `${SITE_URL}/mentions-legales`,
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.2,
     },
   ];
 }

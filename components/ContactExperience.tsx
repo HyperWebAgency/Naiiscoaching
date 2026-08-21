@@ -25,8 +25,9 @@ const FORM_HEADLINE =
 // On the navy page the accent is the site's cream — no third colour.
 const CREAM = "#f5eee8";
 
-// TODO: replace with the real address before this goes live.
-const CONTACT_EMAIL = "contact@naiis-coaching.fr";
+// Also published in the legal notice, as `editeurEmail` in
+// app/mentions-legales/page.tsx. Change both together.
+const CONTACT_EMAIL = "anais.workspace@gmail.com";
 
 const STEP_FAST = 85; // ms on the first word
 const STEP_SLOW = 480; // ms on the last word before the landing

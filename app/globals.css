@@ -269,6 +269,23 @@ html[data-view="dark"] .vlog-surface {
   }
 }
 
+/* The brand mark at the foot of the page dissolves as it descends, the way a
+   sign painted on a wall fades where the light stops reaching it.
+
+   A mask rather than a gradient text fill: the letters keep their one flat
+   colour and it is their *visibility* that falls off, so the effect holds over
+   whatever the section's background happens to be — including the inverted
+   state, where a hardcoded gradient toward the background colour would be
+   fading toward the wrong end.
+
+   Opaque through the top third so the word still reads, gone by the baseline.
+   Unprefixed `mask-image` is the standard property; the WebKit one is kept
+   beside it for Safari before 15.4. */
+.brandmark-fog {
+  -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent 96%);
+  mask-image: linear-gradient(to bottom, #000 30%, transparent 96%);
+}
+
 /* Contact intro — each word lands with a short blur-in so the fast early
    flashes still register as separate words rather than a flicker. */
 @keyframes intro-word {
