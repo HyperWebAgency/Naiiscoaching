@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { TestimonialCarousel } from "./TestimonialCarousel";
+import { VideoTestimonial } from "./VideoTestimonial";
 
 /**
  * Each file is already a finished card — its own header, its own branding, the
@@ -95,7 +96,12 @@ export function Testimonials() {
           </span>
         </h2>
 
-        <ul className="mt-16 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:mt-24 lg:grid-cols-3">
+        {/* Above the screenshots: someone speaking on camera carries more than
+            a screenshot does, and 16:9 cannot be cropped into the portrait grid
+            without losing the outer figures and the title along with them. */}
+        <VideoTestimonial className="mt-16 lg:mt-24" />
+
+        <ul className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:mt-16 lg:grid-cols-3">
           {shown.map((review, i) => (
             <li key={review.src}>
               {/* Opens the carousel rather than the raw file: these are

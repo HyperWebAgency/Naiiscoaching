@@ -142,7 +142,12 @@ function getServerIntroSeen() {
   return false;
 }
 
-const EMPTY = { nom: "", telephone: "", message: "" };
+const EMPTY = { nom: "", telephone: "", message: "", email: "" };
+
+// A French mobile is ten digits. Reaching the tenth means the number is
+// complete, which is the moment to ask for one more thing rather than showing
+// an extra empty box up front.
+const PHONE_REVEAL_DIGITS = 10;
 
 const CALENDLY_URL =
   "https://calendly.com/anais-workspace/appel_visio_decouverte_naiiscoaching?month=2026-08";
@@ -167,6 +172,9 @@ export function ContactExperience() {
   const [index, setIndex] = useState(-1);
   const [done, setDone] = useState(false);
   const [values, setValues] = useState(EMPTY);
+  // Sticky: once the field is out, it stays out. Backspacing a digit to fix a
+  // typo would otherwise collapse a box the visitor may have already filled.
+  const [emailRevealed, setEmailRevealed] = useState(false);
   const [errors, setErrors] = useState<Partial<typeof EMPTY>>({});
   const [sent, setSent] = useState(false);
 
@@ -299,19 +307,28 @@ export function ContactExperience() {
     };
 
   const updatePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValues((v) => ({ ...v, telephone: formatPhone(e.target.value) }));
+    const formatted = formatPhone(e.target.value);
+    setValues((v) => ({ ...v, telephone: formatted }));
     setErrors((prev) => ({ ...prev, telephone: undefined }));
+    if (formatted.replace(/\D/g, "").length >= PHONE_REVEAL_DIGITS) {
+      setEmailRevealed(true);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const next: Partial<typeof EMPTY> = {};
-    if (!values.nom.trim()) next.nom = "Indiquez votre nom.";
+    if (!values.nom.trim()) next.nom = "Indiquez votre nom et prénom.";
     if (!values.telephone.trim()) next.telephone = "Indiquez votre numéro.";
     else if (values.telephone.replace(/\D/g, "").length < 8)
       next.telephone = "Ce numéro semble incomplet.";
     if (!values.message.trim()) next.message = "Dites-moi où vous en êtes.";
+    if (emailRevealed) {
+      if (!values.email.trim()) next.email = "Indiquez votre e-mail.";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim()))
+        next.email = "Cet e-mail semble incorrect.";
+    }
 
     setErrors(next);
     if (Object.keys(next).length > 0) return;
@@ -320,7 +337,9 @@ export function ContactExperience() {
     // genuinely reaches someone. Swap this for a POST when an endpoint exists.
     const subject = encodeURIComponent(`Demande de coaching — ${values.nom}`);
     const body = encodeURIComponent(
-      `Nom : ${values.nom}\nTéléphone : ${values.telephone}\n\n${values.message}\n`
+      `Nom et prénom : ${values.nom}\nTéléphone : ${values.telephone}` +
+        (values.email.trim() ? `\nE-mail : ${values.email.trim()}` : "") +
+        `\n\n${values.message}\n`
     );
     window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
     setSent(true);
@@ -351,7 +370,49 @@ export function ContactExperience() {
     // No `overflow-hidden` here: the form is taller than a short window, and
     // clipping at this level would put it out of reach instead of scrolling.
     <section data-dark-section className="relative min-h-svh bg-[#2d2a49]">
-      <div className="flex min-h-svh flex-col items-center justify-center px-6 py-16">
+      {/* The vertical padding is doing two jobs. Centred content is fine while
+          it fits, but the moment it is taller than the viewport this padding
+          becomes the floor the content rests on — and at `py-16` that floor was
+          64px, while the fixed navbar's bottom edge is at 78px. So on any short
+          window the headline sat *under* the navigation, and opening the email
+          field pushed more sizes into that state. Raised clear of the navbar
+          (47px on phones, 78px from md up) with room to spare, and kept
+          symmetric so the resting composition stays visually centred. */}
+      <div className="flex min-h-svh flex-col items-center justify-center px-6 py-24 md:py-32">
+        {/* Sits in the band between the fixed navbar and the headline rather
+            than beside the wordmark: NAIIS reaches leftward from the centre, and
+            measured across widths the space to its left falls to 23px at 360,
+            which will not hold this label. The gap under the navbar is 45-283px
+            everywhere, so it always fits there.
+
+            Absolute rather than fixed, so on a short window it scrolls away with
+            the page instead of hovering over the form. */}
+        {showForm && (
+          <Link
+            href="/"
+            className="group absolute left-6 top-[62px] z-20 inline-flex items-center gap-2
+                       text-[0.72rem] font-medium uppercase tracking-[0.08em] text-[#f5eee8]/50
+                       transition-colors duration-200 hover:text-[#f5eee8]
+                       focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+                       focus-visible:outline-[#f5eee8] md:top-[96px]"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden
+              focusable="false"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-[14px] w-[14px] shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5"
+            >
+              <path d="M19 12H5" />
+              <path d="M12 19l-7-7 7-7" />
+            </svg>
+            Retour à l’accueil
+          </Link>
+        )}
         {/* Everything sits in one centred column, so when the form opens below
             the word the column grows and re-centres — and the word rising is
             that growth rather than a separate animation chasing it. */}
@@ -413,7 +474,7 @@ export function ContactExperience() {
                         htmlFor="contact-nom"
                         className="text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[#f5eee8]/60"
                       >
-                        Nom
+                        Nom et prénom
                       </label>
                       <input
                         id="contact-nom"
@@ -433,33 +494,83 @@ export function ContactExperience() {
                       )}
                     </div>
 
-                    <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="contact-tel"
-                        className="text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[#f5eee8]/60"
+                    {/* Phone and the field it summons, grouped with no gap of
+                        their own: the spacing lives inside the collapsing row,
+                        so a closed row takes up nothing at all rather than
+                        leaving a double gap behind it. */}
+                    <div className="flex flex-col">
+                      <div className="flex flex-col gap-1.5">
+                        <label
+                          htmlFor="contact-tel"
+                          className="text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[#f5eee8]/60"
+                        >
+                          Téléphone
+                        </label>
+                        <input
+                          id="contact-tel"
+                          type="tel"
+                          inputMode="tel"
+                          autoComplete="tel"
+                          value={values.telephone}
+                          onChange={updatePhone}
+                          aria-invalid={!!errors.telephone}
+                          className={fieldClass}
+                          style={{
+                            borderColor: errors.telephone
+                              ? "#e08b7a"
+                              : "rgba(245,238,232,0.22)",
+                          }}
+                        />
+                        {errors.telephone && (
+                          <span className="text-[0.78rem] text-[#e08b7a]">
+                            {errors.telephone}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Same 0fr -> 1fr row the form itself opens with, so the
+                          height is the content's own and the two reveals feel
+                          like one idea. */}
+                      <div
+                        className="intro-form-row grid transition-[grid-template-rows] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+                        style={{ gridTemplateRows: emailRevealed ? "1fr" : "0fr" }}
                       >
-                        Téléphone
-                      </label>
-                      <input
-                        id="contact-tel"
-                        type="tel"
-                        inputMode="tel"
-                        autoComplete="tel"
-                        value={values.telephone}
-                        onChange={updatePhone}
-                        aria-invalid={!!errors.telephone}
-                        className={fieldClass}
-                        style={{
-                          borderColor: errors.telephone
-                            ? "#e08b7a"
-                            : "rgba(245,238,232,0.22)",
-                        }}
-                      />
-                      {errors.telephone && (
-                        <span className="text-[0.78rem] text-[#e08b7a]">
-                          {errors.telephone}
-                        </span>
-                      )}
+                        <div className="overflow-hidden">
+                          <div className="flex flex-col gap-1.5 pt-4">
+                            <label
+                              htmlFor="contact-email"
+                              className="text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[#f5eee8]/60"
+                            >
+                              E-mail
+                            </label>
+                            <input
+                              id="contact-email"
+                              type="email"
+                              inputMode="email"
+                              autoComplete="email"
+                              // Off-screen while closed, so it must be out of
+                              // the tab order too — otherwise Tab stops on a
+                              // box nobody can see.
+                              tabIndex={emailRevealed ? undefined : -1}
+                              aria-hidden={!emailRevealed}
+                              value={values.email}
+                              onChange={update("email")}
+                              aria-invalid={!!errors.email}
+                              className={fieldClass}
+                              style={{
+                                borderColor: errors.email
+                                  ? "#e08b7a"
+                                  : "rgba(245,238,232,0.22)",
+                              }}
+                            />
+                            {errors.email && (
+                              <span className="text-[0.78rem] text-[#e08b7a]">
+                                {errors.email}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
@@ -520,13 +631,9 @@ export function ContactExperience() {
           </div>
         </div>
 
-        {/* During the sequence this skips ahead; afterwards the way out is back
-            to the site rather than closing an overlay. */}
-        {showForm ? (
-          <Link href="/" className={cornerClass}>
-            Retour
-          </Link>
-        ) : (
+        {/* Only the skip now. Getting back to the site is the breadcrumb's job,
+            and a breadcrumb belongs at the top of the page, not in a corner. */}
+        {!showForm && (
           <button type="button" onClick={openForm} className={cornerClass}>
             Passer
           </button>
