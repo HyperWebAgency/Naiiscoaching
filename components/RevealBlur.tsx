@@ -7,6 +7,12 @@ const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(mi
 const MAX_BLUR = 9; // px at the very bottom edge
 const BAND_HEIGHT = "24vh";
 
+// Desktop only. `backdrop-filter` over a scrolling band is one of the more
+// expensive things a phone GPU can be asked to do every frame, and on a small
+// screen the band covers a quarter of the page — it read as the content going
+// out of focus rather than as a veil it was surfacing through.
+const DESKTOP_QUERY = "(min-width: 768px)";
+
 /**
  * A soft blur band pinned to the bottom of the viewport. It fades in while the
  * next section is rising into view and back out once it has arrived, so the
@@ -20,6 +26,10 @@ export function RevealBlur({ targetId }: { targetId: string }) {
     if (!el) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // The element is hidden below this width in CSS as well; bailing here is
+    // what stops the scroll listener and the per-frame filter writes from
+    // running at all on a phone.
+    if (!window.matchMedia(DESKTOP_QUERY).matches) return;
 
     const target = document.getElementById(targetId);
     if (!target) return;
@@ -60,7 +70,7 @@ export function RevealBlur({ targetId }: { targetId: string }) {
     <div
       ref={ref}
       aria-hidden
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-40"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 hidden md:block"
       style={{
         height: BAND_HEIGHT,
         opacity: 0,

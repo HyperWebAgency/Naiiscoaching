@@ -301,6 +301,61 @@ html[data-view="dark"] .vlog-surface {
   mask-image: linear-gradient(to bottom, #000 40%, transparent 76%);
 }
 
+/* Mobile menu.
+   ─────────────────────────────────────────────────────────────────────────
+   The panel is revealed by growing a circle out of the button that opened it,
+   so the menu reads as coming *from* the tap. Origin and radius are measured
+   in JS and arrive as custom properties; the fallbacks here only matter for
+   the frame before that runs.
+
+   Two different durations and curves, because opening and closing are not the
+   same gesture. Opening is the event — it takes its time and decelerates into
+   place on the site's usual expo-out. Closing is getting out of the way, so it
+   is faster and accelerates away. A single symmetric transition makes the
+   close feel like it is dragging its feet. */
+.menu-panel {
+  clip-path: circle(0px at var(--menu-x, 50%) var(--menu-y, 44px));
+  transition: clip-path 380ms cubic-bezier(0.4, 0, 1, 1);
+  pointer-events: none;
+}
+
+.menu-panel[data-open="true"] {
+  clip-path: circle(var(--menu-r, 150vmax) at var(--menu-x, 50%) var(--menu-y, 44px));
+  transition: clip-path 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: auto;
+}
+
+/* The same arrival the contact page's words use — rise plus a short blur —
+   so the menu belongs to the site rather than looking bought in. Each item's
+   delay comes in on `--d` from the component. */
+@keyframes menu-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+.menu-panel[data-open="true"] .menu-item {
+  animation: menu-item-in 620ms cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-panel,
+  .menu-panel[data-open="true"] {
+    transition: none;
+  }
+
+  .menu-panel[data-open="true"] .menu-item {
+    animation: none;
+  }
+}
+
 /* Contact intro — each word lands with a short blur-in so the fast early
    flashes still register as separate words rather than a flicker. */
 @keyframes intro-word {

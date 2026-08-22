@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { MobileMenu } from "./MobileMenu";
 
 const NAV_LINKS = [
   { label: "Services", href: "#services", inPage: true },
@@ -22,7 +24,10 @@ const SCROLL_SETTLE_MS = 5000;
 
 export function Navbar() {
   const headerRef = useRef<HTMLElement>(null);
+  const burgerRef = useRef<HTMLButtonElement>(null);
   const [onDark, setOnDark] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
   // Starts hidden — tucked behind the pill — and slides out once on mount,
   // then tucks back in during active scroll and re-emerges once a section
   // settles. Reduced-motion visitors just get it shown throughout.
@@ -91,13 +96,34 @@ export function Navbar() {
     // without firing a scroll or a resize.
   }, [pathname, onHome]);
 
+  // Navigating away from an open menu has to close it: the header lives in the
+  // layout and survives the route change, so the panel would otherwise still be
+  // sitting over the page that was just navigated to. Tapping a menu link
+  // already closes it; this covers the back button, which changes the route
+  // without going through one.
+  //
+  // Adjusted during render rather than in an effect. React re-runs this
+  // component immediately with the corrected state and never commits the stale
+  // frame, where an effect would paint the open menu over the new page first
+  // and only then close it.
+  const [routeAtRender, setRouteAtRender] = useState(pathname);
+  if (routeAtRender !== pathname) {
+    setRouteAtRender(pathname);
+    setMenuOpen(false);
+  }
+
+  // The open menu paints a navy panel behind the wordmark, which is the same
+  // situation as scrolling over a navy section — so it takes the same branch
+  // rather than needing its own colour handling.
+  const dark = onDark || menuOpen;
+
   // Over the beige page: beige letters, navy contour. Over a navy section the
   // pair swaps, so the wordmark reads as an outline instead of disappearing.
   // The same transition also carries the show/hide slide, so it has to live
   // here rather than in a class — an inline `transition` would otherwise
   // replace it outright instead of merging with it.
   const wordmarkStyle = {
-    WebkitTextStroke: `0.075em ${onDark ? "#f5eee8" : "#2d2a49"}`,
+    WebkitTextStroke: `0.075em ${dark ? "#f5eee8" : "#2d2a49"}`,
     paintOrder: "stroke fill",
     transition:
       "-webkit-text-stroke-color 300ms ease, color 300ms ease, " +
@@ -115,7 +141,7 @@ export function Navbar() {
       ? { transform: "translateX(0)", opacity: 1 }
       : { transform: side === "left" ? "translateX(100%)" : "translateX(-100%)", opacity: 0 };
 
-  const fillClass = onDark ? "text-[#2d2a49]" : "text-[#f5eee8]";
+  const fillClass = dark ? "text-[#2d2a49]" : "text-[#f5eee8]";
 
   // Shared by both link kinds so they stay identical. The current route is the
   // one item at full strength; the rest sit back at 70%.
@@ -124,7 +150,7 @@ export function Navbar() {
     tracking-[0.02em] transition-colors duration-200
     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
     sm:px-[10px] md:px-[12px] ${
-      onDark
+      dark
         ? `hover:bg-[#2d2a49]/10 hover:text-[#2d2a49] focus-visible:outline-[#2d2a49] ${
             current ? "text-[#2d2a49]" : "text-[#2d2a49]/70"
           }`
@@ -145,12 +171,26 @@ export function Navbar() {
       // (which holds the actual nav links) opts back in below.
       className="pointer-events-none fixed inset-x-0 top-0 z-50 px-4 pt-5 md:pt-8"
     >
+      {/* Painted before the nav, and the nav is positioned above it, so the
+          wordmark stays legible on top of the panel instead of being covered by
+          it — the brand holds still while the menu fills in behind. */}
+      <MobileMenu
+        open={menuOpen}
+        onClose={closeMenu}
+        links={NAV_LINKS}
+        onHome={onHome}
+        pathname={pathname}
+        originRef={burgerRef}
+      />
+
       {/* A three-column grid rather than a plain row: NAIIS and COACHING are
           different lengths, so equal-width outer columns are what keeps the
           pill genuinely centred instead of drifting toward the shorter word. */}
       <nav
         aria-label="Navigation principale"
-        className="grid w-full grid-cols-[1fr_auto_1fr] items-center"
+        // `relative z-10` is load-bearing: the panel above is `fixed`, and an
+        // unpositioned nav would paint underneath it.
+        className="relative z-10 grid w-full grid-cols-[1fr_auto_1fr] items-center"
       >
         <span
           aria-hidden
@@ -165,39 +205,82 @@ export function Navbar() {
             The beige ring disappears against the beige page but defines the
             pill once it scrolls over the navy section, where navy-on-navy
             would otherwise leave the links floating with no pill behind them. */}
-        <ul
-          className={`relative z-10 -mx-[0.12em] flex items-center rounded-full pointer-events-auto transition-colors duration-300
-                     ${onDark ? "bg-[#f5eee8]" : "bg-[#2d2a49] ring-1 ring-[#f5eee8]/20"}
-                     h-[27px] gap-[1px] px-[5px] text-[0.58rem]
-                     sm:h-[32px] sm:gap-[3px] sm:px-[9px] sm:text-[0.66rem]
+        {/* Both centre-column occupants share one wrapper so the grid stays
+            three columns wide at every breakpoint. The three-link pill needed
+            most of a phone's width and ran straight through the wordmark —
+            measured at 390px it covered NAIIS and COACHING almost entirely.
+            The button takes a third of that, which is what finally lets the
+            whole name read on a phone. */}
+        <div className="relative z-10 -mx-[0.12em] flex items-center justify-center">
+          <button
+            ref={burgerRef}
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-expanded={menuOpen}
+            aria-controls="menu-panel"
+            aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            className={`pointer-events-auto flex h-[38px] w-[38px] items-center justify-center
+                       rounded-full transition-colors duration-300 md:hidden
+                       focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+                       ${
+                         dark
+                           ? "bg-[#f5eee8] text-[#2d2a49] focus-visible:outline-[#f5eee8]"
+                           : "bg-[#2d2a49] text-[#f5eee8] ring-1 ring-[#f5eee8]/20 focus-visible:outline-[#2d2a49]"
+                       }`}
+          >
+            {/* Tailwind v4 emits `translate`, `rotate` and `scale` as their own
+                CSS properties rather than folding them into `transform`, so the
+                inline values below compose with each other instead of the last
+                one winning — and each can be transitioned by name. */}
+            <span aria-hidden className="flex flex-col items-center gap-[5px]">
+              <span
+                className="block h-[2px] w-[18px] rounded-full bg-current transition-[translate,rotate,opacity,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                style={menuOpen ? { translate: "0 7px", rotate: "45deg" } : undefined}
+              />
+              <span
+                className="block h-[2px] w-[18px] rounded-full bg-current transition-[translate,rotate,opacity,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                style={menuOpen ? { opacity: 0, scale: "0 1" } : undefined}
+              />
+              <span
+                className="block h-[2px] w-[18px] rounded-full bg-current transition-[translate,rotate,opacity,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                style={menuOpen ? { translate: "0 -7px", rotate: "-45deg" } : undefined}
+              />
+            </span>
+          </button>
+
+          <ul
+            className={`hidden items-center rounded-full pointer-events-auto transition-colors duration-300 md:flex
+                     ${dark ? "bg-[#f5eee8]" : "bg-[#2d2a49] ring-1 ring-[#f5eee8]/20"}
                      md:h-[38px] md:gap-[5px] md:px-[13px] md:text-[0.76rem]
                      lg:h-[43px] lg:px-[17px]`}
-        >
-          {NAV_LINKS.map((link) => {
-            const current = !link.inPage && pathname === link.href;
+          >
+            {NAV_LINKS.map((link) => {
+              const current = !link.inPage && pathname === link.href;
 
-            // A bare hash stays a plain anchor on the home page so Lenis
-            // smooth-scrolls it. From any other route the same target has to be
-            // reached through the home page first, which is a real navigation.
-            return (
-              <li key={link.href}>
-                {link.inPage && onHome ? (
-                  <a href={link.href} className={linkClass(false)}>
-                    {link.label}
-                  </a>
-                ) : (
-                  <Link
-                    href={link.inPage ? `/${link.href}` : link.href}
-                    aria-current={current ? "page" : undefined}
-                    className={linkClass(current)}
-                  >
-                    {link.label}
-                  </Link>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+              // A bare hash stays a plain anchor on the home page so Lenis
+              // smooth-scrolls it. From any other route the same target has to
+              // be reached through the home page first, which is a real
+              // navigation.
+              return (
+                <li key={link.href}>
+                  {link.inPage && onHome ? (
+                    <a href={link.href} className={linkClass(false)}>
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.inPage ? `/${link.href}` : link.href}
+                      aria-current={current ? "page" : undefined}
+                      className={linkClass(current)}
+                    >
+                      {link.label}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
 
         <span
           aria-hidden

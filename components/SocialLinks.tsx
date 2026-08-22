@@ -5,7 +5,7 @@ import { SOCIAL } from "@/lib/site";
  * `currentColor` so each one inherits the link's colour and hover state rather
  * than carrying its own.
  */
-const ICONS = [
+export const SOCIAL_ICONS = [
   {
     name: "Instagram",
     href: SOCIAL.instagram,
@@ -34,18 +34,21 @@ const ICONS = [
  * Below `xl` that band is already taken. COACHING stretches into the right of
  * the header, and measured across widths the icons overlap its glyphs by 16px
  * at 1024 and by 107px on a phone; dropping them to the row underneath instead
- * put them straight through the headline. So below `xl` they simply stay where
- * they sit in the markup, under the call to action. Absolute positioning
- * ignores DOM order, which is what lets one element be in both places without
- * duplicating the links.
+ * put them straight through the headline. So between `md` and `xl` they simply
+ * stay where they sit in the markup, under the call to action. Absolute
+ * positioning ignores DOM order, which is what lets one element be in both
+ * places without duplicating the links.
+ *
+ * Below `md` they are not here at all — the mobile menu carries them, so a
+ * phone has one place to look for them rather than two.
  */
 export function SocialLinks({ className = "" }: { className?: string }) {
   return (
     <ul
-      className={`hero-in hero-in-5 flex items-center gap-1 sm:gap-2
+      className={`hero-in hero-in-5 hidden items-center gap-1 md:flex sm:gap-2
                   xl:absolute xl:right-4 xl:top-8 xl:h-[46px] ${className}`}
     >
-      {ICONS.map((icon) => (
+      {SOCIAL_ICONS.map((icon) => (
         <li key={icon.name}>
           <a
             href={icon.href}
