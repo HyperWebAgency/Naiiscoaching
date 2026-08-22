@@ -43,6 +43,11 @@ export const metadata: Metadata = {
     title: `${SITE_NAME} — Diététicienne et coach sportive à distance à Montpellier`,
     description: SITE_DESCRIPTION,
   },
+  // Without this the card defaults to `summary`, which is the small square
+  // thumbnail. The Open Graph image is a 1200x630 banner, and `summary` crops it
+  // to a postage stamp. Title and description are inherited from `openGraph`
+  // above; only the card type has to be stated.
+  twitter: { card: "summary_large_image" },
   robots: {
     index: true,
     follow: true,

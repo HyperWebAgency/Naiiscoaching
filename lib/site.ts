@@ -5,12 +5,17 @@
  * agree on this — a mismatch is read by search engines as conflicting signals
  * about which URL is the real one, so they all read it from here.
  *
- * TODO: set NEXT_PUBLIC_SITE_URL to the real domain before launch. The fallback
- * below is inferred from the contact address and is very likely wrong; leaving
- * it in production would publish a sitemap full of URLs that do not resolve.
+ * The fallback is the current Vercel deployment, which is where the site
+ * actually lives today. It has to be a URL that resolves: `metadataBase` builds
+ * the absolute Open Graph image URL from it, so a domain nobody owns means
+ * every link preview asks for an image that isn't there.
+ *
+ * TODO: when a real domain is bought, set NEXT_PUBLIC_SITE_URL in the Vercel
+ * project rather than editing this line. It is read at build time, so the
+ * change needs a redeploy to take effect.
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://naiis-coaching.fr"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://naiiscoaching.vercel.app"
 ).replace(/\/+$/, "");
 
 export const SITE_NAME = "Naiis Coaching";
