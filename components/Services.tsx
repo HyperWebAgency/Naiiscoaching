@@ -8,7 +8,13 @@ type Plan = {
   id: string;
   featured: boolean;
   title: string;
-  description: string;
+  /**
+   * Who the formule suits. Anaïs's words to write, not mine — guessing at who
+   * an offer is for is guessing at her clients. Empty until she supplies it,
+   * and flagged on the page while it is, the same way the unfilled legal fields
+   * are: a blank line under a heading reads as a bug, a flag reads as pending.
+   */
+  bestFor: string;
   monthly: number;
   /** Price of a year paid upfront. `null` means the offer has no annual mode
    *  and keeps its monthly price whatever the toggle says. */
@@ -25,8 +31,7 @@ const PLANS: Plan[] = [
     id: "training-diete-mindset",
     featured: true,
     title: "Training + Diète & Mindset",
-    description:
-      "La formule complète : l’entraînement, l’assiette et le mental, construits ensemble.",
+    bestFor: "",
     monthly: 175,
     annual: 1900,
     savings: 200,
@@ -40,7 +45,7 @@ const PLANS: Plan[] = [
     id: "diete-mindset",
     featured: false,
     title: "Diète & Mindset",
-    description: "L’alimentation et le mental, sans le programme d’entraînement.",
+    bestFor: "",
     monthly: 135,
     annual: 1450,
     savings: 170,
@@ -50,7 +55,7 @@ const PLANS: Plan[] = [
     id: "posing",
     featured: false,
     title: "Suivi posing mensuel",
-    description: "Pour préparer la scène : votre posing corrigé semaine après semaine.",
+    bestFor: "",
     monthly: 180,
     annual: null,
     savings: null,
@@ -104,6 +109,19 @@ const buttonClass = (featured: boolean) =>
  */
 const cardSurface = "bg-[#2d2a49]/[0.05] ring-1 ring-[#2d2a49]/10";
 
+/**
+ * Stands in for copy that has not arrived yet. Borrows the flag from the legal
+ * page verbatim, so "waiting on someone" looks the same wherever it appears —
+ * and stays loud enough that it cannot reach the live site unnoticed.
+ */
+function ARemplir() {
+  return (
+    <mark className="rounded bg-[#e08b7a]/30 px-1.5 py-0.5 text-[0.82em] font-bold uppercase tracking-[0.08em] text-[#2d2a49]">
+      à compléter
+    </mark>
+  );
+}
+
 export function Services() {
   const [annual, setAnnual] = useState(false);
 
@@ -134,8 +152,11 @@ export function Services() {
         {plan.title}
       </h3>
 
-      <p className="mt-2 text-[0.9rem] leading-[1.6] text-[#2d2a49]/65">
-        {plan.description}
+      <p className="mt-3 text-[0.9rem] font-semibold leading-[1.6] text-[#2d2a49]/80">
+        Ce programme est idéal pour&nbsp;:
+      </p>
+      <p className="mt-1 text-[0.9rem] leading-[1.6] text-[#2d2a49]/65">
+        {plan.bestFor || <ARemplir />}
       </p>
 
       <div className="mt-6">

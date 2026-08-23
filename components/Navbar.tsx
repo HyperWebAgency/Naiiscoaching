@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 import { MobileMenu } from "./MobileMenu";
 
@@ -22,6 +28,34 @@ const wordmarkClass =
 // the word only comes back once a visitor has actually settled on a section.
 const SCROLL_SETTLE_MS = 5000;
 
+// Far enough that the header does not twitch on the small bounce a phone gives
+// at the top of a page, close enough that it has moved by the time the hero's
+// headline is under it.
+const COMPACT_AFTER = 40;
+
+/**
+ * Below `md` is where the hamburger lives, and so is the only place the compact
+ * header applies. Read through `useSyncExternalStore` rather than an effect:
+ * subscribing to a media query is exactly what it exists for, and it avoids the
+ * extra render — plus the setState-in-effect this file already trips twice.
+ */
+const MOBILE_QUERY = "(max-width: 767px)";
+
+function subscribeMobile(onChange: () => void) {
+  const mq = window.matchMedia(MOBILE_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+
+function getMobile() {
+  return window.matchMedia(MOBILE_QUERY).matches;
+}
+
+/** No viewport on the server, so it renders the full-width header. */
+function getServerMobile() {
+  return false;
+}
+
 export function Navbar() {
   const headerRef = useRef<HTMLElement>(null);
   const burgerRef = useRef<HTMLButtonElement>(null);
@@ -32,6 +66,10 @@ export function Navbar() {
   // then tucks back in during active scroll and re-emerges once a section
   // settles. Reduced-motion visitors just get it shown throughout.
   const [wordmarkVisible, setWordmarkVisible] = useState(false);
+  // Past the threshold the header goes compact: the button slides to the right
+  // edge and the wordmark clears out of its way.
+  const [scrolled, setScrolled] = useState(false);
+  const isMobile = useSyncExternalStore(subscribeMobile, getMobile, getServerMobile);
   const pathname = usePathname();
   const onHome = pathname === "/";
 
@@ -67,6 +105,7 @@ export function Navbar() {
         }
       }
       setOnDark(over);
+      setScrolled(window.scrollY > COMPACT_AFTER);
     };
 
     // Only the home page has enough sections for this to read as "arriving
@@ -75,7 +114,13 @@ export function Navbar() {
     let settleTimer: ReturnType<typeof setTimeout> | null = null;
     const onScroll = () => {
       update();
-      if (!onHome || reducedMotion) return;
+      // On a phone the wordmark's visibility is decided by scroll *position*
+      // (see `compact` below), not by this settle timer. Leaving the timer
+      // running there would fight it: scroll back to the top and the word would
+      // stay hidden for another five seconds despite being at rest.
+      // Read live rather than closed over, so a rotation is picked up without
+      // resubscribing the listener.
+      if (!onHome || reducedMotion || window.matchMedia(MOBILE_QUERY).matches) return;
       setWordmarkVisible(false);
       if (settleTimer) clearTimeout(settleTimer);
       settleTimer = setTimeout(() => setWordmarkVisible(true), SCROLL_SETTLE_MS);
@@ -117,6 +162,15 @@ export function Navbar() {
   // rather than needing its own colour handling.
   const dark = onDark || menuOpen;
 
+  // Mobile only. On desktop the pill carries the links and the three-part
+  // wordmark is the header, so there is nothing to compact.
+  const compact = isMobile && scrolled;
+
+  // The wordmark answers to whichever rule is in charge: scroll position on a
+  // phone, the settle timer everywhere else. The mount reveal still gates both,
+  // so the entrance plays once before either takes over.
+  const showWordmark = wordmarkVisible && !compact;
+
   // Over the beige page: beige letters, navy contour. Over a navy section the
   // pair swaps, so the wordmark reads as an outline instead of disappearing.
   // The same transition also carries the show/hide slide, so it has to live
@@ -137,7 +191,7 @@ export function Navbar() {
   // the pill's rectangle but outside its rounded fill. Fading opacity to 0
   // alongside the slide hides it regardless of that mismatch.
   const wordmarkHiddenStyle = (side: "left" | "right") =>
-    wordmarkVisible
+    showWordmark
       ? { transform: "translateX(0)", opacity: 1 }
       : { transform: side === "left" ? "translateX(100%)" : "translateX(-100%)", opacity: 0 };
 
@@ -190,7 +244,25 @@ export function Navbar() {
         aria-label="Navigation principale"
         // `relative z-10` is load-bearing: the panel above is `fixed`, and an
         // unpositioned nav would paint underneath it.
-        className="relative z-10 grid w-full grid-cols-[1fr_auto_1fr] items-center"
+        //
+        // Collapsing the trailing column to `0fr` is what walks the button over
+        // to the right edge: the middle track is `auto`, so the leading `1fr`
+        // takes every pixel the trailing one gives up and pushes the button
+        // ahead of it. Cheaper and steadier than translating by a measured
+        // distance — grid track sizes interpolate, so the slide comes free and
+        // stays correct through a rotation without re-measuring anything.
+        //
+        // `minmax(0,…)` on the outer tracks rather than a bare `1fr`: a plain
+        // `fr` track is `minmax(auto, …)`, so it never shrinks past the
+        // min-content width of what is in it. Measured, that floored the
+        // collapsing column at 84px — the width of COACHING — and the button
+        // stopped short of the edge. A zero minimum lets the track actually
+        // reach nothing.
+        className={`relative z-10 grid w-full items-center transition-[grid-template-columns] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+          compact
+            ? "grid-cols-[minmax(0,1fr)_auto_minmax(0,0fr)]"
+            : "grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
+        }`}
       >
         <span
           aria-hidden

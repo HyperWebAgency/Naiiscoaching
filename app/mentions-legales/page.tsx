@@ -59,7 +59,15 @@ type LegalFields = {
 };
 
 const LEGAL: LegalFields = {
+  editeurNom: "Anaïs Teck",
+  editeurStatut: "Entrepreneur individuel (micro-entreprise)",
   editeurEmail: "anais.workspace@gmail.com",
+
+  // A sole trader publishes in her own name, so the publication director is the
+  // same person as the éditeur by construction — there is no board to appoint
+  // anyone else. If the activity is ever incorporated, this becomes the legal
+  // representative of the company and stops tracking `editeurNom`.
+  directeurPublication: "Anaïs Teck",
 
   // Taken from Vercel's own Terms of Service, which names this as the address
   // to serve them at, rather than from a directory listing.
@@ -68,7 +76,7 @@ const LEGAL: LegalFields = {
 };
 
 /** Kept beside the page it stamps, so editing the text is what updates it. */
-const DERNIERE_MISE_A_JOUR = "21 août 2026";
+const DERNIERE_MISE_A_JOUR = "23 août 2026";
 
 const PHONE_DISPLAY = PHONE_E164.replace("+33", "0").replace(/(\d{2})(?=\d)/g, "$1 ");
 
