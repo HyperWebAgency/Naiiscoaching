@@ -14,24 +14,42 @@ export function Hero() {
           phones, where the headline, sub-headline, photo and CTA together
           would otherwise overflow. Scoped to narrow widths too, so a short
           laptop window is not affected. */}
-      <div className="mx-auto grid min-h-svh max-w-[1400px] grid-cols-1 items-center gap-5 px-6 py-8 [@media(max-height:700px)_and_(max-width:640px)]:gap-2 [@media(max-height:700px)_and_(max-width:640px)]:py-3 sm:gap-6 sm:py-12 lg:grid-cols-2 lg:gap-10 lg:px-12 lg:py-0">
+      {/* The top padding is asymmetric because the header is fixed and overlays
+          this, and it steps with the header's own height rather than with the
+          usual breakpoint rhythm. Below `md` the hamburger's bottom edge sits
+          at 58px; from `md` the pill returns and its bottom is at 70px. The
+          headline was starting above both — measured between 28px and 56px on
+          phones, and 22px *under* the pill on a portrait tablet. Each value
+          below clears the header it shares a breakpoint with, with room to
+          spare. From `lg` the layout is two columns and the headline has the
+          left one to itself, so it needs no reserved band. */}
+      <div className="mx-auto grid min-h-svh max-w-[1400px] grid-cols-1 items-center gap-5 px-6 pt-[88px] pb-8 [@media(max-height:700px)_and_(max-width:640px)]:gap-2 [@media(max-height:700px)_and_(max-width:640px)]:pt-[80px] [@media(max-height:700px)_and_(max-width:640px)]:pb-3 sm:gap-6 sm:pb-12 md:pt-[104px] lg:grid-cols-2 lg:gap-10 lg:px-12 lg:py-0">
         {/* `contents` drops this wrapper below lg so the headline and the button
             become grid items in their own right and the photo can sit between
             them. From lg up the wrapper reappears and regroups them left. */}
         <div className="contents lg:flex lg:flex-col lg:items-start lg:gap-7">
-          <h1 className="hero-in hero-in-1 order-1 mx-auto max-w-[19ch] text-balance text-center text-[2rem] font-bold leading-[1.1] tracking-[-0.02em] text-[#2d2a49] sm:text-[2.5rem] md:text-[3rem] lg:mx-0 lg:text-left lg:text-[2.6rem] xl:text-[3.1rem] 2xl:text-[3.5rem]">
-            Laissez-moi vous aider à forger un mental et un corps{" "}
-            <span className="box-decoration-clone rounded-[0.14em] bg-[#2d2a49] px-[0.22em] py-[0.04em] text-[#f5eee8]">
-              inébranlables
-            </span>{" "}
-            dans votre vie sportive, étape par étape.
-          </h1>
+          {/* Below `lg` the headline and the line under it are one grid row
+              rather than two. The grid distributes its leftover height into the
+              row tracks, so as separate rows the space between these two grew
+              with the viewport — measured from 11px on a short phone to 68px on
+              a tall one, for the same two sentences. Sharing a row makes that
+              gap a fixed 8px everywhere. `lg:contents` dissolves the wrapper
+              again further up, where the column's own gap takes over. */}
+          <div className="order-1 flex flex-col gap-2 sm:gap-3 lg:contents">
+            <h1 className="hero-in hero-in-1 mx-auto max-w-[19ch] text-balance text-center text-[2rem] font-bold leading-[1.1] tracking-[-0.02em] text-[#2d2a49] sm:text-[2.5rem] md:text-[3rem] lg:mx-0 lg:text-left lg:text-[2.6rem] xl:text-[3.1rem] 2xl:text-[3.5rem]">
+              Laissez-moi vous aider à forger un mental et un corps{" "}
+              <span className="box-decoration-clone rounded-[0.14em] bg-[#2d2a49] px-[0.22em] py-[0.04em] text-[#f5eee8]">
+                inébranlables
+              </span>{" "}
+              dans votre vie sportive, étape par étape.
+            </h1>
 
-          <h2 className="hero-in hero-in-2 order-2 mx-auto max-w-[46ch] text-balance text-center text-[0.95rem] font-normal leading-[1.6] text-[#2d2a49]/75 sm:text-[1.05rem] lg:mx-0 lg:text-left lg:text-[1.1rem]">
-            Diététicienne et coach à distance basée à Montpellier. Je vous aide à
-            ajuster votre alimentation et vos entraînements pour enfin atteindre
-            les objectifs que vous repoussez chaque jour.
-          </h2>
+            <h2 className="hero-in hero-in-2 mx-auto max-w-[46ch] text-balance text-center text-[0.95rem] font-normal leading-[1.6] text-[#2d2a49]/75 sm:text-[1.05rem] lg:mx-0 lg:text-left lg:text-[1.1rem]">
+              Diététicienne et coach à distance basée à Montpellier. Je vous aide
+              à ajuster votre alimentation et vos entraînements pour enfin
+              atteindre les objectifs que vous repoussez chaque jour.
+            </h2>
+          </div>
 
           <div className="order-4 flex flex-col items-center gap-3 lg:items-start">
             <StartButton className="hero-in hero-in-3" />

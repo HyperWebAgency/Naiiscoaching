@@ -61,8 +61,13 @@ export function WhoAmI() {
       {/* Top-aligned rather than centred: both columns now carry a full stack of
           content, so they should start on the same line. */}
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-14 lg:grid-cols-2 lg:gap-16">
-        {/* Left: her, then who the work is for. */}
-        <div className="flex flex-col items-center gap-10 lg:items-start lg:gap-12">
+        {/* Left: her, then who the work is for.
+            `contents` below `lg` so the photo and the pitch stop being one
+            block and become grid items in their own right — which is what lets
+            the pitch be placed after the results while the photo stays at the
+            top. From `lg` the wrapper reappears and regroups them into the left
+            column. */}
+        <div className="contents lg:flex lg:flex-col lg:items-start lg:gap-12">
           {/* Same composition as the hero — silhouette behind, nudged 2% left.
               Here the silhouette is the beige recolour, since the navy one
               would be invisible against this section. The figure slides in
@@ -71,7 +76,7 @@ export function WhoAmI() {
               Pulled up on desktop only. A transform rather than a margin, so
               she and the silhouette rise together into the section's top
               padding without dragging the copy below them up too. */}
-          <div className="relative w-full max-w-[300px] sm:max-w-[380px] lg:-translate-y-20 lg:max-w-[470px] xl:max-w-[520px]">
+          <div className="relative order-1 mx-auto w-full max-w-[300px] sm:max-w-[380px] lg:mx-0 lg:-translate-y-20 lg:max-w-[470px] xl:max-w-[520px]">
             <Image
               src="/hero-silhouette-beige.png"
               alt=""
@@ -93,7 +98,11 @@ export function WhoAmI() {
             </ScrollFigure>
           </div>
 
-          <div className="flex w-full max-w-[46ch] flex-col gap-6 text-center lg:text-left">
+          {/* Last on a phone, so the claim about who this suits lands after the
+              before/afters have already made the case. `order` moves it
+              visually only — in the source it stays with the photo, which is
+              what keeps the desktop column intact. */}
+          <div className="order-3 mx-auto flex w-full max-w-[46ch] flex-col gap-6 text-center lg:mx-0 lg:text-left">
             <p className="text-[1.05rem] font-semibold leading-[1.5] text-[#f5eee8] sm:text-[1.15rem] lg:text-[1.45rem] lg:leading-[1.35]">
               Adapté à tout type de corps, de genre, d’âge et de mental.
             </p>
@@ -135,8 +144,10 @@ export function WhoAmI() {
           </div>
         </div>
 
-        {/* Right: who she is, then the proof that it works. */}
-        <div className="flex flex-col gap-12 lg:gap-16">
+        {/* Right: who she is, then the proof that it works. On a phone this
+            sits between the photo and the pitch; from `lg` it is the second
+            column, which `order-2` already describes. */}
+        <div className="order-2 flex flex-col gap-12 lg:gap-16">
           <div className="flex max-w-[52ch] flex-col gap-5">
             {/* The section's heading now that the statement above the photo is
                 gone — it is what "Qui je suis" in the nav points at, and every

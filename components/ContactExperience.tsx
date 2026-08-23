@@ -22,6 +22,19 @@ const FINAL_WORD = "PRÊT.";
 const FORM_HEADLINE =
   "15 minutes de votre temps, c’est tout ce qu’il faut pour commencer ce parcours.";
 
+// And once it is sent, that line is answered in the same spot rather than the
+// confirmation opening somewhere further down the page. It opens on the
+// visitor's name, so the answer reads as being addressed to them.
+const sentHeadline = (firstName: string) =>
+  firstName
+    ? `${firstName}, je vous recontacte très vite pour échanger sur votre projet.`
+    : "Je vous recontacte très vite pour échanger sur votre projet.";
+
+/** The name now opens the sentence, so a lowercased entry must not start it. */
+function capitalise(word: string) {
+  return word ? word[0].toUpperCase() + word.slice(1) : "";
+}
+
 // On the navy page the accent is the site's cream — no third colour.
 const CREAM = "#f5eee8";
 
@@ -159,6 +172,19 @@ function formatPhone(raw: string) {
   return digits.match(/.{1,2}/g)?.join(" ") ?? "";
 }
 
+// The ring is drawn by animating its dash offset from full circumference down
+// to zero. Radius and circumference have to move together — deriving the
+// second from the first is what keeps that true if the radius ever changes.
+const SUCCESS_RING_RADIUS = 60;
+const SUCCESS_RING_CIRCUMFERENCE = 2 * Math.PI * SUCCESS_RING_RADIUS;
+
+// Three timers, one sequence: the ring starts closing almost immediately, the
+// check pops the moment it finishes, and the way back out trails in after it.
+// The confirmation wording itself is up in the headline, not on a timer.
+const RING_DRAW_DELAY = 100;
+const CHECKMARK_DELAY = 1200;
+const RETURN_LINK_DELAY = 1500;
+
 export function ContactExperience() {
   // The sequence is an arrival, so it belongs to the first arrival only —
   // whether the visitor comes back by reloading or by navigating in again.
@@ -178,14 +204,26 @@ export function ContactExperience() {
   const [emailRevealed, setEmailRevealed] = useState(false);
   const [errors, setErrors] = useState<Partial<typeof EMPTY>>({});
   const [sent, setSent] = useState(false);
+  // The success ring, checkmark and return link each arrive on their own beat
+  // once `sent` flips, driven by the timers in `handleSubmit`.
+  const [ringOffset, setRingOffset] = useState(SUCCESS_RING_CIRCUMFERENCE);
+  const [showCheckmark, setShowCheckmark] = useState(false);
+  const [showReturnLink, setShowReturnLink] = useState(false);
 
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const firstFieldRef = useRef<HTMLInputElement>(null);
+  const headlineRef = useRef<HTMLSpanElement>(null);
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
   }, []);
+
+  // The intro effect below only cleans up `timersRef` while it is still
+  // wired up, which stops being true once the intro has already played —
+  // exactly the state a visitor is in when the success timers get scheduled.
+  // This is the cleanup that actually reaches them if the page is left mid-animation.
+  useEffect(() => () => timersRef.current.forEach(clearTimeout), []);
 
   const openForm = useCallback(() => {
     clearTimers();
@@ -300,6 +338,14 @@ export function ContactExperience() {
     if (showForm && !sent) firstFieldRef.current?.focus();
   }, [showForm, sent]);
 
+  // The confirmation replaces the headline, which is not somewhere focus would
+  // travel on its own. `preventScroll` because the column re-centres as the
+  // form collapses — letting the browser chase the element mid-transition
+  // fights that movement.
+  useEffect(() => {
+    if (sent) headlineRef.current?.focus({ preventScroll: true });
+  }, [sent]);
+
   const update =
     (field: keyof typeof EMPTY) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -344,19 +390,35 @@ export function ContactExperience() {
     );
     window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
     setSent(true);
+
+    if (window.matchMedia(REDUCED_QUERY).matches) {
+      // No draw, no pop, no stagger — just the finished state, at once.
+      setRingOffset(0);
+      setShowCheckmark(true);
+      setShowReturnLink(true);
+    } else {
+      timersRef.current.push(setTimeout(() => setRingOffset(0), RING_DRAW_DELAY));
+      timersRef.current.push(setTimeout(() => setShowCheckmark(true), CHECKMARK_DELAY));
+      timersRef.current.push(setTimeout(() => setShowReturnLink(true), RETURN_LINK_DELAY));
+    }
   };
 
   const started = index >= 0;
   const isFinal = index >= WORDS.length;
+  // Read once here rather than in the JSX: the confirmation is the only place
+  // the name is used, and it opens the sentence.
+  const firstName = capitalise(values.nom.trim().split(/\s+/)[0] ?? "");
   // PRÊT is the sequence's landing; opening the form turns it into the line.
   // The non-breaking space holds the line's height through the opening beat.
-  const headline = showForm
-    ? FORM_HEADLINE
-    : started
-      ? isFinal
-        ? FINAL_WORD
-        : WORDS[index]
-      : " ";
+  const headline = sent
+    ? sentHeadline(firstName)
+    : showForm
+      ? FORM_HEADLINE
+      : started
+        ? isFinal
+          ? FINAL_WORD
+          : WORDS[index]
+        : " ";
 
   const fieldClass =
     "w-full rounded-2xl border bg-transparent px-4 py-3 text-[0.95rem] text-[#f5eee8] " +
@@ -419,8 +481,16 @@ export function ContactExperience() {
             that growth rather than a separate animation chasing it. */}
         <div className="flex w-full flex-col items-center">
           <span
-            key={showForm ? "headline" : index}
+            // Remounting on the swap is what replays the blur-in, so the
+            // confirmation arrives the same way every other line here does
+            // rather than the text simply changing underneath.
+            key={sent ? "sent" : showForm ? "headline" : index}
+            ref={headlineRef}
             id={showForm ? "contact-headline" : undefined}
+            // Submitting makes the form `inert`, which drops focus to the body.
+            // Focus moves here instead, so the confirmation is what a screen
+            // reader lands on rather than nothing at all.
+            tabIndex={sent ? -1 : undefined}
             // A decorative flash during the sequence; real content once it
             // becomes the line above the form.
             aria-hidden={showForm ? undefined : true}
@@ -452,23 +522,116 @@ export function ContactExperience() {
           <div className="overflow-hidden">
             {showForm && (
               <div className="intro-form w-full pt-10">
-                {sent ? (
-                  <div className="flex flex-col items-center gap-3 text-center">
-                    <p className="text-[1.15rem] font-semibold text-[#f5eee8]">
-                      Merci, {values.nom.split(" ")[0]}.
-                    </p>
-                    <p className="text-[0.95rem] leading-[1.6] text-[#f5eee8]/70">
-                      Votre message est prêt dans votre application mail. Envoyez-le et je
-                      vous réponds sous 48&nbsp;heures.
-                    </p>
-                    <Link
-                      href="/"
-                      className="mt-2 rounded-full bg-[#f5eee8] px-5 py-2 text-[0.8rem] font-semibold uppercase tracking-[0.08em] text-[#2d2a49]"
-                    >
-                      Retour à l’accueil
-                    </Link>
+                {/* The confirmation lives up in the headline now, so this box
+                    no longer has to hold whichever of the two states is taller:
+                    the form's row collapses to nothing as the success row
+                    opens, and the height morphs between them rather than
+                    jumping. Same 0fr/1fr row the form and the e-mail field
+                    already open with. */}
+                <div>
+                  <div
+                    className="intro-form-row grid transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    style={{ gridTemplateRows: sent ? "1fr" : "0fr" }}
+                  >
+                    <div className="overflow-hidden">
+                      {/* `pb-3` is the return link's landing room, not spacing.
+                          It rises the last 8px into place, and the clip this
+                          row needs to collapse cuts at the padding edge — with
+                          the link flush to the bottom, that sliced the bottom
+                          off a cream pill mid-entrance and read as it sliding
+                          out from under something. */}
+                      <div
+                        inert={!sent}
+                        className={`flex flex-col items-center gap-6 pb-3 text-center transition-all duration-700 motion-reduce:transition-none ${
+                          sent
+                            ? "scale-100 opacity-100"
+                            : "pointer-events-none scale-105 opacity-0"
+                        }`}
+                      >
+                        <div className="relative h-32 w-32 text-[#f5eee8]">
+                          {/* -rotate-90 makes the stroke start at 12 o’clock
+                              instead of the 3 o’clock an SVG circle draws
+                              from by default. */}
+                          <svg
+                            viewBox="0 0 128 128"
+                            aria-hidden
+                            focusable="false"
+                            className="h-32 w-32 -rotate-90"
+                          >
+                            {/* Faint static track, so the ring on top reads as
+                                tracing itself rather than as having simply
+                                always been there. */}
+                            <circle
+                              cx="64"
+                              cy="64"
+                              r={SUCCESS_RING_RADIUS}
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="3"
+                              strokeOpacity="0.15"
+                            />
+                            <circle
+                              cx="64"
+                              cy="64"
+                              r={SUCCESS_RING_RADIUS}
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="3"
+                              strokeLinecap="round"
+                              className="transition-[stroke-dashoffset] duration-1000 ease-out motion-reduce:transition-none"
+                              style={{
+                                strokeDasharray: SUCCESS_RING_CIRCUMFERENCE,
+                                strokeDashoffset: ringOffset,
+                              }}
+                            />
+                          </svg>
+
+                          <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden
+                            focusable="false"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            className={`absolute inset-0 m-auto h-16 w-16 transition-all duration-500 motion-reduce:transition-none ${
+                              showCheckmark ? "scale-100 opacity-100" : "scale-0 opacity-0"
+                            }`}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+
+                        <Link
+                          href="/"
+                          className={`rounded-full bg-[#f5eee8] px-5 py-2 text-[0.8rem] font-semibold uppercase tracking-[0.08em] text-[#2d2a49] transition-all duration-500 motion-reduce:transition-none ${
+                            showReturnLink
+                              ? "translate-y-0 opacity-100"
+                              : "translate-y-2 opacity-0"
+                          }`}
+                        >
+                          Retour à l’accueil
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                ) : (
+
+                  <div
+                    className="intro-form-row grid transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    style={{ gridTemplateRows: sent ? "0fr" : "1fr" }}
+                  >
+                    <div className="overflow-hidden">
+                      <div
+                        inert={sent}
+                        className={`transition-all duration-700 motion-reduce:transition-none ${
+                          sent
+                            ? "pointer-events-none scale-95 opacity-0"
+                            : "scale-100 opacity-100"
+                        }`}
+                      >
                   <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label
@@ -626,7 +789,10 @@ export function ContactExperience() {
                       Choisir un créneau d’appel
                     </a>
                   </form>
-                )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
