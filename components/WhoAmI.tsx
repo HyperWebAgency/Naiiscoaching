@@ -23,21 +23,36 @@ const RESULTS = [
   },
 ];
 
-// Drawn entirely from what the site already claims about Anaïs — diététicienne,
-// coaching à distance, Montpellier — plus how she works. The parts only she can
-// supply are her training, how long she has practised, and why she started;
-// those belong here and are deliberately not invented.
+// Anaïs's own words. The opening line that stands on its own.
+const BIO_LEAD =
+  "Sportive depuis toujours, scientifique de formation, coach par passion et aujourd’hui athlète de bodybuilding.";
+
+// The story itself, set evenly. Her document bolds the closing phrase of each of
+// these, but at reading size on this dark ground three emphasised tails in a row
+// pull harder than they help; the lead and the sign-off carry the weight here
+// instead.
 const BIO = [
-  "Je suis diététicienne, et je coache à distance depuis Montpellier.",
-  "J’accompagne des personnes qui ont déjà essayé seules. Qui ont enchaîné les régimes, les programmes trouvés en ligne, les promesses de résultats en huit semaines, et qui n’ont jamais tenu plus d’un mois.",
-  "Le problème n’a jamais été leur motivation. C’était le plan.",
-  "Alors je ne donne pas de méthode toute faite. Je pars de votre corps, de votre quotidien, de vos contraintes et de ce que vous êtes réellement prêt à tenir. Je construis à partir de là.",
+  "Le sport a façonné une grande partie de la personne que je suis. Il m’a appris la discipline, la rigueur, la confiance en moi et surtout cette conviction : les plus belles choses demandent du temps, de la constance et surtout un pourquoi suffisamment profond et puissant pour continuer lorsque les choses deviennent difficiles.",
+  "Après un Master en chimie et une première carrière dans laquelle j’ai fini par ne plus me sentir alignée, j’ai choisi de reconstruire mon quotidien autour de ce qui m’animait réellement : le sport, la nutrition, le mindset et l’envie de transmettre.",
+  "Aujourd’hui, j’accompagne à mon tour celles et ceux qui veulent aller au bout de leurs objectifs, pas seulement en leur donnant un plan, mais en les aidant à construire les habitudes et l’état d’esprit nécessaires pour y parvenir.",
 ];
 
+// Her closing statement, bold in full.
+const BIO_CLOSING =
+  "Un accompagnement humain, exigeant et bienveillant, où l’on travaille autant sur le corps que sur la personne qui le construit.";
+
+// Opens the results column, above the line that states what they are.
+const RESULTS_INTRO =
+  "Derrière ces photos, il y a évidemment des kilos perdus, du muscle construit et des physiques qui évoluent. Mais il y a aussi des habitudes qui changent, de la confiance qui se construit et des personnes qui découvrent qu’elles sont capables de bien plus qu’elles ne le pensaient.";
+
+// The five steps, in order — the numbering in the markup is what carries that,
+// so these are plain sentences with no emphasis of their own.
 const METHOD = [
-  "Une alimentation qui fait prendre du muscle et perdre du gras en même temps.",
-  "Un programme d’entraînement qui corrige les points faibles et respecte votre morphologie.",
-  "Un suivi qui vérifie, semaine après semaine, que tout est appliqué correctement.",
+  "Une analyse approfondie de ton point de départ : habitudes alimentaires et sportives, rythme de vie, activité quotidienne, environnement, contraintes et état d’esprit, pour construire tes plans personnalisés, et non te faire suivre une méthode préétablie.",
+  "Une stratégie nutritionnelle construite autour de tes objectifs, tes préférences, tes besoins et ton quotidien.",
+  "Un entraînement individualisé selon ton niveau, tes capacités, ta morphologie et tes axes de progression.",
+  "Un bilan chaque semaine pour analyser ton évolution, comprendre tes difficultés et ajuster ton accompagnement au fil de ta progression.",
+  "Et surtout, un travail sur tes habitudes et ton mindset, pour ne pas seulement atteindre tes objectifs, mais construire des changements capables de réellement durer dans le temps.",
 ];
 
 // Reused by the two small section labels, so they stay identical.
@@ -103,43 +118,56 @@ export function WhoAmI() {
               visually only — in the source it stays with the photo, which is
               what keeps the desktop column intact. */}
           <div className="order-3 mx-auto flex w-full max-w-[46ch] flex-col gap-6 text-center lg:mx-0 lg:text-left">
-            <p className="text-[1.05rem] font-semibold leading-[1.5] text-[#f5eee8] sm:text-[1.15rem] lg:text-[1.45rem] lg:leading-[1.35]">
-              Adapté à tout type de corps, de genre, d’âge et de mental.
-            </p>
+            {/* Styled like a heading but written as a label, for the same
+                reason the list below is: this column comes before the
+                biography in the source, so a real heading here would be
+                announced ahead of the section's own <h2>. */}
+            <div className="flex flex-col gap-2">
+              <p className={labelClass}>Résultats</p>
+              <p className="text-[1.05rem] font-semibold leading-[1.5] text-[#f5eee8] sm:text-[1.15rem] lg:text-[1.45rem] lg:leading-[1.35]">
+                Des résultats qui vont bien au-delà du physique.
+              </p>
+            </div>
 
-            <p className={pitchBodyClass}>
-              À la fin, ils ont obtenu ce qu’ils étaient venus chercher&nbsp;: le
-              corps qu’ils avaient en tête. Et souvent mieux encore.
-            </p>
+            <p className={pitchBodyClass}>{RESULTS_INTRO}</p>
 
             <div className="flex flex-col gap-4">
-              {/* A label for the list rather than a heading: this column comes
-                  before the biography in the source, so an <h3> here would be
-                  announced ahead of the section's own <h2>. `aria-labelledby`
-                  gives the list the same name a heading would have. */}
+              {/* A label for the list rather than a heading, for the reason
+                  above. `aria-labelledby` gives the list the same name a
+                  heading would have. */}
               <p
                 id="method-label"
                 className="text-[1rem] font-semibold text-[#f5eee8] sm:text-[1.05rem] lg:text-[1.25rem]"
               >
-                Comment je les ai aidés&nbsp;?
+                Comment allons-nous construire tes résultats&nbsp;?
               </p>
 
-              {/* Left-aligned even where the block above is centred: a bulleted
-                  list with a centred rag is unreadable. */}
-              <ul
+              {/* Left-aligned even where the block above is centred: a list
+                  with a centred rag is unreadable. */}
+              {/* An ordered list now that these are steps: the sequence is part
+                  of the meaning, and `ol` is what states it to a screen reader.
+                  The painted numbers are decorative for that reason — the list
+                  already announces "1 of 5". */}
+              <ol
                 aria-labelledby="method-label"
-                className="mx-auto flex max-w-[42ch] flex-col gap-3 text-left lg:mx-0"
+                className="mx-auto flex max-w-[42ch] flex-col gap-6 text-left lg:mx-0"
               >
-                {METHOD.map((item) => (
-                  <li key={item} className={`flex gap-3 ${pitchBodyClass}`}>
+                {METHOD.map((item, i) => (
+                  <li key={item} className="flex flex-col gap-1.5">
+                    {/* Same numbering as the mobile menu: zero-padded, small,
+                        widely tracked and held well back, sitting over the line
+                        it counts rather than beside it. Decorative here — the
+                        `ol` already announces the position. */}
                     <span
                       aria-hidden
-                      className="mt-[0.62em] h-[5px] w-[5px] shrink-0 rounded-full bg-[#f5eee8]/60"
-                    />
-                    {item}
+                      className="text-[0.7rem] font-medium uppercase tracking-[0.14em] text-[#f5eee8]/35"
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className={pitchBodyClass}>{item}</span>
                   </li>
                 ))}
-              </ul>
+              </ol>
             </div>
           </div>
         </div>
@@ -156,6 +184,13 @@ export function WhoAmI() {
             <h2 className="text-[1.5rem] font-bold leading-[1.2] tracking-[-0.01em] text-[#f5eee8] sm:text-[1.75rem]">
               Moi, c’est Anaïs.
             </h2>
+            {/* Opens the biography at full strength, so the four-part summary
+                of who she is reads as a statement before the story explains
+                it. */}
+            <p className="text-[1.05rem] font-semibold leading-[1.5] text-[#f5eee8] sm:text-[1.15rem]">
+              {BIO_LEAD}
+            </p>
+
             {BIO.map((paragraph) => (
               <p key={paragraph} className={bodyClass}>
                 {paragraph}
@@ -165,9 +200,8 @@ export function WhoAmI() {
             {/* Her sign-off. Set apart from the paragraphs above it — full
                 strength and heavier — so it lands as a closing statement
                 rather than as one more line of the biography. */}
-            <p className="mt-2 max-w-[30ch] text-[1.15rem] font-semibold leading-[1.4] tracking-[-0.01em] text-[#f5eee8] sm:text-[1.3rem]">
-              Vous ne possédez vraiment qu’une seule chose dans cette vie&nbsp;:
-              votre corps et votre mental. Alors, prenons-en soin.
+            <p className="mt-2 text-[1.15rem] font-semibold leading-[1.4] tracking-[-0.01em] text-[#f5eee8] sm:text-[1.3rem]">
+              {BIO_CLOSING}
             </p>
           </div>
 

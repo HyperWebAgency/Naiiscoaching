@@ -56,7 +56,7 @@ export function SocialLinks({ className = "" }: { className?: string }) {
             // `noreferrer` alongside `noopener` so the destination is not told
             // which page sent the visitor.
             rel="noopener noreferrer"
-            aria-label={`${icon.name} — Naiis Coaching`}
+            aria-label={`${icon.name}, Naiis Coaching`}
             className="flex items-center justify-center rounded-full p-2 text-[#2d2a49]/70
                        transition-colors duration-200 hover:bg-[#2d2a49]/10 hover:text-[#2d2a49]
                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2

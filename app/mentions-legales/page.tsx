@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { Footer } from "@/components/Footer";
 import { PHONE_E164, SITE_NAME } from "@/lib/site";
 
@@ -123,7 +125,9 @@ export default function MentionsLegalesPage() {
           md up — the same clearance problem the contact page hit at py-16. */}
       <main className="bg-[#f5eee8] px-6 pt-32 pb-24 md:pt-40 lg:px-12">
         <div className="mx-auto max-w-[68ch]">
-          <h1 className="font-extrabold uppercase leading-[0.95] tracking-[-0.03em] text-[clamp(2.25rem,7vw,4rem)] text-[#2d2a49]">
+          <Breadcrumb label="Mentions légales" href="/mentions-legales" />
+
+          <h1 className="mt-5 font-extrabold uppercase leading-[0.95] tracking-[-0.03em] text-[clamp(2.25rem,7vw,4rem)] text-[#2d2a49]">
             Mentions légales
           </h1>
 
@@ -261,71 +265,33 @@ export default function MentionsLegalesPage() {
             </p>
           </section>
 
-          <section className={sectionClass}>
-            <h2 className={h2Class}>7. Données personnelles</h2>
+          {/* Summary plus a pointer, not a second copy. The detail lives in
+              /politique-de-confidentialite, and two full versions of the same
+              legal text in one site is how they end up contradicting each other
+              — which is worse than having only one. */}
+          <section id="donnees-personnelles" className={`${sectionClass} scroll-mt-28`}>
+            <h2 className={h2Class}>7. Données personnelles et cookies</h2>
             <p className={pClass}>
-              Le formulaire de contact de ce site ne transmet aucune donnée à un
-              serveur : il prépare un message dans votre propre logiciel de
-              messagerie, que vous restez libre d’envoyer ou non. Les
-              informations saisies (nom et prénom, téléphone, adresse e-mail et
-              message) ne quittent votre appareil qu’au moment où vous envoyez
-              ce message, et ne sont alors reçues que par l’éditeur du site.
+              Ce site ne collecte aucune donnée à votre insu et ne dépose aucun
+              cookie de mesure d’audience, de publicité ou de traçage. Les
+              seules informations traitées sont celles que vous transmettez
+              vous-même, pour répondre à votre demande et assurer le suivi de
+              votre accompagnement. Elles ne sont ni cédées ni vendues à des
+              tiers.
             </p>
             <p className={pClass}>
-              Ces informations sont utilisées uniquement pour répondre à votre
-              demande et assurer le suivi de votre accompagnement. Elles ne sont
-              ni cédées ni vendues à des tiers.
-            </p>
-            <p className={pClass}>
-              Conformément au règlement (UE) 2016/679 (RGPD) et à la loi
-              Informatique et Libertés, vous disposez d’un droit d’accès, de
-              rectification, d’effacement, de limitation, d’opposition et de
-              portabilité de vos données. Vous pouvez les exercer à l’adresse
-              indiquée à l’article 1. Vous pouvez également introduire une
-              réclamation auprès de la CNIL (
-              <a
-                href="https://www.cnil.fr"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={inlineLinkClass}
-              >
-                cnil.fr
-              </a>
-              ).
-            </p>
-            <p className={pClass}>
-              La prise de rendez-vous s’effectue via Calendly, dont les
-              conditions de traitement des données sont accessibles sur{" "}
-              <a
-                href="https://calendly.com/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={inlineLinkClass}
-              >
-                calendly.com
-              </a>
+              Le détail des traitements, des durées de conservation, des
+              sous-traitants et des modalités d’exercice de vos droits RGPD
+              figure dans la{" "}
+              <Link href="/politique-de-confidentialite" className={inlineLinkClass}>
+                politique de confidentialité
+              </Link>
               .
             </p>
           </section>
 
           <section className={sectionClass}>
-            <h2 className={h2Class}>8. Cookies</h2>
-            {/* Accurate as the site is built today: no analytics, no ad tags,
-                and the two YouTube blocks are click-to-load facades pointed at
-                youtube-nocookie. Adding any measurement tool means this
-                paragraph stops being true and a consent banner starts being
-                required. */}
-            <p className={pClass}>
-              Ce site ne dépose aucun cookie de mesure d’audience, de publicité
-              ou de traçage. Les vidéos YouTube ne sont chargées qu’après un
-              clic explicite de votre part, et transitent par le domaine
-              youtube-nocookie.com : tant que vous ne lancez pas une vidéo,
-              aucune donnée n’est transmise à YouTube.
-            </p>
-          </section>
-
-          <section className={sectionClass}>
-            <h2 className={h2Class}>9. Liens hypertextes</h2>
+            <h2 className={h2Class}>8. Liens hypertextes</h2>
             <p className={pClass}>
               Ce site comporte des liens vers des sites tiers (réseaux sociaux,
               YouTube, plateforme de prise de rendez-vous). L’éditeur n’exerce
@@ -335,7 +301,7 @@ export default function MentionsLegalesPage() {
           </section>
 
           <section className={sectionClass}>
-            <h2 className={h2Class}>10. Médiation de la consommation</h2>
+            <h2 className={h2Class}>9. Médiation de la consommation</h2>
             <p className={pClass}>
               Conformément à l’article L.612-1 du code de la consommation, tout
               consommateur a le droit de recourir gratuitement à un médiateur de
@@ -359,7 +325,7 @@ export default function MentionsLegalesPage() {
           </section>
 
           <section className={sectionClass}>
-            <h2 className={h2Class}>11. Droit applicable</h2>
+            <h2 className={h2Class}>10. Droit applicable</h2>
             <p className={pClass}>
               Les présentes mentions légales sont soumises au droit français. En
               cas de litige, et à défaut de résolution amiable, les tribunaux

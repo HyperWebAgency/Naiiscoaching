@@ -33,7 +33,7 @@ export function StartButton({ className }: { className?: string }) {
         timerRef.current = setTimeout(() => router.push("/contact"), SHATTER_MS);
       }}
     >
-      Commencer
+      Réserver ma visio découverte
     </BlobButton>
   );
 }

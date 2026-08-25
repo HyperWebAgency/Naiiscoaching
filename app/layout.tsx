@@ -25,10 +25,11 @@ export const metadata: Metadata = {
   // resolve.
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — Diététicienne et coach sportive à distance à Montpellier`,
+    default: `${SITE_NAME}, diététicienne et coach sportive à distance à Montpellier`,
     // Pages set only their own name; the brand is appended here so it can never
-    // drift between routes.
-    template: `%s — ${SITE_NAME}`,
+    // drift between routes. A pipe rather than the comma above: this one is a
+    // separator between two names, not a phrase describing one.
+    template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} — Diététicienne et coach sportive à distance à Montpellier`,
+    title: `${SITE_NAME}, diététicienne et coach sportive à distance à Montpellier`,
     description: SITE_DESCRIPTION,
   },
   // Without this the card defaults to `summary`, which is the small square

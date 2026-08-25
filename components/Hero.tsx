@@ -37,17 +37,20 @@ export function Hero() {
               again further up, where the column's own gap takes over. */}
           <div className="order-1 flex flex-col gap-2 sm:gap-3 lg:contents">
             <h1 className="hero-in hero-in-1 mx-auto max-w-[19ch] text-balance text-center text-[2rem] font-bold leading-[1.1] tracking-[-0.02em] text-[#2d2a49] sm:text-[2.5rem] md:text-[3rem] lg:mx-0 lg:text-left lg:text-[2.6rem] xl:text-[3.1rem] 2xl:text-[3.5rem]">
-              Laissez-moi vous aider à forger un mental et un corps{" "}
+              Un objectif.{" "}
               <span className="box-decoration-clone rounded-[0.14em] bg-[#2d2a49] px-[0.22em] py-[0.04em] text-[#f5eee8]">
-                inébranlables
+                Un pourquoi
               </span>{" "}
-              dans votre vie sportive, étape par étape.
+              suffisamment fort. Et les actions nécessaires pour aller jusqu’au
+              bout.
             </h1>
 
             <h2 className="hero-in hero-in-2 mx-auto max-w-[46ch] text-balance text-center text-[0.95rem] font-normal leading-[1.6] text-[#2d2a49]/75 sm:text-[1.05rem] lg:mx-0 lg:text-left lg:text-[1.1rem]">
-              Diététicienne et coach à distance basée à Montpellier. Je vous aide
-              à ajuster votre alimentation et vos entraînements pour enfin
-              atteindre les objectifs que vous repoussez chaque jour.
+              Nutrition, entraînement et mindset&nbsp;: je t’accompagne bien
+              au-delà d’un simple programme. Ensemble, nous transformons ton
+              physique, tes habitudes, et ton état d’esprit pour construire un
+              mode de vie qui te correspond et la discipline nécessaire pour
+              aller au bout de tes objectifs.
             </h2>
           </div>
 
@@ -58,7 +61,7 @@ export function Hero() {
                 aria-hidden
                 className="h-[7px] w-[7px] shrink-0 rounded-full bg-[#3a9e63]"
               />
-              Places limitées
+              Places disponibles
             </p>
 
             {/* Rendered here so it has somewhere sensible to sit on small

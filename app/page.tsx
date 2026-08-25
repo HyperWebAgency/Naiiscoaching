@@ -12,11 +12,12 @@ export default function Home() {
       <main className="relative">
         <Hero />
         <WhoAmI />
-        <Testimonials />
-        {/* After the proof, the offer: a visitor scrolls past the results and
-            the avis before being asked to look at prices. This is also what
-            the navbar's #services link points at — a dead anchor until now. */}
+        {/* The offer before the proof: "Qui je suis" has already made the case
+            for her, so the formules come next and the avis close the argument
+            rather than open it. This is also what the navbar's #services link
+            points at. */}
         <Services />
+        <Testimonials />
         <RevealBlur targetId="qui-je-suis" />
         {/* Home only. On /contact it would sit on top of the fullscreen word
             sequence, which is the one place the page wants no competition. */}

@@ -17,18 +17,31 @@ const WORDS = [
 ];
 const FINAL_WORD = "PRÊT.";
 
-// Once the form opens, the single word gives way to the line that lowers the
-// barrier to actually starting.
-const FORM_HEADLINE =
-  "15 minutes de votre temps, c’est tout ce qu’il faut pour commencer ce parcours.";
+// Once the form opens, the single word gives way to the question the form
+// answers, and the line under it that lowers the barrier to starting.
+const FORM_TITLE = "Prêt·e à commencer ?";
+const FORM_SUBTITLE = "Quelques informations suffisent pour faire le premier pas.";
 
-// And once it is sent, that line is answered in the same spot rather than the
+// And once it is sent, the title is answered in the same spot rather than the
 // confirmation opening somewhere further down the page. It opens on the
 // visitor's name, so the answer reads as being addressed to them.
 const sentHeadline = (firstName: string) =>
   firstName
-    ? `${firstName}, je vous recontacte très vite pour échanger sur votre projet.`
-    : "Je vous recontacte très vite pour échanger sur votre projet.";
+    ? `${firstName}, je te recontacte très vite pour échanger sur ton projet.`
+    : "Je te recontacte très vite pour échanger sur ton projet.";
+
+/**
+ * The four answers to "quel accompagnement t’intéresse ?", in her order. The
+ * last one is the escape hatch, which is what lets the field be required: there
+ * is always a true answer available, so nobody is forced to guess a formule to
+ * get past it.
+ */
+const FORMULES = [
+  "Suivi training + diète & mindset",
+  "Suivi diète & mindset",
+  "Suivi posing mensuel",
+  "Je ne sais pas encore, j’aimerais en discuter",
+];
 
 /** The name now opens the sentence, so a lowercased entry must not start it. */
 function capitalise(word: string) {
@@ -156,7 +169,7 @@ function getServerIntroSeen() {
   return false;
 }
 
-const EMPTY = { nom: "", telephone: "", message: "", email: "" };
+const EMPTY = { nom: "", telephone: "", formule: "", message: "", email: "" };
 
 // A French mobile is ten digits. Reaching the tenth means the number is
 // complete, which is the moment to ask for one more thing rather than showing
@@ -348,7 +361,11 @@ export function ContactExperience() {
 
   const update =
     (field: keyof typeof EMPTY) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >
+    ) => {
       setValues((v) => ({ ...v, [field]: e.target.value }));
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     };
@@ -365,14 +382,16 @@ export function ContactExperience() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Tutoiement throughout, to match the labels she wrote for this page.
     const next: Partial<typeof EMPTY> = {};
-    if (!values.nom.trim()) next.nom = "Indiquez votre nom et prénom.";
-    if (!values.telephone.trim()) next.telephone = "Indiquez votre numéro.";
+    if (!values.nom.trim()) next.nom = "Indique ton nom et prénom.";
+    if (!values.telephone.trim()) next.telephone = "Indique ton numéro.";
     else if (values.telephone.replace(/\D/g, "").length < 8)
       next.telephone = "Ce numéro semble incomplet.";
-    if (!values.message.trim()) next.message = "Dites-moi où vous en êtes.";
+    if (!values.formule) next.formule = "Choisis l’accompagnement qui t’intéresse.";
+    if (!values.message.trim()) next.message = "Dis-moi où tu en es.";
     if (emailRevealed) {
-      if (!values.email.trim()) next.email = "Indiquez votre e-mail.";
+      if (!values.email.trim()) next.email = "Indique ton e-mail.";
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim()))
         next.email = "Cet e-mail semble incorrect.";
     }
@@ -381,11 +400,14 @@ export function ContactExperience() {
     if (Object.keys(next).length > 0) return;
 
     // No backend yet: hand the message to the visitor's mail client so it
-    // genuinely reaches someone. Swap this for a POST when an endpoint exists.
-    const subject = encodeURIComponent(`Demande de coaching — ${values.nom}`);
+    // genuinely reaches someone. Formspree is the endpoint this is waiting on —
+    // every field already carries the `name` Formspree posts under, so wiring it
+    // is a `fetch` to the form's action in place of the two lines below.
+    const subject = encodeURIComponent(`Demande de coaching : ${values.nom}`);
     const body = encodeURIComponent(
       `Nom et prénom : ${values.nom}\nTéléphone : ${values.telephone}` +
         (values.email.trim() ? `\nE-mail : ${values.email.trim()}` : "") +
+        `\nAccompagnement : ${values.formule}` +
         `\n\n${values.message}\n`
     );
     window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
@@ -413,7 +435,7 @@ export function ContactExperience() {
   const headline = sent
     ? sentHeadline(firstName)
     : showForm
-      ? FORM_HEADLINE
+      ? FORM_TITLE
       : started
         ? isFinal
           ? FINAL_WORD
@@ -496,12 +518,37 @@ export function ContactExperience() {
             aria-hidden={showForm ? undefined : true}
             className={
               showForm
-                ? "intro-word intro-word-final max-w-[24ch] px-6 text-center text-[1.15rem] font-semibold leading-[1.45] tracking-[-0.01em] text-[#f5eee8] sm:text-[1.4rem]"
+                ? // Two states, two sizes: the title reads as a heading, the
+                  // confirmation as a sentence.
+                  `intro-word intro-word-final px-6 text-center tracking-[-0.01em] text-[#f5eee8] ${
+                    sent
+                      ? "max-w-[24ch] text-[1.15rem] font-semibold leading-[1.45] sm:text-[1.4rem]"
+                      : "text-[1.5rem] font-bold leading-[1.25] sm:text-[1.9rem]"
+                  }`
                 : `intro-word ${isFinal ? "intro-word-final" : ""} select-none px-6 text-center font-extrabold uppercase leading-none tracking-[-0.02em] text-[#f5eee8] text-[2.5rem] sm:text-[4rem] md:text-[5.5rem] lg:text-[7rem]`
             }
           >
             {headline}
           </span>
+
+          {/* Her line under the title. It opens on the same collapsing row the
+              form uses rather than mounting and unmounting, so sending the form
+              closes it in step with everything else instead of snapping it out
+              from under the confirmation. The padding rather than a margin
+              because a margin would escape the clip while the row is closed. */}
+          <div
+            className="intro-form-row grid w-full transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{ gridTemplateRows: showForm && !sent ? "1fr" : "0fr" }}
+          >
+            <div className="overflow-hidden">
+              <p
+                aria-hidden={!showForm || sent}
+                className="mx-auto max-w-[36ch] px-6 pt-3 text-center text-[0.95rem] leading-[1.55] text-[#f5eee8]/60 sm:text-[1.05rem]"
+              >
+                {FORM_SUBTITLE}
+              </p>
+            </div>
+          </div>
 
           {isFinal && !showForm && (
             <span
@@ -638,12 +685,13 @@ export function ContactExperience() {
                         htmlFor="contact-nom"
                         className="text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[#f5eee8]/60"
                       >
-                        Nom et prénom
+                        Nom &amp; prénom
                       </label>
                       <input
                         id="contact-nom"
                         ref={firstFieldRef}
                         type="text"
+                        name="nom"
                         autoComplete="name"
                         value={values.nom}
                         onChange={update("nom")}
@@ -673,6 +721,7 @@ export function ContactExperience() {
                         <input
                           id="contact-tel"
                           type="tel"
+                          name="telephone"
                           inputMode="tel"
                           autoComplete="tel"
                           value={values.telephone}
@@ -710,6 +759,7 @@ export function ContactExperience() {
                             <input
                               id="contact-email"
                               type="email"
+                              name="email"
                               inputMode="email"
                               autoComplete="email"
                               // Off-screen while closed, so it must be out of
@@ -739,18 +789,91 @@ export function ContactExperience() {
 
                     <div className="flex flex-col gap-1.5">
                       <label
+                        htmlFor="contact-formule"
+                        className="text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[#f5eee8]/60"
+                      >
+                        Quel accompagnement t’intéresse&nbsp;?
+                      </label>
+                      {/* `relative` for the chevron, which is drawn here because
+                          `appearance-none` removes the browser's own — and
+                          without it the box reads as a text field that refuses
+                          to take typing. */}
+                      <div className="relative">
+                        <select
+                          id="contact-formule"
+                          name="accompagnement"
+                          value={values.formule}
+                          onChange={update("formule")}
+                          aria-invalid={!!errors.formule}
+                          // `color-scheme: dark` is what makes the native option
+                          // list paint dark. Without it the popup is drawn from
+                          // the control's own background, which is transparent
+                          // here, and lands as cream text on white.
+                          className={`${fieldClass} cursor-pointer appearance-none pr-11 [color-scheme:dark]`}
+                          style={{
+                            borderColor: errors.formule
+                              ? "#e08b7a"
+                              : "rgba(245,238,232,0.22)",
+                            // Inline rather than a utility: `fieldClass` already
+                            // sets a text colour, and two utilities of equal
+                            // specificity would be decided by stylesheet order
+                            // rather than by which one is meant to win.
+                            color: values.formule ? CREAM : "rgba(245,238,232,0.35)",
+                          }}
+                        >
+                          {/* Disabled rather than a real value, so an untouched
+                              form cannot arrive reading as the first formule —
+                              which would be a lead about the wrong offer. */}
+                          <option value="" disabled>
+                            Choisis ton accompagnement
+                          </option>
+                          {FORMULES.map((formule) => (
+                            <option
+                              key={formule}
+                              value={formule}
+                              style={{ backgroundColor: "#2d2a49", color: CREAM }}
+                            >
+                              {formule}
+                            </option>
+                          ))}
+                        </select>
+
+                        <svg
+                          viewBox="0 0 24 24"
+                          aria-hidden
+                          focusable="false"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#f5eee8]/45"
+                        >
+                          <path d="M6 9l6 6 6-6" />
+                        </svg>
+                      </div>
+                      {errors.formule && (
+                        <span className="text-[0.78rem] text-[#e08b7a]">
+                          {errors.formule}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label
                         htmlFor="contact-msg"
                         className="text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[#f5eee8]/60"
                       >
-                        Votre objectif
+                        Parle-moi de toi et de ton objectif
                       </label>
                       <textarea
                         id="contact-msg"
+                        name="message"
                         rows={4}
                         value={values.message}
                         onChange={update("message")}
                         aria-invalid={!!errors.message}
-                        placeholder="Où vous en êtes, ce que vous visez…"
+                        placeholder="Quelques mots sur toi, ton objectif et ce qui t’amène jusqu’ici suffisent"
                         className={`${fieldClass} resize-none`}
                         style={{
                           borderColor: errors.message

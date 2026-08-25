@@ -3,13 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { PHONE_E164, SOCIAL } from "@/lib/site";
-
-/**
- * "+33677704510" -> "06 77 70 45 10". Derived rather than written out a second
- * time, so the dialled number and the printed one cannot drift apart.
- */
-const PHONE_DISPLAY = PHONE_E164.replace("+33", "0").replace(/(\d{2})(?=\d)/g, "$1 ");
+import { SOCIAL } from "@/lib/site";
 
 /**
  * Resolved when the page is built, not when it is viewed. A statically rendered
@@ -18,15 +12,32 @@ const PHONE_DISPLAY = PHONE_E164.replace("+33", "0").replace(/(\d{2})(?=\d)/g, "
  */
 const YEAR = new Date().getFullYear();
 
-/** In-page targets. Both live on the home page only. */
+/**
+ * Her address, already printed on the legal page as the éditeur's contact.
+ * Written out once here; the two are the same address and there is no shared
+ * constant for it yet.
+ */
+const EMAIL = "anais.workspace@gmail.com";
+
+/**
+ * In-page targets, all three on the home page only.
+ *
+ * "Mes accompagnements" is her name for the Services section. Only the footer's
+ * label changed — the section's own heading and the navbar still say Services,
+ * and renaming those is its own item in her document.
+ */
 const NAV = [
   { label: "Qui je suis", hash: "#qui-je-suis" },
+  { label: "Mes accompagnements", hash: "#services" },
   { label: "Témoignages", hash: "#temoignages" },
 ];
 
+/**
+ * Instagram and YouTube only. WhatsApp is a contact channel rather than a
+ * réseau, and her list for this column names these two.
+ */
 const SOCIALS = [
   { label: "Instagram", href: SOCIAL.instagram },
-  { label: "WhatsApp", href: SOCIAL.whatsapp },
   { label: "YouTube", href: SOCIAL.youtube },
 ];
 
@@ -71,9 +82,17 @@ export function Footer() {
               Naiis Coaching
             </p>
 
-            <p className="mt-4 max-w-[30ch] text-[0.95rem] leading-[1.6] text-[#f5eee8]/55">
-              Diététicienne et coach sportive à distance. Alimentation,
-              entraînement et suivi adaptés à votre corps et à votre quotidien.
+            {/* Her two lines, in her order: what this is, then what it does
+                for you. The first is held brighter so it reads as the
+                positioning line under the name rather than as the opening of
+                the paragraph below it. */}
+            <p className="mt-4 text-[0.95rem] leading-[1.6] text-[#f5eee8]/75">
+              Coaching sportif, nutrition &amp; mindset.
+            </p>
+
+            <p className="mt-2 max-w-[34ch] text-[0.95rem] leading-[1.6] text-[#f5eee8]/55">
+              Un accompagnement personnalisé pour transformer ton physique, tes
+              habitudes et ta façon d’aborder tes objectifs.
             </p>
 
             {/* The year is read from the clock, which runs at build time on the
@@ -143,14 +162,20 @@ export function Footer() {
             <p className={labelClass}>Contact</p>
             <ul className="mt-4 flex flex-col gap-3">
               <li>
-                <a href={`tel:${PHONE_E164}`} className={linkClass}>
-                  {PHONE_DISPLAY}
-                </a>
-              </li>
-              <li>
                 <Link href="/contact" className={linkClass}>
                   Prendre rendez-vous
                 </Link>
+              </li>
+              <li>
+                {/* The address is the link's destination rather than its text.
+                    Printing it in full would put a live mailto and a plain-text
+                    copy of the same address on every page of the site, which is
+                    what address harvesters read; the label says what the link
+                    does, and a long address does not have to be wrapped into a
+                    narrow column. */}
+                <a href={`mailto:${EMAIL}`} className={linkClass}>
+                  Me contacter
+                </a>
               </li>
             </ul>
           </div>
@@ -161,6 +186,11 @@ export function Footer() {
               <li>
                 <Link href="/mentions-legales" className={linkClass}>
                   Mentions légales
+                </Link>
+              </li>
+              <li>
+                <Link href="/politique-de-confidentialite" className={linkClass}>
+                  Politique de confidentialité
                 </Link>
               </li>
             </ul>

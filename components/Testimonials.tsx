@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { TestimonialCarousel } from "./TestimonialCarousel";
-import { VideoTestimonial } from "./VideoTestimonial";
+import { VideoTestimonials } from "./VideoTestimonials";
 
 /**
  * Each file is already a finished card — its own header, its own branding, the
@@ -43,9 +43,10 @@ const REVIEWS = [
 ];
 
 /**
- * Section three. The two words are the section's masthead: type at poster
- * scale, each tilted off the horizontal, no images. The client cards sit
- * underneath.
+ * Section four. Anaïs asked for the masthead straight and modest — the earlier
+ * poster-scale tilted pair read as taking too much of the page — so the title
+ * is now an ordinary centred heading with her line under it, and the video
+ * carousel follows close behind.
  *
  * Beige ground with `#2d2a49` type, the same pairing as the hero. That hex is
  * the site's purple; there is no colour variable in the theme to reach for, so
@@ -68,38 +69,25 @@ export function Testimonials() {
   return (
     <section
       id="temoignages"
-      // `overflow-hidden` earns its place here: the words are sized in vw and
-      // then rotated, and a rotated box is wider than the text inside it. Without
-      // the clip, the tilt alone would put the page into horizontal scroll.
-      className="relative overflow-hidden bg-[#f5eee8] px-6 py-24 scroll-mt-24 sm:py-28 lg:px-12 lg:py-36"
+      className="relative bg-[#f5eee8] px-6 py-24 scroll-mt-24 sm:py-28 lg:py-32 lg:px-12"
     >
       <div className="mx-auto flex max-w-[1400px] flex-col">
-        {/* One heading, two spans. "Avis" is a graphic echo of "Témoignages"
-            rather than a second idea — near-synonyms in French — so it is
-            hidden from assistive tech and the heading reads as the single word
-            it means. Uppercasing is left to CSS so screen readers are not
-            handed a string of capitals to spell out. */}
-        <h2 className="flex flex-col items-center font-extrabold uppercase leading-[0.95] tracking-[-0.035em] text-[#2d2a49]">
-          <span className="block -rotate-3 text-[clamp(2.5rem,12vw,9.5rem)]">
-            Témoignages
-          </span>
-          {/* Tilted the other way and pushed to the right edge of the word
-              above, so the pair reads as a composition rather than two centred
-              lines. The shorter word carries a larger size to hold its own
-              against the longer one. Leading stays just under 1: any tighter
-              and the two tilts bring the glyphs into each other. */}
-          <span
-            aria-hidden
-            className="block self-end rotate-[4deg] text-[clamp(3.5rem,19vw,14rem)]"
-          >
-            Avis
-          </span>
-        </h2>
+        {/* Her copy, verbatim: the heading names the section, the line under it
+            makes the argument. Uppercasing is left to CSS so screen readers are
+            not handed a string of capitals to spell out. */}
+        <div className="flex flex-col items-center gap-4 text-center">
+          <h2 className="font-extrabold uppercase leading-[1.05] tracking-[-0.02em] text-[#2d2a49] text-[clamp(1.9rem,5.5vw,3.5rem)]">
+            Témoignages client·es
+          </h2>
+          <p className="text-[1.05rem] font-semibold text-[#2d2a49]/80 sm:text-[1.25rem]">
+            Elles en parlent mieux que moi.
+          </p>
+        </div>
 
         {/* Above the screenshots: someone speaking on camera carries more than
             a screenshot does, and 16:9 cannot be cropped into the portrait grid
             without losing the outer figures and the title along with them. */}
-        <VideoTestimonial className="mt-16 lg:mt-24" />
+        <VideoTestimonials className="mt-12 lg:mt-16" />
 
         <ul className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:mt-16 lg:grid-cols-3">
           {shown.map((review, i) => (

@@ -195,7 +195,7 @@ export function MobileMenu({
                   href={icon.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`${icon.name} — Naiis Coaching`}
+                  aria-label={`${icon.name}, Naiis Coaching`}
                   className="flex h-11 w-11 items-center justify-center rounded-full
                              bg-[#f5eee8]/10 text-[#f5eee8]/80 transition-colors duration-200
                              hover:bg-[#f5eee8]/20 hover:text-[#f5eee8]
