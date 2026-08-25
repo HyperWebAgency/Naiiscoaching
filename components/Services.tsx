@@ -35,46 +35,37 @@ type Plan = {
   title: string;
   /** Only the posing formule has one: the federations it prepares for. */
   subtitle?: string;
+  /** Marks the flagship: a firmer edge and the badge above it. */
+  featured?: boolean;
   monthly: number;
   commitment: string;
   /** The paragraphs under "Cet accompagnement est fait pour toi si…". */
   intro: string[];
+  /**
+   * The name of a formule this one contains whole. Where it is set, `features`
+   * holds only what this formule adds on top — reprinting the nine shared lines
+   * made the two cards look almost identical and buried the two that actually
+   * differ. Checked against the other plan's list at build time by the
+   * assertion below, so the claim cannot quietly stop being true.
+   */
+  inherits?: string;
   features: string[];
   annual?: Annual;
   cta: string;
 };
 
+const DIETE_MINDSET_TITLE = "Suivi diète & mindset";
+
+/**
+ * Diète & mindset first, so the pair reads left to right as "the base" then
+ * "the base plus training" — which is the order the card on the right refers
+ * back to. Stacked on a phone it holds: the reference still points at the card
+ * above it.
+ */
 const COACHING: Plan[] = [
   {
-    id: "training-diete-mindset",
-    title: "Suivi training + diète & mindset",
-    monthly: 175,
-    commitment: `Engagement initial de 3 mois${NBSP}· puis reconduction tacite mensuelle`,
-    intro: [
-      "…tu souhaites ne rien laisser au hasard dans ta transformation. En me confiant à la fois ton entraînement, ta nutrition et l’accompagnement sur ton mindset, je garde une vision globale de ta progression et peux faire évoluer chaque paramètre en fonction des autres.",
-      // Her sentence ran on through a dash; split in two, which is what the dash
-      // was standing in for anyway.
-      "Moins de charge mentale pour toi : je construis, j’analyse et j’ajuste la stratégie au fil de ton évolution. Tu sais quoi faire, comment le faire et pourquoi tu le fais. Ton rôle est de t’investir et de passer à l’action.",
-    ],
-    features: [
-      "Analyse complète de ton point de départ et de tes habitudes",
-      "Programme d’entraînement 100 % personnalisé et évolutif",
-      "Stratégie nutritionnelle 100 % personnalisée et adaptée à ton quotidien",
-      "Bilan complet chaque semaine : questionnaire, photos et mensurations",
-      "Retour vidéo personnalisé chaque semaine avec analyse, ajustements et priorités pour la semaine à venir",
-      "Ajustements réguliers des plans et de la stratégie selon tes résultats, ton ressenti, ton évolution et tes retours",
-      "Analyse et correction vidéo de tes exercices",
-      "Suivi de tes données quotidiennes via l’application",
-      "Travail sur tes habitudes, ta discipline et ton mindset",
-      "Accompagnement et échanges via WhatsApp tout au long du suivi",
-      "Un accompagnement humain, bienveillant et honnête : comprendre tes difficultés, te dire aussi ce que tu as parfois besoin d’entendre pour avancer, sans jamais perdre de vue tes objectifs, et trouver ensemble les solutions adaptées.",
-    ],
-    annual: { was: 2100, now: 1900, savings: 200, perMonth: 158 },
-    cta: "Commencer mon suivi",
-  },
-  {
     id: "diete-mindset",
-    title: "Suivi diète & mindset",
+    title: DIETE_MINDSET_TITLE,
     monthly: 135,
     commitment: `Engagement initial de 3 mois${NBSP}· puis reconduction tacite mensuelle`,
     intro: [
@@ -96,7 +87,51 @@ const COACHING: Plan[] = [
     annual: { was: 1620, now: 1450, savings: 170, perMonth: 121 },
     cta: "Commencer mon suivi",
   },
+  {
+    id: "training-diete-mindset",
+    title: "Suivi training + diète & mindset",
+    featured: true,
+    monthly: 175,
+    commitment: `Engagement initial de 3 mois${NBSP}· puis reconduction tacite mensuelle`,
+    intro: [
+      "…tu souhaites ne rien laisser au hasard dans ta transformation. En me confiant à la fois ton entraînement, ta nutrition et l’accompagnement sur ton mindset, je garde une vision globale de ta progression et peux faire évoluer chaque paramètre en fonction des autres.",
+      // Her sentence ran on through a dash; split in two, which is what the dash
+      // was standing in for anyway.
+      "Moins de charge mentale pour toi : je construis, j’analyse et j’ajuste la stratégie au fil de ton évolution. Tu sais quoi faire, comment le faire et pourquoi tu le fais. Ton rôle est de t’investir et de passer à l’action.",
+    ],
+    // Anaïs's full list for this formule repeats all nine lines of the one
+    // above verbatim and adds these two. Only the two are printed; the rest is
+    // covered by `inherits`.
+    inherits: DIETE_MINDSET_TITLE,
+    features: [
+      "Programme d’entraînement 100 % personnalisé et évolutif",
+      "Analyse et correction vidéo de tes exercices",
+    ],
+    annual: { was: 2100, now: 1900, savings: 200, perMonth: 158 },
+    cta: "Commencer mon suivi",
+  },
 ];
+
+/**
+ * "Tout ce que contient le X, plus…" is a factual claim about another card, and
+ * the shared lines only live in one place now — so nothing would catch it if a
+ * feature were later added to the base formule and silently not to this one.
+ * Thrown at module load, which on a statically rendered page means the build
+ * fails rather than the claim going out wrong.
+ */
+for (const plan of COACHING) {
+  if (!plan.inherits) continue;
+  const base = COACHING.find((p) => p.title === plan.inherits);
+  if (!base) {
+    throw new Error(`Services: "${plan.title}" inherits from an unknown formule.`);
+  }
+  const alsoListed = plan.features.filter((f) => base.features.includes(f));
+  if (alsoListed.length > 0) {
+    throw new Error(
+      `Services: "${plan.title}" reprints lines it already inherits: ${alsoListed.join(" / ")}`
+    );
+  }
+}
 
 const POSING: Plan = {
   id: "posing-mensuel",
@@ -167,7 +202,17 @@ const SESSION_BLOCKS = [
  */
 const cardSurface = "bg-[#2d2a49]/[0.05] ring-1 ring-[#2d2a49]/10";
 
-const cardClass = `flex flex-col rounded-2xl p-7 text-[#2d2a49] sm:p-8 ${cardSurface}`;
+/**
+ * `relative` for the featured card's badge, which is positioned against it.
+ *
+ * Weight without resizing — a scaled card in a grid drags its whole row along.
+ * The flagship keeps the same surface as the others and is marked by a firmer
+ * edge instead, plus the badge above it.
+ */
+const cardClass = (featured = false) =>
+  `relative flex flex-col rounded-2xl p-7 text-[#2d2a49] sm:p-8 ${
+    featured ? "bg-[#2d2a49]/[0.05] ring-2 ring-[#2d2a49]/25" : cardSurface
+  }`;
 
 const groupLabelClass =
   "text-[0.72rem] font-medium uppercase tracking-[0.14em] text-[#2d2a49]/45";
@@ -206,7 +251,17 @@ function Check() {
 
 function PlanCard({ plan }: { plan: Plan }) {
   return (
-    <article className={cardClass}>
+    <article className={cardClass(plan.featured)}>
+      {plan.featured && (
+        // Straddles the card's top edge, so it sits over both the card and the
+        // page behind it. Solid navy reads against either — the two surfaces
+        // are only a few percent apart, so a ring separating them would have
+        // nothing to separate.
+        <p className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#2d2a49] px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[#f5eee8]">
+          Le plus choisi
+        </p>
+      )}
+
       <h4 className="text-[1.2rem] font-bold leading-[1.25] tracking-[-0.01em] sm:text-[1.3rem]">
         {plan.title}
       </h4>
@@ -313,7 +368,17 @@ function PlanCard({ plan }: { plan: Plan }) {
         </details>
       )}
 
-      <ul className="mt-7 flex flex-col gap-3">
+      {/* Everything the other formule contains, named rather than reprinted.
+          Given its own panel so it carries the weight of the nine lines it
+          stands for — as a plain sentence it read as a footnote, which is the
+          opposite of what it says. */}
+      {plan.inherits && (
+        <p className="mt-7 rounded-xl bg-[#2d2a49]/[0.06] px-4 py-3.5 text-[0.92rem] font-semibold leading-[1.5] ring-1 ring-[#2d2a49]/10">
+          Tout ce que contient le {plan.inherits}, plus&nbsp;:
+        </p>
+      )}
+
+      <ul className={`${plan.inherits ? "mt-4" : "mt-7"} flex flex-col gap-3`}>
         {plan.features.map((feature) => (
           <li
             key={feature}
@@ -343,7 +408,7 @@ function PlanCard({ plan }: { plan: Plan }) {
 
 function SessionBlock({ block }: { block: (typeof SESSION_BLOCKS)[number] }) {
   return (
-    <article className={cardClass}>
+    <article className={cardClass()}>
       <h4 className="text-[1.2rem] font-bold leading-[1.25] tracking-[-0.01em] sm:text-[1.3rem]">
         {block.title}
       </h4>

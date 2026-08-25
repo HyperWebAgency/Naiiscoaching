@@ -15,7 +15,10 @@ const WORDS = [
   "VOLONTÉ",
   "DÉPASSEMENT",
 ];
-const FINAL_WORD = "PRÊT.";
+// Written inclusively, like the title it hands over to and like Anaïs's own
+// copy: her clientèle is mostly women, and a masculine-only landing word would
+// address the wrong person at the sequence's most emphatic moment.
+const FINAL_WORD = "PRÊT·E.";
 
 // Once the form opens, the single word gives way to the question the form
 // answers, and the line under it that lowers the barrier to starting.
@@ -430,7 +433,7 @@ export function ContactExperience() {
   // Read once here rather than in the JSX: the confirmation is the only place
   // the name is used, and it opens the sentence.
   const firstName = capitalise(values.nom.trim().split(/\s+/)[0] ?? "");
-  // PRÊT is the sequence's landing; opening the form turns it into the line.
+  // PRÊT·E is the sequence's landing; opening the form turns it into the title.
   // The non-breaking space holds the line's height through the opening beat.
   const headline = sent
     ? sentHeadline(firstName)
