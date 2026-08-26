@@ -149,7 +149,7 @@ export default function PolitiqueDeConfidentialitePage() {
             <p className={pClass}>
               Aucune donnée de santé n’est demandée par ce site. Si vous en
               communiquez spontanément dans le cadre d’un accompagnement, elles
-              sont traitées avec la confidentialité attachée à la profession et
+              sont traitées de manière strictement confidentielle et
               ne sont jamais publiées.
             </p>
           </section>

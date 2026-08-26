@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   // line a search result shows, not page copy. The old version promised "quinze
   // minutes", which was the headline that has since been replaced.
   description:
-    "Prenez contact avec Anaïs, diététicienne et coach à distance à Montpellier. Quelques informations suffisent pour faire le premier pas.",
+    "Prenez contact avec Anaïs, coach sportive en ligne à Montpellier. Quelques informations suffisent pour faire le premier pas.",
   alternates: { canonical: "/contact" },
 };
 

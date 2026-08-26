@@ -3,9 +3,8 @@ import { PHONE_E164, SITE_DESCRIPTION, SITE_NAME, SITE_URL, SOCIAL } from "@/lib
 /**
  * Schema.org structured data, as JSON-LD.
  *
- * Everything here is asserted on the page itself — a diététicienne coaching
- * remotely from Montpellier, and the three things the accompaniment consists
- * of. Nothing is inferred: no street address, no phone number, no opening
+ * Everything here is asserted on the page itself — a coach working remotely
+ * from Montpellier, and the three things the accompaniment consists of. Nothing is inferred: no street address, no phone number, no opening
  * hours, no ratings, because none of those are known and structured data that
  * contradicts the page is worse than no structured data at all.
  *
@@ -25,9 +24,11 @@ const graph = {
       publisher: { "@id": `${SITE_URL}/#business` },
     },
     {
-      // The precise Schema.org type for the regulated profession, rather than a
-      // generic LocalBusiness.
-      "@type": "Dietician",
+      // `Dietician` would be the precise type for that regulated profession,
+      // and stating it here is a machine-readable claim to hold a title she
+      // does not. `ProfessionalService` is the accurate parent for a remote
+      // coaching practice.
+      "@type": "ProfessionalService",
       "@id": `${SITE_URL}/#business`,
       name: SITE_NAME,
       description: SITE_DESCRIPTION,
@@ -86,7 +87,7 @@ const graph = {
       "@type": "Person",
       "@id": `${SITE_URL}/#anais`,
       name: "Anaïs",
-      jobTitle: "Diététicienne et coach sportive",
+      jobTitle: "Coach sportive",
       image: `${SITE_URL}/anais.png`,
       worksFor: { "@id": `${SITE_URL}/#business` },
       knowsLanguage: "fr-FR",

@@ -26,16 +26,13 @@ export const metadata: Metadata = {
  *
  * That is a presentation choice, not a compliance one. These entries are
  * required of a French site by article 6-III of the LCEN (loi n° 2004-575),
- * plus the extra ones a regulated health profession owes under articles
- * L.4371-1 et seq. of the code de la santé publique, and one under article
- * L.612-1 of the code de la consommation. Missing today:
+ * plus one under article L.612-1 of the code de la consommation. Missing
+ * today:
  *
  *   editeurAdresse   registered address — required even for a home-based
  *                    sole trader
  *   editeurSiret     SIRET
  *   editeurTva       VAT number, or the micro-entreprise exemption wording
- *   diplome          the dietician's qualification
- *   numeroAdeli      ADELI / RPPS registration
  *   mediateurNom     consumer mediator — mandatory for anyone selling to
  *   mediateurSite    consumers, and the article is hidden entirely without it
  *
@@ -58,10 +55,6 @@ type LegalFields = {
   editeurTva?: string;
   /** Usually the same person as the publisher. */
   directeurPublication?: string;
-  /** e.g. "BTS Diététique, obtenu en France". */
-  diplome?: string;
-  /** ADELI or RPPS registration number for the dietician's title. */
-  numeroAdeli?: string;
   /** Name and address of the host. Filled in for Vercel; if the site ever moves
    *  off it, this has to move with it. */
   hebergeurNom?: string;
@@ -180,34 +173,28 @@ export default function MentionsLegalesPage() {
             <p className={pClass}>{LEGAL.directeurPublication}</p>
           </section>
 
+          {/* This article used to open by quoting the statute that reserves the
+              title of diététicien, which on a page about the éditrice reads as
+              a claim to hold it. She does not, so it says the opposite now —
+              plainly, because the disclaimer below is worth more when the
+              boundary above it is stated rather than implied. */}
           <section className={sectionClass}>
-            <h2 className={h2Class}>3. Profession réglementée</h2>
+            <h2 className={h2Class}>3. Nature des prestations</h2>
             <p className={pClass}>
-              Le titre de diététicien est réglementé en France par les articles
-              L.4371-1 à L.4371-6 du code de la santé publique. L’exercice de
-              cette profession est soumis aux règles professionnelles qui s’y
-              rattachent.
+              Les prestations proposées sur ce site relèvent du coaching sportif
+              et de l’accompagnement nutritionnel de personnes en bonne santé.
             </p>
-            {/* "Pays de délivrance : France" only means anything next to a
-                diploma, so the whole list waits for one rather than standing
-                alone describing nothing. */}
-            {(LEGAL.diplome || LEGAL.numeroAdeli) && (
-              <dl className="mt-6">
-                <Ligne label="Diplôme">{LEGAL.diplome}</Ligne>
-                {LEGAL.diplome && (
-                  <>
-                    <dt className={dtClass}>Pays de délivrance</dt>
-                    <dd className={ddClass}>France</dd>
-                  </>
-                )}
-                <Ligne label="Numéro ADELI / RPPS">{LEGAL.numeroAdeli}</Ligne>
-              </dl>
-            )}
             <p className={pClass}>
-              Les prestations proposées sur ce site relèvent de
-              l’accompagnement diététique et sportif. Elles ne constituent en
-              aucun cas un diagnostic ni un traitement médical, et ne remplacent
-              pas l’avis d’un médecin.
+              L’éditrice n’exerce pas la profession de diététicien, dont le titre
+              est réservé en France aux titulaires du diplôme correspondant par
+              les articles L.4371-1 à L.4371-6 du code de la santé publique.
+            </p>
+            <p className={pClass}>
+              Ces prestations ne constituent en aucun cas un diagnostic, une
+              consultation diététique ni un traitement médical, et ne remplacent
+              pas l’avis d’un médecin ou d’un diététicien. En cas de pathologie,
+              de traitement en cours ou de régime prescrit, l’avis d’un
+              professionnel de santé est indispensable.
             </p>
           </section>
 

@@ -66,6 +66,13 @@ export const SOCIAL = {
   youtube: clean(contact.youtube),
 };
 
+/**
+ * Feeds the meta description, the Open Graph card and the structured data.
+ *
+ * Says coach, not diététicienne. That title is reserved in France to holders of
+ * the diploma (articles L.4371-1 et seq. du code de la santé publique), so
+ * claiming it without one is an offence rather than a wording preference.
+ */
 export const SITE_DESCRIPTION =
-  "Anaïs, diététicienne et coach sportive à distance à Montpellier. " +
-  "Alimentation, entraînement et suivi adaptés à votre corps et à votre quotidien.";
+  "Anaïs, coach sportive en ligne à Montpellier. Entraînement, nutrition et " +
+  "mindset : un accompagnement adapté à votre objectif, votre niveau et votre parcours.";

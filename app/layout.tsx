@@ -25,10 +25,12 @@ export const metadata: Metadata = {
   // resolve.
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME}, diététicienne et coach sportive à distance à Montpellier`,
+    // What she is, then who she is. The service comes first because that is
+    // what anyone searching types; the brand means nothing to someone who has
+    // not met her yet.
+    default: `Coach sportif en ligne | ${SITE_NAME}`,
     // Pages set only their own name; the brand is appended here so it can never
-    // drift between routes. A pipe rather than the comma above: this one is a
-    // separator between two names, not a phrase describing one.
+    // drift between routes.
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME}, diététicienne et coach sportive à distance à Montpellier`,
+    title: `Coach sportif en ligne | ${SITE_NAME}`,
     description: SITE_DESCRIPTION,
   },
   // Without this the card defaults to `summary`, which is the small square
