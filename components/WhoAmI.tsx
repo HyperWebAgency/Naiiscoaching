@@ -1,27 +1,9 @@
 import Image from "next/image";
 
-import { ScrollFigure } from "./ScrollFigure";
+import { RESULTS } from "@/lib/gallery";
 
-// Alt text carries the figures printed on each card, so the results are not
-// lost to anyone using a screen reader or with images disabled.
-const RESULTS = [
-  {
-    src: "/avant-apres-1.webp",
-    alt: "Résultat client : 4 mois d’accompagnement, de 67,5 kg à 58,5 kg, soit −9 kg.",
-  },
-  {
-    src: "/avant-apres-2.webp",
-    alt: "Résultat cliente : transformation avant / après un accompagnement Naiis Coaching.",
-  },
-  {
-    src: "/avant-apres-3.webp",
-    alt: "Résultat cliente : 2 ans d’accompagnement, jusqu’à la scène de compétition.",
-  },
-  {
-    src: "/avant-apres-4.webp",
-    alt: "Résultat client : prise de masse musculaire avant / après un accompagnement Naiis Coaching.",
-  },
-];
+import { ResultsGallery } from "./ResultsGallery";
+import { ScrollFigure } from "./ScrollFigure";
 
 // Anaïs's own words. The opening line that stands on its own.
 const BIO_LEAD =
@@ -208,23 +190,11 @@ export function WhoAmI() {
           {/* Client results. Each file is already a self-contained before/after
               card with its own badges and branding, so it only needs a grid —
               but under a biography it needs a label, or it reads as decoration
-              rather than as evidence. */}
+              rather than as evidence. The grid itself lives in its own client
+              component, because tapping a card opens it full screen. */}
           <div className="flex flex-col gap-5">
             <h3 className={labelClass}>Leurs résultats</h3>
-            <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
-              {RESULTS.map((result) => (
-                <li key={result.src} className="overflow-hidden rounded-xl">
-                  <Image
-                    src={result.src}
-                    alt={result.alt}
-                    width={1279}
-                    height={1600}
-                    sizes="(max-width: 1024px) 45vw, 23vw"
-                    className="h-auto w-full"
-                  />
-                </li>
-              ))}
-            </ul>
+            <ResultsGallery images={RESULTS} />
           </div>
         </div>
       </div>

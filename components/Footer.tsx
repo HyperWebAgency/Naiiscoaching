@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { SOCIAL } from "@/lib/site";
+import { CONTACT_EMAIL, SOCIAL } from "@/lib/site";
 
 /**
  * Resolved when the page is built, not when it is viewed. A statically rendered
@@ -11,13 +11,6 @@ import { SOCIAL } from "@/lib/site";
  * deploy — which for a copyright line is the usual trade.
  */
 const YEAR = new Date().getFullYear();
-
-/**
- * Her address, already printed on the legal page as the éditeur's contact.
- * Written out once here; the two are the same address and there is no shared
- * constant for it yet.
- */
-const EMAIL = "anais.workspace@gmail.com";
 
 /**
  * In-page targets, all three on the home page only.
@@ -173,7 +166,7 @@ export function Footer() {
                     what address harvesters read; the label says what the link
                     does, and a long address does not have to be wrapped into a
                     narrow column. */}
-                <a href={`mailto:${EMAIL}`} className={linkClass}>
+                <a href={`mailto:${CONTACT_EMAIL}`} className={linkClass}>
                   Me contacter
                 </a>
               </li>

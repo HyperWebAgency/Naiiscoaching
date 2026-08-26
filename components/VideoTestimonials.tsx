@@ -1,44 +1,32 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import temoignages from "@/content/temoignages-video.json";
 
 /**
- * TODO on a new video testimonial: append an entry here. The poster is derived
- * from the id, so one object is the whole update.
+ * Read from content/temoignages-video.json, which Anaïs edits from /admin.
  *
- * Maëva leads. Her objective is lifestyle, which is 99% of the current
- * clientèle; Aurore's competition physique can read as intimidating to the
- * visitor this page is actually for, so she comes second.
+ * She supplies four things per testimonial: the YouTube id, the client's name,
+ * the credential line and the quotes. The player title and the poster's alt
+ * text are built from those rather than being two more boxes to fill — they are
+ * the fields an editor leaves blank, and blank alt text on a poster is a real
+ * loss for anyone who cannot see it.
+ *
+ * Maëva leads because she is first in the file. Her objective is lifestyle,
+ * which is 99% of the current clientèle; Aurore's competition physique can read
+ * as intimidating to the visitor this page is actually for, so she comes
+ * second. Reordering is a drag in the CMS.
  */
-const TESTIMONIALS = [
-  {
-    id: "m_LVMjK8QLM",
-    name: "Maëva",
-    credential: "1 an d’accompagnement · Recomposition corporelle & changement d’habitudes",
-    title: "Témoignage client : Maëva | Recomposition corporelle & changement d’habitudes",
-    alt:
-      "Témoignage vidéo : Maëva raconte un an d’accompagnement, une recomposition " +
-      "corporelle et un changement complet de mode de vie.",
-    quotes: [
-      "Je suis hyper contente du physique et du résultat que j’ai pu obtenir, mais ce dont je suis le plus fière, c’est d’avoir réussi à changer mon mode de vie.",
-      "Je me suis donné les moyens d’atteindre mes objectifs. Je ne me suis pas laissée tomber, je n’ai pas baissé les bras.",
-      "Aujourd’hui, je mange plus qu’au début alors que mon poids reste le même et que ma shape reste la même.",
-    ],
-  },
-  {
-    id: "kvguvk4MvqI",
-    name: "Aurore",
-    credential: "2 ans d’accompagnement · De débutante à compétitrice",
-    title: "Témoignage client : Aurore | De débutante à compétitrice",
-    alt:
-      "Témoignage vidéo : Aurore, avant / après, de débutante à compétitrice sur scène, " +
-      "photographiée de face et de dos, et avec Anaïs après la compétition.",
-    quotes: [
-      "Je me fixais 1600 calories par jour et je sentais que mon corps avait besoin de plus. J’avais même peur d’aller au restaurant. Aujourd’hui, je crois que je n’ai jamais autant mangé de ma vie et je n’ai jamais été aussi affinée. Franchement, tout est au vert.",
-    ],
-  },
-];
+const TESTIMONIALS = temoignages.items.map((item) => ({
+  id: item.youtubeId,
+  name: item.name,
+  credential: item.credential,
+  title: `Témoignage client : ${item.name} | ${item.credential}`,
+  alt: `Témoignage vidéo : ${item.name}, ${item.credential}.`,
+  quotes: item.quotes,
+}));
 
 // Long enough to read the longest slide's three quotes, per the brief.
 const ROTATE_MS = 10_000;
@@ -180,6 +168,42 @@ export function VideoTestimonials({ className = "" }: { className?: string }) {
   const [playing, setPlaying] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
 
+  const trackRef = useRef<HTMLDivElement>(null);
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  /**
+   * The slides are stacked in one grid cell so they can crossfade in place,
+   * which makes the cell as tall as the tallest of them. Aurore's single quote
+   * then sat in a pocket of empty space with the arrows stranded far below it,
+   * while Maëva's three quotes reached them. Measuring whichever slide is
+   * actually showing, and animating the track to that height, puts the controls
+   * the same distance under every caption.
+   *
+   * Written straight to the node rather than through state: this is an effect
+   * synchronising the DOM with React's idea of the current slide, which is what
+   * effects are for, and it avoids a re-render on every resize.
+   *
+   * Before this runs the track has no explicit height, so it falls back to the
+   * natural one — the tallest slide, which is Maëva's, and she is also the
+   * slide it opens on. So the first paint already shows the right height and
+   * nothing moves at hydration.
+   */
+  useEffect(() => {
+    const track = trackRef.current;
+    const slide = slideRefs.current[index];
+    if (!track || !slide) return;
+
+    const apply = () => {
+      track.style.height = `${slide.offsetHeight}px`;
+    };
+
+    // Fires once on observe, and again whenever that slide reflows: a rotated
+    // phone, a narrower window, a font swapping in late.
+    const observer = new ResizeObserver(apply);
+    observer.observe(slide);
+    return () => observer.disconnect();
+  }, [index]);
+
   useEffect(() => {
     if (!autoRotate || playing) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -207,12 +231,30 @@ export function VideoTestimonials({ className = "" }: { className?: string }) {
       aria-label="Témoignages en vidéo"
       className={`mx-auto w-full max-w-[860px] ${className}`}
     >
-      <div className="grid">
+      <div
+        ref={trackRef}
+        // Clipped, so the taller outgoing slide cannot spill over the controls
+        // while it fades. Opened again on focus because the play button's
+        // outline sits 2px outside its own box and would otherwise be clipped
+        // away from keyboard users — and only the showing slide can take focus,
+        // since the others are `inert`.
+        // `items-start` matters more than it looks: grid items stretch to the
+        // cell by default, so every slide reported the height of the tallest
+        // one and there was nothing to measure. Sized to their own content,
+        // each slide is its own height and the cell is still the tallest —
+        // which is exactly the fallback wanted before the effect runs.
+        className="grid items-start overflow-hidden transition-[height] duration-[420ms]
+                   ease-[cubic-bezier(0.22,1,0.36,1)] focus-within:overflow-visible
+                   motion-reduce:transition-none"
+      >
         {TESTIMONIALS.map((testimonial, i) => {
           const active = i === index;
           return (
             <div
               key={testimonial.id}
+              ref={(el) => {
+                slideRefs.current[i] = el;
+              }}
               role="group"
               aria-roledescription="diapositive"
               aria-label={`${i + 1} sur ${count}`}

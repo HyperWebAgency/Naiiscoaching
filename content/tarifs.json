@@ -1,0 +1,17 @@
+{
+  "trainingDieteMindset": {
+    "monthly": 175,
+    "annual": 1900
+  },
+  "dieteMindset": {
+    "monthly": 135,
+    "annual": 1450
+  },
+  "posing": {
+    "monthly": 120
+  },
+  "cours30min": 50,
+  "cours45min": 70,
+  "pack3seances": 135,
+  "pack6seances": 240
+}

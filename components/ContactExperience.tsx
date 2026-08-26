@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
+import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/site";
+
 // The arc: doubt first, then the work that answers it, then readiness.
 const WORDS = [
   "DOUTE",
@@ -53,10 +55,6 @@ function capitalise(word: string) {
 
 // On the navy page the accent is the site's cream — no third colour.
 const CREAM = "#f5eee8";
-
-// Also published in the legal notice, as `editeurEmail` in
-// app/mentions-legales/page.tsx. Change both together.
-const CONTACT_EMAIL = "anais.workspace@gmail.com";
 
 const STEP_FAST = 85; // ms on the first word
 const STEP_SLOW = 480; // ms on the last word before the landing
@@ -178,9 +176,6 @@ const EMPTY = { nom: "", telephone: "", formule: "", message: "", email: "" };
 // complete, which is the moment to ask for one more thing rather than showing
 // an extra empty box up front.
 const PHONE_REVEAL_DIGITS = 10;
-
-const CALENDLY_URL =
-  "https://calendly.com/anais-workspace/appel_visio_decouverte_naiiscoaching?month=2026-08";
 
 /** Groups digits by pairs as they're typed — "0612345678" becomes "06 12 34 56 78". */
 function formatPhone(raw: string) {

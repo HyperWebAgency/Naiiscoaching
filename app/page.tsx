@@ -5,6 +5,7 @@ import { Services } from "@/components/Services";
 import { RevealBlur } from "@/components/RevealBlur";
 import { Testimonials } from "@/components/Testimonials";
 import { WhoAmI } from "@/components/WhoAmI";
+import { REVIEWS } from "@/lib/gallery";
 
 export default function Home() {
   return (
@@ -17,7 +18,7 @@ export default function Home() {
             rather than open it. This is also what the navbar's #services link
             points at. */}
         <Services />
-        <Testimonials />
+        <Testimonials reviews={REVIEWS} />
         <RevealBlur targetId="qui-je-suis" />
         {/* Home only. On /contact it would sit on top of the fullscreen word
             sequence, which is the one place the page wants no competition. */}

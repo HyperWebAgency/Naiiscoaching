@@ -7,6 +7,15 @@ const nextConfig: NextConfig = {
   // renders as static HTML with no interactivity.
   allowedDevOrigins: ["192.168.1.144"],
 
+  // `public/admin/index.html` is served at its literal path, so /admin alone
+  // is a 404 and /admin/ only normalises to that same 404. Array rewrites are
+  // checked after the filesystem, so this catches the one path that misses and
+  // leaves the real file, the config and every upload in that folder untouched.
+  // Without it the address to hand Anaïs would be /admin/index.html.
+  async rewrites() {
+    return [{ source: "/admin", destination: "/admin/index.html" }];
+  },
+
   images: {
     // YouTube serves every thumbnail from this host at a predictable path, so
     // the optimiser can point straight at it and no copy is kept locally —

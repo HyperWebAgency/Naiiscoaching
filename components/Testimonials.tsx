@@ -3,44 +3,10 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { TestimonialCarousel } from "./TestimonialCarousel";
-import { VideoTestimonials } from "./VideoTestimonials";
+import type { GalleryImage } from "@/lib/gallery";
 
-/**
- * Each file is already a finished card — its own header, its own branding, the
- * client's messages inside — so it only needs a grid, exactly like the
- * before/after cards in the section above.
- *
- * The alt text summarises what each client actually says rather than repeating
- * "témoignage client" six times: with images off, or on a screen reader, the
- * summaries are the only thing carrying the proof this section exists for.
- */
-const REVIEWS = [
-  {
-    src: "/avis-2.webp",
-    alt: "Témoignage : perdue entre les régimes et les programmes trouvés en ligne avant le coaching, elle décrit un suivi entièrement personnalisé et une bien meilleure relation avec la nourriture.",
-  },
-  {
-    src: "/avis-3.webp",
-    alt: "Témoignage : après une année familiale très lourde, un coaching à distance entre la France et la Suisse, où les vidéos et les retours précis ont remplacé la présence physique.",
-  },
-  {
-    src: "/avis-4.webp",
-    alt: "Témoignage : un poids maîtrisé tout en mangeant plus qu'au début, et des douleurs de genoux disparues après plusieurs opérations.",
-  },
-  {
-    src: "/avis-5.webp",
-    alt: "Témoignage : accompagnée pendant la préparation d'un concours, elle décrit un changement complet de routine alimentaire et sportive.",
-  },
-  {
-    src: "/avis-6.webp",
-    alt: "Témoignage : dix-huit semaines de préparation, avec un ajustement continu des paramètres et un soutien psychologique dans les phases difficiles.",
-  },
-  {
-    src: "/avis-7.webp",
-    alt: "Témoignage : descendu d'une catégorie, de −93 kg à −83 kg, tout en gagnant en force et avec le physique le plus sec de sa vie.",
-  },
-];
+import { ImageLightbox } from "./ImageLightbox";
+import { VideoTestimonials } from "./VideoTestimonials";
 
 /**
  * Section four. Anaïs asked for the masthead straight and modest — the earlier
@@ -60,11 +26,11 @@ const REVIEWS = [
 // a wall of six screenshots before the visitor has read any of them.
 const VISIBLE_COUNT = 3;
 
-export function Testimonials() {
+export function Testimonials({ reviews }: { reviews: GalleryImage[] }) {
   const [expanded, setExpanded] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  const shown = expanded ? REVIEWS : REVIEWS.slice(0, VISIBLE_COUNT);
+  const shown = expanded ? reviews : reviews.slice(0, VISIBLE_COUNT);
 
   return (
     <section
@@ -106,8 +72,8 @@ export function Testimonials() {
                 <Image
                   src={review.src}
                   alt={review.alt}
-                  width={1279}
-                  height={1600}
+                  width={review.width}
+                  height={review.height}
                   sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
                   className="h-auto w-full"
                 />
@@ -116,7 +82,7 @@ export function Testimonials() {
           ))}
         </ul>
 
-        {REVIEWS.length > VISIBLE_COUNT && (
+        {reviews.length > VISIBLE_COUNT && (
           <div className="mt-10 flex justify-center">
             <button
               type="button"
@@ -138,11 +104,12 @@ export function Testimonials() {
       </div>
 
       {activeIndex !== null && (
-        <TestimonialCarousel
-          reviews={REVIEWS}
+        <ImageLightbox
+          images={reviews}
           index={activeIndex}
           onIndexChange={setActiveIndex}
           onClose={() => setActiveIndex(null)}
+          noun="Témoignage"
         />
       )}
     </section>

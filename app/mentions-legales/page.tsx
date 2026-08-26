@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Footer } from "@/components/Footer";
-import { PHONE_E164, SITE_NAME } from "@/lib/site";
+import { CONTACT_EMAIL, PHONE_E164, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
@@ -18,16 +18,28 @@ export const metadata: Metadata = {
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * FILL THIS IN BEFORE LAUNCH.
+ * STILL OWED — SIX ENTRIES THE LAW ASKS FOR AND THIS PAGE NO LONGER SHOWS.
  *
- * Every field left out below renders on the page as a loud "À COMPLÉTER" flag,
- * on purpose: an incomplete legal notice should be impossible to miss rather
- * than quietly wrong. Add the line, the flag disappears.
+ * A field left empty below is now simply omitted: its row disappears, and a
+ * section whose whole substance is missing is not rendered at all. Fill the
+ * value in and it comes back on its own, in place, with nothing else to edit.
  *
- * These are the entries required of a French site by article 6-III of the LCEN
- * (loi n° 2004-575), plus the extra ones a regulated health profession owes
- * under articles L.4371-1 et seq. of the code de la santé publique. This is a
- * structure, not legal advice — have it read by someone qualified.
+ * That is a presentation choice, not a compliance one. These entries are
+ * required of a French site by article 6-III of the LCEN (loi n° 2004-575),
+ * plus the extra ones a regulated health profession owes under articles
+ * L.4371-1 et seq. of the code de la santé publique, and one under article
+ * L.612-1 of the code de la consommation. Missing today:
+ *
+ *   editeurAdresse   registered address — required even for a home-based
+ *                    sole trader
+ *   editeurSiret     SIRET
+ *   editeurTva       VAT number, or the micro-entreprise exemption wording
+ *   diplome          the dietician's qualification
+ *   numeroAdeli      ADELI / RPPS registration
+ *   mediateurNom     consumer mediator — mandatory for anyone selling to
+ *   mediateurSite    consumers, and the article is hidden entirely without it
+ *
+ * This is a structure, not legal advice — have it read by someone qualified.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 type LegalFields = {
@@ -37,8 +49,8 @@ type LegalFields = {
   editeurStatut?: string;
   /** Registered address. Required even for a home-based sole trader. */
   editeurAdresse?: string;
-  /** Shares a value with `CONTACT_EMAIL` in ContactExperience.tsx, which is
-   *  where the contact form sends. Change both together. */
+  /** Read from content/contact.json, which is also where the contact form
+   *  sends and what the footer links to. */
   editeurEmail?: string;
   editeurSiret?: string;
   /** VAT number, or the exemption wording: "TVA non applicable, article 293 B
@@ -63,7 +75,7 @@ type LegalFields = {
 const LEGAL: LegalFields = {
   editeurNom: "Anaïs Teck",
   editeurStatut: "Entrepreneur individuel (micro-entreprise)",
-  editeurEmail: "anais.workspace@gmail.com",
+  editeurEmail: CONTACT_EMAIL,
 
   // A sole trader publishes in her own name, so the publication director is the
   // same person as the éditeur by construction — there is no board to appoint
@@ -83,17 +95,20 @@ const DERNIERE_MISE_A_JOUR = "23 août 2026";
 const PHONE_DISPLAY = PHONE_E164.replace("+33", "0").replace(/(\d{2})(?=\d)/g, "$1 ");
 
 /**
- * Renders a value, or a flag where one is missing. The flag borrows the form
- * error colour already used by the contact form, so "something here needs
- * attention" looks the same everywhere on the site.
+ * One `dt`/`dd` pair, or nothing at all where the value has not been supplied.
+ *
+ * A fragment rather than a wrapper element on purpose: `dt` and `dd` have to be
+ * direct children of the `dl` to be read as a term and its definition, and a
+ * `div` between them would break that.
  */
-function Champ({ children }: { children?: string }) {
-  if (children) return <>{children}</>;
+function Ligne({ label, children }: { label: string; children?: string }) {
+  if (!children) return null;
 
   return (
-    <mark className="rounded bg-[#e08b7a]/30 px-1.5 py-0.5 text-[0.82em] font-bold uppercase tracking-[0.08em] text-[#2d2a49]">
-      à compléter
-    </mark>
+    <>
+      <dt className={dtClass}>{label}</dt>
+      <dd className={ddClass}>{children}</dd>
+    </>
   );
 }
 
@@ -141,21 +156,12 @@ export default function MentionsLegalesPage() {
               Le site {SITE_NAME} est édité par :
             </p>
             <dl className="mt-6">
-              <dt className={dtClass}>Nom</dt>
-              <dd className={ddClass}>
-                <Champ>{LEGAL.editeurNom}</Champ>
-              </dd>
+              <Ligne label="Nom">{LEGAL.editeurNom}</Ligne>
+              <Ligne label="Statut juridique">{LEGAL.editeurStatut}</Ligne>
+              <Ligne label="Adresse">{LEGAL.editeurAdresse}</Ligne>
 
-              <dt className={dtClass}>Statut juridique</dt>
-              <dd className={ddClass}>
-                <Champ>{LEGAL.editeurStatut}</Champ>
-              </dd>
-
-              <dt className={dtClass}>Adresse</dt>
-              <dd className={ddClass}>
-                <Champ>{LEGAL.editeurAdresse}</Champ>
-              </dd>
-
+              {/* Not a `Ligne`: the phone is derived from a constant rather
+                  than read from `LEGAL`, so it is always present. */}
               <dt className={dtClass}>Téléphone</dt>
               <dd className={ddClass}>
                 <a href={`tel:${PHONE_E164}`} className={inlineLinkClass}>
@@ -163,28 +169,15 @@ export default function MentionsLegalesPage() {
                 </a>
               </dd>
 
-              <dt className={dtClass}>E-mail</dt>
-              <dd className={ddClass}>
-                <Champ>{LEGAL.editeurEmail}</Champ>
-              </dd>
-
-              <dt className={dtClass}>SIRET</dt>
-              <dd className={ddClass}>
-                <Champ>{LEGAL.editeurSiret}</Champ>
-              </dd>
-
-              <dt className={dtClass}>TVA intracommunautaire</dt>
-              <dd className={ddClass}>
-                <Champ>{LEGAL.editeurTva}</Champ>
-              </dd>
+              <Ligne label="E-mail">{LEGAL.editeurEmail}</Ligne>
+              <Ligne label="SIRET">{LEGAL.editeurSiret}</Ligne>
+              <Ligne label="TVA intracommunautaire">{LEGAL.editeurTva}</Ligne>
             </dl>
           </section>
 
           <section className={sectionClass}>
             <h2 className={h2Class}>2. Directeur de la publication</h2>
-            <p className={pClass}>
-              <Champ>{LEGAL.directeurPublication}</Champ>
-            </p>
+            <p className={pClass}>{LEGAL.directeurPublication}</p>
           </section>
 
           <section className={sectionClass}>
@@ -195,20 +188,21 @@ export default function MentionsLegalesPage() {
               cette profession est soumis aux règles professionnelles qui s’y
               rattachent.
             </p>
-            <dl className="mt-6">
-              <dt className={dtClass}>Diplôme</dt>
-              <dd className={ddClass}>
-                <Champ>{LEGAL.diplome}</Champ>
-              </dd>
-
-              <dt className={dtClass}>Pays de délivrance</dt>
-              <dd className={ddClass}>France</dd>
-
-              <dt className={dtClass}>Numéro ADELI / RPPS</dt>
-              <dd className={ddClass}>
-                <Champ>{LEGAL.numeroAdeli}</Champ>
-              </dd>
-            </dl>
+            {/* "Pays de délivrance : France" only means anything next to a
+                diploma, so the whole list waits for one rather than standing
+                alone describing nothing. */}
+            {(LEGAL.diplome || LEGAL.numeroAdeli) && (
+              <dl className="mt-6">
+                <Ligne label="Diplôme">{LEGAL.diplome}</Ligne>
+                {LEGAL.diplome && (
+                  <>
+                    <dt className={dtClass}>Pays de délivrance</dt>
+                    <dd className={ddClass}>France</dd>
+                  </>
+                )}
+                <Ligne label="Numéro ADELI / RPPS">{LEGAL.numeroAdeli}</Ligne>
+              </dl>
+            )}
             <p className={pClass}>
               Les prestations proposées sur ce site relèvent de
               l’accompagnement diététique et sportif. Elles ne constituent en
@@ -221,15 +215,8 @@ export default function MentionsLegalesPage() {
             <h2 className={h2Class}>4. Hébergement</h2>
             <p className={pClass}>Le site est hébergé par :</p>
             <dl className="mt-6">
-              <dt className={dtClass}>Hébergeur</dt>
-              <dd className={ddClass}>
-                <Champ>{LEGAL.hebergeurNom}</Champ>
-              </dd>
-
-              <dt className={dtClass}>Adresse</dt>
-              <dd className={ddClass}>
-                <Champ>{LEGAL.hebergeurAdresse}</Champ>
-              </dd>
+              <Ligne label="Hébergeur">{LEGAL.hebergeurNom}</Ligne>
+              <Ligne label="Adresse">{LEGAL.hebergeurAdresse}</Ligne>
             </dl>
           </section>
 
@@ -300,32 +287,42 @@ export default function MentionsLegalesPage() {
             </p>
           </section>
 
-          <section className={sectionClass}>
-            <h2 className={h2Class}>9. Médiation de la consommation</h2>
-            <p className={pClass}>
-              Conformément à l’article L.612-1 du code de la consommation, tout
-              consommateur a le droit de recourir gratuitement à un médiateur de
-              la consommation en vue de la résolution amiable d’un litige.
-              Médiateur compétent : <Champ>{LEGAL.mediateurNom}</Champ>
-              {LEGAL.mediateurSite ? (
-                <>
-                  {", "}
-                  <a
-                    href={LEGAL.mediateurSite}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={inlineLinkClass}
-                  >
-                    {LEGAL.mediateurSite.replace(/^https?:\/\//, "")}
-                  </a>
-                </>
-              ) : null}
-              .
-            </p>
-          </section>
+          {/* The point of this article is to name the mediator; without one the
+              sentence would announce a right and then trail off. Hidden whole
+              until `mediateurNom` is filled in, at which point it reappears and
+              the article below it steps back down to 10. */}
+          {LEGAL.mediateurNom && (
+            <section className={sectionClass}>
+              <h2 className={h2Class}>9. Médiation de la consommation</h2>
+              <p className={pClass}>
+                Conformément à l’article L.612-1 du code de la consommation, tout
+                consommateur a le droit de recourir gratuitement à un médiateur
+                de la consommation en vue de la résolution amiable d’un litige.
+                Médiateur compétent : {LEGAL.mediateurNom}
+                {LEGAL.mediateurSite ? (
+                  <>
+                    {", "}
+                    <a
+                      href={LEGAL.mediateurSite}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={inlineLinkClass}
+                    >
+                      {LEGAL.mediateurSite.replace(/^https?:\/\//, "")}
+                    </a>
+                  </>
+                ) : null}
+                .
+              </p>
+            </section>
+          )}
 
           <section className={sectionClass}>
-            <h2 className={h2Class}>10. Droit applicable</h2>
+            {/* The only number that moves, because it is the only article that
+                follows a conditional one. */}
+            <h2 className={h2Class}>
+              {LEGAL.mediateurNom ? 10 : 9}. Droit applicable
+            </h2>
             <p className={pClass}>
               Les présentes mentions légales sont soumises au droit français. En
               cas de litige, et à défaut de résolution amiable, les tribunaux

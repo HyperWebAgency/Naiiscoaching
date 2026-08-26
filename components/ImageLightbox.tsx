@@ -3,30 +3,44 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef } from "react";
 
-type Review = { src: string; alt: string };
+import type { GalleryImage } from "@/lib/gallery";
 
 /**
- * Full-screen lightbox opened from a testimonial thumbnail. Slides across the
- * whole review set — not just whichever rows the grid currently shows — so
- * "Voir plus" and browsing here stay two separate questions.
+ * Full-screen lightbox opened from a thumbnail. Slides across the whole set it
+ * is given — not just whichever rows a grid currently shows — so "Voir plus"
+ * and browsing here stay two separate questions.
+ *
+ * Serves both galleries on the site: the message screenshots under Témoignages
+ * and the avant/après cards under Qui je suis. Each image carries its own
+ * measured size, so an upload that is not the usual 1279×1600 portrait still
+ * gets the right box reserved for it.
  */
-export function TestimonialCarousel({
-  reviews,
+export function ImageLightbox({
+  images,
   index,
   onIndexChange,
   onClose,
+  noun,
 }: {
-  reviews: Review[];
+  images: GalleryImage[];
   index: number;
   onIndexChange: (index: number) => void;
   onClose: () => void;
+  /**
+   * What is being browsed, as a masculine singular noun — "Témoignage",
+   * "Résultat". Names the dialog and its two arrows, so a screen reader says
+   * which gallery is open rather than "previous, next" with no subject.
+   * Required rather than defaulted: two callers, and neither should inherit the
+   * other's wording by accident.
+   */
+  noun: string;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const touchStartX = useRef<number | null>(null);
 
   const goTo = useCallback(
-    (next: number) => onIndexChange((next + reviews.length) % reviews.length),
-    [onIndexChange, reviews.length]
+    (next: number) => onIndexChange((next + images.length) % images.length),
+    [onIndexChange, images.length]
   );
 
   // Body scroll lock + keyboard nav for as long as the lightbox is open.
@@ -47,13 +61,13 @@ export function TestimonialCarousel({
     };
   }, [goTo, index, onClose]);
 
-  const review = reviews[index];
+  const image = images[index];
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Témoignage client"
+      aria-label={`${noun}s clients`}
       className="fixed inset-0 z-[60] flex items-center justify-center bg-[#171426]/90 p-4 backdrop-blur-sm"
       onClick={onClose}
       onTouchStart={(e) => {
@@ -79,7 +93,7 @@ export function TestimonialCarousel({
         </svg>
       </button>
 
-      {reviews.length > 1 && (
+      {images.length > 1 && (
         <>
           <button
             type="button"
@@ -87,7 +101,7 @@ export function TestimonialCarousel({
               e.stopPropagation();
               goTo(index - 1);
             }}
-            aria-label="Témoignage précédent"
+            aria-label={`${noun} précédent`}
             className="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-[#f5eee8]/70 transition-colors hover:bg-[#f5eee8]/10 hover:text-[#f5eee8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5eee8] sm:left-4"
           >
             <svg viewBox="0 0 24 24" aria-hidden className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -100,7 +114,7 @@ export function TestimonialCarousel({
               e.stopPropagation();
               goTo(index + 1);
             }}
-            aria-label="Témoignage suivant"
+            aria-label={`${noun} suivant`}
             className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-[#f5eee8]/70 transition-colors hover:bg-[#f5eee8]/10 hover:text-[#f5eee8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5eee8] sm:right-4"
           >
             <svg viewBox="0 0 24 24" aria-hidden className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -112,11 +126,11 @@ export function TestimonialCarousel({
 
       <div className="relative max-h-[85vh] max-w-[90vw]" onClick={(e) => e.stopPropagation()}>
         <Image
-          key={review.src}
-          src={review.src}
-          alt={review.alt}
-          width={1279}
-          height={1600}
+          key={image.src}
+          src={image.src}
+          alt={image.alt}
+          width={image.width}
+          height={image.height}
           sizes="90vw"
           className="max-h-[85vh] w-auto rounded-xl object-contain"
           priority
@@ -124,7 +138,7 @@ export function TestimonialCarousel({
       </div>
 
       <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[0.75rem] font-medium tracking-[0.08em] text-[#f5eee8]/60">
-        {index + 1} / {reviews.length}
+        {index + 1} / {images.length}
       </p>
     </div>
   );

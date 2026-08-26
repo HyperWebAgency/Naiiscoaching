@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import tarifs from "@/content/tarifs.json";
+
 /**
  * French typography, written out rather than left to `toLocaleString`: the
  * thousands separator is a narrow no-break space and the one before the euro
@@ -25,10 +27,31 @@ type Annual = {
   was: number;
   now: number;
   savings: number;
-  /** `now` divided over twelve months, rounded. Written out rather than
-   *  computed so that changing a price forces both numbers to be looked at. */
+  /** `now` spread back over twelve months. */
   perMonth: number;
 };
+
+/**
+ * Three of the four annual figures are arithmetic, so they are computed rather
+ * than stored: the struck-through price is twelve months at the monthly rate,
+ * the saving is the difference, and the per-month equivalent is the year split
+ * twelve ways.
+ *
+ * This matters now that the two source numbers are editable from the CMS. Left
+ * as four independent values, a careless edit could publish "1 900 € / an,
+ * économise 500 €" when the real saving is 200 — and in France a wrong savings
+ * claim is a misleading commercial practice, not a typo. Derived, the three can
+ * never disagree with the two prices printed beside them.
+ */
+function annualFrom(monthly: number, annual: number): Annual {
+  const was = monthly * 12;
+  return {
+    was,
+    now: annual,
+    savings: was - annual,
+    perMonth: Math.round(annual / 12),
+  };
+}
 
 type Plan = {
   id: string;
@@ -66,7 +89,7 @@ const COACHING: Plan[] = [
   {
     id: "diete-mindset",
     title: DIETE_MINDSET_TITLE,
-    monthly: 135,
+    monthly: tarifs.dieteMindset.monthly,
     commitment: `Engagement initial de 3 mois${NBSP}· puis reconduction tacite mensuelle`,
     intro: [
       "…tu souhaites atteindre tes objectifs physiques grâce à une stratégie nutritionnelle entièrement construite autour de toi, tout en travaillant sur tes habitudes, ta discipline et ton mindset.",
@@ -84,14 +107,14 @@ const COACHING: Plan[] = [
       "Accompagnement et échanges via WhatsApp tout au long du suivi",
       "Un accompagnement humain, bienveillant et honnête : comprendre tes difficultés, te dire aussi ce que tu as parfois besoin d’entendre pour avancer, sans jamais perdre de vue tes objectifs, et trouver ensemble les solutions adaptées.",
     ],
-    annual: { was: 1620, now: 1450, savings: 170, perMonth: 121 },
+    annual: annualFrom(tarifs.dieteMindset.monthly, tarifs.dieteMindset.annual),
     cta: "Commencer mon suivi",
   },
   {
     id: "training-diete-mindset",
     title: "Suivi training + diète & mindset",
     featured: true,
-    monthly: 175,
+    monthly: tarifs.trainingDieteMindset.monthly,
     commitment: `Engagement initial de 3 mois${NBSP}· puis reconduction tacite mensuelle`,
     intro: [
       "…tu souhaites ne rien laisser au hasard dans ta transformation. En me confiant à la fois ton entraînement, ta nutrition et l’accompagnement sur ton mindset, je garde une vision globale de ta progression et peux faire évoluer chaque paramètre en fonction des autres.",
@@ -99,15 +122,20 @@ const COACHING: Plan[] = [
       // was standing in for anyway.
       "Moins de charge mentale pour toi : je construis, j’analyse et j’ajuste la stratégie au fil de ton évolution. Tu sais quoi faire, comment le faire et pourquoi tu le fais. Ton rôle est de t’investir et de passer à l’action.",
     ],
-    // Anaïs's full list for this formule repeats all nine lines of the one
-    // above verbatim and adds these two. Only the two are printed; the rest is
-    // covered by `inherits`.
+    // Everything this formule adds on top of the one above, in her order. The
+    // nine lines the two share are covered by `inherits` rather than reprinted.
     inherits: DIETE_MINDSET_TITLE,
     features: [
       "Programme d’entraînement 100 % personnalisé et évolutif",
+      "Entraînement adapté à ton environnement : en salle ou à la maison",
+      "Suivi de tes performances et de ta progression à l’entraînement",
       "Analyse et correction vidéo de tes exercices",
+      "Adaptation de tes entraînements lors de tes vacances ou déplacements si nécessaire",
     ],
-    annual: { was: 2100, now: 1900, savings: 200, perMonth: 158 },
+    annual: annualFrom(
+      tarifs.trainingDieteMindset.monthly,
+      tarifs.trainingDieteMindset.annual
+    ),
     cta: "Commencer mon suivi",
   },
 ];
@@ -137,7 +165,7 @@ const POSING: Plan = {
   id: "posing-mensuel",
   title: "Suivi posing mensuel",
   subtitle: `Bikini & Fit Model${NBSP}· NPC`,
-  monthly: 120,
+  monthly: tarifs.posing.monthly,
   commitment: "Sans engagement",
   intro: [
     "…tu souhaites progresser de manière régulière et travailler ton posing semaine après semaine, où que tu sois, avec un regard extérieur pour identifier précisément tes axes de progression.",
@@ -168,8 +196,8 @@ const SESSION_BLOCKS = [
     description:
       "Une séance individuelle en visio pour travailler ton posing à mes côtés : poses, transitions, fluidité, mise en valeur de ton physique et corrections adaptées à tes besoins.",
     items: [
-      { name: "30 minutes", price: 50, detail: null },
-      { name: "45 minutes", price: 70, detail: null },
+      { name: "30 minutes", price: tarifs.cours30min, detail: null },
+      { name: "45 minutes", price: tarifs.cours45min, detail: null },
     ],
     cta: "Réserver une séance",
   },
@@ -181,12 +209,12 @@ const SESSION_BLOCKS = [
     items: [
       {
         name: "Pack 3 séances",
-        price: 135,
+        price: tarifs.pack3seances,
         detail: `3 × 30 min${NBSP}· Valable 6 semaines à compter de la date d’achat`,
       },
       {
         name: "Pack 6 séances",
-        price: 240,
+        price: tarifs.pack6seances,
         detail: `6 × 30 min${NBSP}· Valable 12 semaines à compter de la date d’achat`,
       },
     ],

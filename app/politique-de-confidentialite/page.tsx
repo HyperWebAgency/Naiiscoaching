@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Footer } from "@/components/Footer";
-import { SITE_NAME } from "@/lib/site";
+import { CONTACT_EMAIL, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 const FORMSPREE_ACTIVE = false;
 
 const RESPONSABLE = "Anaïs Teck";
-const EMAIL = "anais.workspace@gmail.com";
+const EMAIL = CONTACT_EMAIL;
 
 /** Kept beside the text it stamps, so editing the page is what updates it. */
 const DERNIERE_MISE_A_JOUR = "25 août 2026";

@@ -1,3 +1,5 @@
+import contact from "@/content/contact.json";
+
 /**
  * The canonical origin of the site.
  *
@@ -24,23 +26,44 @@ export const SITE_NAME = "Naiis Coaching";
  * Anaïs's mobile in E.164. Given as "6 77 70 45 10" — a French mobile written
  * without its leading zero — so the country code is France's.
  *
- * Kept as one constant because wa.me wants the same digits with no `+` and the
+ * Kept as one value because wa.me wants the same digits with no `+` and the
  * structured data wants them with one; deriving both beats keeping two copies
  * in step by hand.
  */
-export const PHONE_E164 = "+33677704510";
+export const PHONE_E164 = contact.phone;
+
+/** Where the contact form and the footer's "Me contacter" both send. */
+export const CONTACT_EMAIL = contact.email;
+
+/** The booking link behind "Choisir un créneau d'appel". */
+export const CALENDLY_URL = contact.calendly;
 
 /**
- * The share-sheet tracking each link arrived with is stripped:
- * Instagram's `utm_source`/`igsi` and YouTube's `si` are attribution tokens
- * minted for one particular share, so leaving them in would tag every visitor
- * as having come from that single tap.
+ * Strip the share-sheet tracking each link may arrive with: Instagram's
+ * `utm_source`/`igsi` and YouTube's `si` are attribution tokens minted for one
+ * particular share, so leaving them in would tag every visitor as having come
+ * from that single tap. Done here rather than trusted to whoever pastes the
+ * link into the CMS.
  */
+function clean(url: string) {
+  try {
+    const parsed = new URL(url);
+    for (const key of ["utm_source", "utm_medium", "utm_campaign", "igsh", "igsi", "si"]) {
+      parsed.searchParams.delete(key);
+    }
+    return parsed.toString();
+  } catch {
+    // Not a URL at all — hand it back untouched rather than losing the value.
+    return url;
+  }
+}
+
 export const SOCIAL = {
-  instagram: "https://www.instagram.com/naiiscoaching/",
+  instagram: clean(contact.instagram),
+  // Derived, never entered: one wrong digit here and the number that rings is
+  // not the number printed on the page.
   whatsapp: `https://wa.me/${PHONE_E164.replace(/\D/g, "")}`,
-  // A playlist rather than the channel — that is the link that was given.
-  youtube: "https://www.youtube.com/playlist?list=PLfsuY7-4a2Vk",
+  youtube: clean(contact.youtube),
 };
 
 export const SITE_DESCRIPTION =

@@ -1,0 +1,222 @@
+# Sveltia CMS — the editing interface at /admin.
+#
+# Deliberately narrow. Only four files are reachable from here, and every field
+# is typed: prices are number inputs, images go through an uploader. Nothing
+# else on the site can be reached, because nothing else is described below.
+#
+# What is NOT editable here, on purpose:
+#   - the legal notice and the privacy policy (they cross-reference each other
+#     and carry compliance obligations)
+#   - headings, the hero, navigation labels, the contact word sequence
+#     (composition, not content)
+#   - the service feature lists (the training card claims to contain the diète
+#     card whole, and a build-time check enforces that — editing one list and
+#     not the other would fail the publish with an error nobody here can read)
+#
+# Saving commits to GitHub, and Vercel rebuilds. Allow a minute or two before
+# a change is visible on the live site.
+
+backend:
+  name: github
+  repo: HyperWebAgency/Naiiscoaching
+  branch: main
+
+# Uploads land in `public/` and are referenced from the root, which is where
+# every existing image already lives.
+media_folder: public
+public_folder: /
+
+locale: fr
+
+collections:
+  - name: contenu
+    label: Contenu du site
+    files:
+      # ─── Prices ────────────────────────────────────────────────────────────
+      - name: tarifs
+        label: Tarifs
+        file: content/tarifs.json
+        icon: euro_symbol
+        description: >-
+          Les prix affichés dans « Mes accompagnements ». Pour les formules
+          annuelles, saisis seulement le prix mensuel et le prix annuel : le
+          prix barré, l’économie et l’équivalent par mois sont calculés
+          automatiquement à partir de ces deux nombres.
+        fields:
+          - name: trainingDieteMindset
+            label: Suivi training + diète & mindset
+            widget: object
+            fields:
+              - name: monthly
+                label: Prix par mois (€)
+                widget: number
+                value_type: int
+                min: 1
+              - name: annual
+                label: Prix pour l’année, payée en une fois (€)
+                widget: number
+                value_type: int
+                min: 1
+
+          - name: dieteMindset
+            label: Suivi diète & mindset
+            widget: object
+            fields:
+              - name: monthly
+                label: Prix par mois (€)
+                widget: number
+                value_type: int
+                min: 1
+              - name: annual
+                label: Prix pour l’année, payée en une fois (€)
+                widget: number
+                value_type: int
+                min: 1
+
+          - name: posing
+            label: Suivi posing mensuel
+            widget: object
+            fields:
+              - name: monthly
+                label: Prix par mois (€)
+                widget: number
+                value_type: int
+                min: 1
+
+          - name: cours30min
+            label: Cours individuel — 30 minutes (€)
+            widget: number
+            value_type: int
+            min: 1
+          - name: cours45min
+            label: Cours individuel — 45 minutes (€)
+            widget: number
+            value_type: int
+            min: 1
+          - name: pack3seances
+            label: Pack 3 séances (€)
+            widget: number
+            value_type: int
+            min: 1
+          - name: pack6seances
+            label: Pack 6 séances (€)
+            widget: number
+            value_type: int
+            min: 1
+
+      # ─── Contact details ───────────────────────────────────────────────────
+      - name: contact
+        label: Coordonnées
+        file: content/contact.json
+        icon: contact_page
+        description: >-
+          Ces informations apparaissent dans le pied de page, sur la page
+          contact et dans les mentions légales. Le lien WhatsApp est construit
+          à partir du numéro de téléphone : il n’y a rien à saisir pour lui.
+        fields:
+          - name: phone
+            label: Téléphone
+            widget: string
+            hint: 'Format international, sans espaces. Exemple : +33677704510'
+            pattern:
+              ['^\+[0-9]{8,15}$', 'Doit commencer par + et ne contenir que des chiffres.']
+          - name: email
+            label: Adresse e-mail
+            widget: string
+            pattern: ['^[^@\s]+@[^@\s]+\.[^@\s]{2,}$', 'Adresse e-mail invalide.']
+          - name: instagram
+            label: Lien Instagram
+            widget: string
+            pattern: ['^https://', 'Doit commencer par https://']
+          - name: youtube
+            label: Lien YouTube
+            widget: string
+            pattern: ['^https://', 'Doit commencer par https://']
+          - name: calendly
+            label: Lien Calendly (prise de rendez-vous)
+            widget: string
+            pattern: ['^https://', 'Doit commencer par https://']
+
+      # ─── Video testimonials ────────────────────────────────────────────────
+      - name: temoignages-video
+        label: Témoignages en vidéo
+        file: content/temoignages-video.json
+        icon: smart_display
+        description: >-
+          Le carrousel vidéo de la section « Témoignages ». Le premier de la
+          liste s’affiche en premier ; fais glisser pour changer l’ordre.
+        fields:
+          - name: items
+            label: Témoignages
+            label_singular: témoignage
+            widget: list
+            summary: '{{fields.name}}'
+            fields:
+              - name: youtubeId
+                label: Identifiant de la vidéo YouTube
+                widget: string
+                hint: >-
+                  La partie après « v= » dans l’adresse YouTube. Pour
+                  youtube.com/watch?v=m_LVMjK8QLM, saisis m_LVMjK8QLM
+                pattern:
+                  ['^[A-Za-z0-9_-]{11}$', 'Un identifiant YouTube fait 11 caractères.']
+              - name: name
+                label: Prénom de la cliente
+                widget: string
+              - name: credential
+                label: Sous-titre
+                widget: string
+                hint: 'Exemple : 1 an d’accompagnement · Recomposition corporelle'
+              - name: quotes
+                label: Extraits cités
+                label_singular: extrait
+                widget: list
+                field:
+                  name: quote
+                  label: Extrait
+                  widget: text
+                hint: >-
+                  Les guillemets sont ajoutés automatiquement, ne les saisis
+                  pas.
+
+      # ─── Photo galleries ───────────────────────────────────────────────────
+      - name: galeries
+        label: Photos
+        file: content/galeries.json
+        icon: photo_library
+        description: >-
+          Les photos avant / après de la section « Qui je suis » et les captures
+          d’avis de la section « Témoignages ». Format conseillé : portrait,
+          1279 × 1600 pixels.
+        fields:
+          - name: results
+            label: Photos avant / après
+            label_singular: photo
+            widget: list
+            summary: '{{fields.alt}}'
+            fields:
+              - name: src
+                label: Image
+                widget: image
+              - name: alt
+                label: Description de l’image
+                widget: string
+                hint: >-
+                  Lue à voix haute par les lecteurs d’écran et affichée si
+                  l’image ne charge pas. Décris ce qu’on voit, avec les chiffres
+                  s’il y en a.
+          - name: reviews
+            label: Captures d’avis
+            label_singular: avis
+            widget: list
+            summary: '{{fields.alt}}'
+            fields:
+              - name: src
+                label: Image
+                widget: image
+              - name: alt
+                label: Résumé de l’avis
+                widget: string
+                hint: >-
+                  Résume ce que dit la cliente. C’est le seul texte disponible
+                  pour qui ne peut pas voir la capture.
