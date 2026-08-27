@@ -80,7 +80,7 @@ export function Footer() {
                 positioning line under the name rather than as the opening of
                 the paragraph below it. */}
             <p className="mt-4 text-[0.95rem] leading-[1.6] text-[#f5eee8]/75">
-              Coaching sportif, nutrition &amp; mindset.
+              Coaching sportif en ligne, nutrition &amp; mindset.
             </p>
 
             <p className="mt-2 max-w-[34ch] text-[0.95rem] leading-[1.6] text-[#f5eee8]/55">
