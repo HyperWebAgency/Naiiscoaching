@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/site";
+import { CALENDLY_URL, CONTACT_EMAIL, FORMSPREE_ENDPOINT } from "@/lib/site";
 
 // The arc: doubt first, then the work that answers it, then readiness.
 const WORDS = [
@@ -215,6 +215,10 @@ export function ContactExperience() {
   const [emailRevealed, setEmailRevealed] = useState(false);
   const [errors, setErrors] = useState<Partial<typeof EMPTY>>({});
   const [sent, setSent] = useState(false);
+  // The network round trip the mailto never had: the button has to say it is
+  // working, and a failure has to be visible rather than swallowed.
+  const [submitting, setSubmitting] = useState(false);
+  const [sendFailed, setSendFailed] = useState(false);
   // The success ring, checkmark and return link each arrive on their own beat
   // once `sent` flips, driven by the timers in `handleSubmit`.
   const [ringOffset, setRingOffset] = useState(SUCCESS_RING_CIRCUMFERENCE);
@@ -366,6 +370,7 @@ export function ContactExperience() {
     ) => {
       setValues((v) => ({ ...v, [field]: e.target.value }));
       setErrors((prev) => ({ ...prev, [field]: undefined }));
+      setSendFailed(false);
     };
 
   const updatePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -377,8 +382,9 @@ export function ContactExperience() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
 
     // Tutoiement throughout, to match the labels she wrote for this page.
     const next: Partial<typeof EMPTY> = {};
@@ -397,18 +403,47 @@ export function ContactExperience() {
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
-    // No backend yet: hand the message to the visitor's mail client so it
-    // genuinely reaches someone. Formspree is the endpoint this is waiting on —
-    // every field already carries the `name` Formspree posts under, so wiring it
-    // is a `fetch` to the form's action in place of the two lines below.
-    const subject = encodeURIComponent(`Demande de coaching : ${values.nom}`);
-    const body = encodeURIComponent(
-      `Nom et prénom : ${values.nom}\nTéléphone : ${values.telephone}` +
-        (values.email.trim() ? `\nE-mail : ${values.email.trim()}` : "") +
-        `\nAccompagnement : ${values.formule}` +
-        `\n\n${values.message}\n`
-    );
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    setSubmitting(true);
+    setSendFailed(false);
+
+    try {
+      // `Accept: application/json` is what makes Formspree answer with
+      // `{ ok: true }` instead of a redirect to its own thank-you page — which
+      // would take the visitor off the site entirely.
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          // Keys are what lands in her inbox, so they are written the way she
+          // would read them rather than as field names.
+          "Nom et prénom": values.nom.trim(),
+          Téléphone: values.telephone.trim(),
+          ...(values.email.trim() ? { "E-mail": values.email.trim() } : {}),
+          Accompagnement: values.formule,
+          Message: values.message.trim(),
+          // Formspree's own fields: the subject line of the notification, and
+          // the address that hitting "reply" answers to. Only set when an
+          // e-mail was given — otherwise replying would bounce.
+          _subject: `Demande de coaching : ${values.nom.trim()}`,
+          ...(values.email.trim() ? { _replyto: values.email.trim() } : {}),
+        }),
+      });
+
+      if (!response.ok) throw new Error(`Formspree responded ${response.status}`);
+    } catch {
+      // Anything at all — offline, a blocked request, a disabled form, a
+      // Formspree outage. The one outcome that must never happen is the
+      // confirmation playing for a message that was never delivered, so the
+      // form stays open and says so.
+      setSubmitting(false);
+      setSendFailed(true);
+      return;
+    }
+
+    setSubmitting(false);
     setSent(true);
 
     if (window.matchMedia(REDUCED_QUERY).matches) {
@@ -888,10 +923,31 @@ export function ContactExperience() {
 
                     <button
                       type="submit"
-                      className="mt-1 rounded-full bg-[#f5eee8] px-6 py-3 text-[0.82rem] font-bold uppercase tracking-[0.1em] text-[#2d2a49] transition-opacity duration-200 hover:opacity-90"
+                      disabled={submitting}
+                      className="mt-1 rounded-full bg-[#f5eee8] px-6 py-3 text-[0.82rem] font-bold uppercase tracking-[0.1em] text-[#2d2a49] transition-opacity duration-200 hover:opacity-90 disabled:cursor-wait disabled:opacity-70"
                     >
-                      Envoyer
+                      {submitting ? "Envoi en cours…" : "Envoyer"}
                     </button>
+
+                    {/* `role="alert"` so a screen reader is told immediately;
+                        the mailto is a real way out rather than an apology, so
+                        a message written once is not lost to a bad connection. */}
+                    {sendFailed && (
+                      <p
+                        role="alert"
+                        className="text-[0.85rem] leading-[1.5] text-[#e08b7a]"
+                      >
+                        L’envoi n’a pas fonctionné. Vérifie ta connexion et
+                        réessaie, ou écris-moi directement à{" "}
+                        <a
+                          href={`mailto:${CONTACT_EMAIL}`}
+                          className="underline underline-offset-4"
+                        >
+                          {CONTACT_EMAIL}
+                        </a>
+                        .
+                      </p>
+                    )}
 
                     <div className="flex items-center gap-3" aria-hidden>
                       <span className="h-px flex-1 bg-[#f5eee8]/15" />

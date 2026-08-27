@@ -21,7 +21,7 @@ export const metadata: Metadata = {
  * is worse than none at all — it is a written statement that can be shown to be
  * false. So every claim below is checked against the code:
  *
- *   - the contact form has no backend and opens the visitor's mail client;
+ *   - the contact form POSTs to Formspree, which forwards it by e-mail;
  *   - the two YouTube blocks are click-to-load facades on youtube-nocookie;
  *   - there is no analytics, no ad tag and no consent banner anywhere.
  *
@@ -32,23 +32,23 @@ export const metadata: Metadata = {
  */
 
 /**
- * Flip to `true` in the same commit that wires the Formspree endpoint into
- * `handleSubmit` in components/ContactExperience.tsx.
+ * Now true: `handleSubmit` in components/ContactExperience.tsx POSTs to
+ * Formspree, so the form data does reach a third party.
  *
- * It is a switch rather than a rewrite because the two states are genuinely
- * different in law: with the mailto the form data never reaches a third party,
- * so there is no processor to name and no transfer to justify. The moment a
- * POST leaves the browser, Formspree becomes a sous-traitant that has to be
- * disclosed here by name. Leaving that paragraph switched off while the POST is
- * live would make this page false.
+ * The two states are genuinely different in law, which is why this is a switch
+ * rather than prose. Under the old mailto nothing left the visitor's machine
+ * except through their own mail client, so there was no processor to name and
+ * no transfer to justify. A POST makes Formspree a sous-traitant that has to be
+ * disclosed here by name, and it is a US company, so the transfer paragraph in
+ * article 5 applies to it too. Switch this back only if the POST goes away.
  */
-const FORMSPREE_ACTIVE = false;
+const FORMSPREE_ACTIVE = true;
 
 const RESPONSABLE = "Anaïs Teck";
 const EMAIL = CONTACT_EMAIL;
 
 /** Kept beside the text it stamps, so editing the page is what updates it. */
-const DERNIERE_MISE_A_JOUR = "25 août 2026";
+const DERNIERE_MISE_A_JOUR = "27 août 2026";
 
 const sectionClass = "mt-14";
 

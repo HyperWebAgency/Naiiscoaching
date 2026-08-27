@@ -39,6 +39,16 @@ export const CONTACT_EMAIL = contact.email;
 export const CALENDLY_URL = contact.calendly;
 
 /**
+ * Where the contact form posts.
+ *
+ * Not a secret — Formspree endpoints live in the form's action attribute and
+ * are visible to anyone reading the page source, which is why this sits beside
+ * the other public constants rather than in an environment variable. Abuse is
+ * handled on Formspree's side, not by hiding the URL.
+ */
+export const FORMSPREE_ENDPOINT = "https://formspree.io/f/xvkpelnw";
+
+/**
  * Strip the share-sheet tracking each link may arrive with: Instagram's
  * `utm_source`/`igsi` and YouTube's `si` are attribution tokens minted for one
  * particular share, so leaving them in would tag every visitor as having come
