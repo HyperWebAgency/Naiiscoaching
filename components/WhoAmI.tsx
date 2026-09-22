@@ -1,8 +1,8 @@
 import Image from "next/image";
 
-import { RESULTS } from "@/lib/gallery";
+import { RESULTS, REVIEWS } from "@/lib/gallery";
 
-import { ResultsGallery } from "./ResultsGallery";
+import { ImageCarousel } from "./ImageCarousel";
 import { ScrollFigure } from "./ScrollFigure";
 
 // Anaïs's own words. The opening line that stands on its own.
@@ -187,14 +187,20 @@ export function WhoAmI() {
             </p>
           </div>
 
-          {/* Client results. Each file is already a self-contained before/after
-              card with its own badges and branding, so it only needs a grid —
-              but under a biography it needs a label, or it reads as decoration
-              rather than as evidence. The grid itself lives in its own client
-              component, because tapping a card opens it full screen. */}
+          {/* Client results: the avant/après cards on top, and under them the
+              same message screenshots Témoignages shows, read from the same
+              list so an upload appears in both places. Under a biography they
+              need a label, or they read as decoration rather than as evidence.
+              The carousels are their own client component, because paging and
+              tapping a card to open it full screen both need JavaScript. */}
           <div className="flex flex-col gap-5">
             <h3 className={labelClass}>Leurs résultats</h3>
-            <ResultsGallery images={RESULTS} />
+            <ImageCarousel images={RESULTS} label="Avant / après" noun="Résultat" />
+            <ImageCarousel
+              images={REVIEWS}
+              label="Témoignages client·es"
+              noun="Témoignage"
+            />
           </div>
         </div>
       </div>
