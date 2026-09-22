@@ -3,18 +3,20 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import vlog from "@/content/vlog.json";
+
 /**
- * The one thing to change when a new vlog goes up. Everything else — the
- * thumbnail, the watch link — is derived from the id, so pasting a new one is
- * the whole update.
+ * Read from content/vlog.json, which Anaïs edits from /admin when a new vlog
+ * goes up. She supplies the id and the title; everything else — the thumbnail,
+ * the watch link — is derived from the id.
  *
- * Deliberately hardcoded rather than fetched: no API key to rotate, no quota,
- * and the site stays fully static. The trade is that it does not follow the
+ * Deliberately not fetched from YouTube: no API key to rotate, no quota, and
+ * the site stays fully static. The trade is that it does not follow the
  * channel by itself — it shows this video until someone changes it.
  */
 const VLOG = {
-  id: "sMHtrA3SmmM",
-  title: "ROAD TO STAGE #6 | Jusqu’où iriez-vous pour réaliser un rêve ?",
+  id: vlog.youtubeId,
+  title: vlog.title,
 };
 
 const WATCH_URL = `https://www.youtube.com/watch?v=${VLOG.id}`;

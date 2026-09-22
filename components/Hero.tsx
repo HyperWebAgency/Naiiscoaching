@@ -1,5 +1,8 @@
 import Image from "next/image";
 
+import { HERO_PHOTO } from "@/lib/photos";
+import { CTA } from "@/lib/site";
+
 import { ScrollFigure } from "./ScrollFigure";
 import { SocialLinks } from "./SocialLinks";
 import { StartButton } from "./StartButton";
@@ -55,7 +58,7 @@ export function Hero() {
           </div>
 
           <div className="order-4 flex flex-col items-center gap-3 lg:items-start">
-            <StartButton className="hero-in hero-in-3" />
+            <StartButton href={CTA.hero} className="hero-in hero-in-3" />
             <p className="hero-in hero-in-4 flex items-center gap-2 text-[0.8rem] font-medium text-[#2d2a49]/70">
               <span
                 aria-hidden
@@ -73,26 +76,29 @@ export function Hero() {
         <div className="order-3 flex justify-center lg:justify-end">
           {/* The silhouette is the same pose as the photo, so it sits directly
               behind at a small offset and reads as a graphic echo of her.
-              It is matched to the photo's height, then nudged left 2%. */}
+              It is matched to the photo's height, then nudged left 2%. Both
+              come from the CMS, and the silhouette can be left out there. */}
           <div className="relative w-full max-w-[210px] [@media(max-height:700px)_and_(max-width:640px)]:max-w-[125px] sm:max-w-[280px] md:max-w-[340px] lg:max-w-[510px] xl:max-w-[580px] 2xl:max-w-[650px]">
-            <Image
-              src="/hero-silhouette.png"
-              alt=""
-              aria-hidden
-              width={1003}
-              height={1103}
-              priority
-              sizes="(max-width: 1024px) 60vw, 42vw"
-              className="pointer-events-none absolute left-1/2 top-0 h-full w-auto max-w-none -translate-x-[52%] -translate-y-[1%] select-none"
-            />
+            {HERO_PHOTO.silhouette && (
+              <Image
+                src={HERO_PHOTO.silhouette.src}
+                alt=""
+                aria-hidden
+                width={HERO_PHOTO.silhouette.width}
+                height={HERO_PHOTO.silhouette.height}
+                priority
+                sizes="(max-width: 1024px) 60vw, 42vw"
+                className="pointer-events-none absolute left-1/2 top-0 h-full w-auto max-w-none -translate-x-[52%] -translate-y-[1%] select-none"
+              />
+            )}
             {/* She travels out to the right as the hero scrolls away, and
                 re-enters from the left in the section below. */}
             <ScrollFigure mode="exitRight" className="relative">
               <Image
-                src="/anais.png"
-                alt="Anaïs, coach sportive, contractant son biceps"
-                width={1229}
-                height={1387}
+                src={HERO_PHOTO.photo.src}
+                alt={HERO_PHOTO.photo.alt}
+                width={HERO_PHOTO.photo.width}
+                height={HERO_PHOTO.photo.height}
                 priority
                 sizes="(max-width: 1024px) 60vw, 42vw"
                 className="h-auto w-full"

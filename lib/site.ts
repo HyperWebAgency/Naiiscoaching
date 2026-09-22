@@ -1,3 +1,4 @@
+import boutons from "@/content/boutons.json";
 import contact from "@/content/contact.json";
 
 /**
@@ -42,6 +43,22 @@ export const CONTACT_EMAIL = contact.email;
  * reader of this file does not have to know that history to trust what it says.
  */
 export const BOOKING_URL = contact.booking;
+
+/**
+ * Where each call-to-action button leads: the hero's, and the one at the foot
+ * of every formule card. Editable from the CMS. The monthly suivis are sold as
+ * a SimplyBook.me membership, and the one-off posing sessions and the packs
+ * each have a SimplyBook page of their own; the hero and the posing suivi go
+ * to /contact.
+ */
+export const CTA = boutons;
+
+/**
+ * True for a full address to another site, as opposed to a path on this one.
+ * The buttons open those in a new tab, as the booking link on /contact does,
+ * so the visitor does not lose the page they were comparing formules on.
+ */
+export const isExternal = (href: string) => /^https?:\/\//i.test(href);
 
 /**
  * Where the contact form posts.

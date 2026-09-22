@@ -1,0 +1,13 @@
+{
+  "hero": {
+    "photo": "/anais.png",
+    "alt": "Anaïs, coach sportive, contractant son biceps",
+    "silhouette": "/hero-silhouette.png"
+  },
+  "whoAmI": {
+    "photo": "/anais.png",
+    "alt": "Anaïs, coach sportive, contractant son biceps",
+    "silhouette": "/hero-silhouette-beige.png"
+  },
+  "posing": "/anais.png"
+}

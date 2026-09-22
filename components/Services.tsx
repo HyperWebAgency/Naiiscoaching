@@ -1,7 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import tarifs from "@/content/tarifs.json";
+import { POSING_PHOTO } from "@/lib/photos";
+import { CTA, isExternal } from "@/lib/site";
 
 /**
  * French typography, written out rather than left to `toLocaleString`: the
@@ -75,6 +78,8 @@ type Plan = {
   features: string[];
   annual?: Annual;
   cta: string;
+  /** Where the button goes. Set from the CMS. */
+  href: string;
 };
 
 const DIETE_MINDSET_TITLE = "Suivi diète & mindset";
@@ -109,6 +114,7 @@ const COACHING: Plan[] = [
     ],
     annual: annualFrom(tarifs.dieteMindset.monthly, tarifs.dieteMindset.annual),
     cta: "Commencer mon suivi",
+    href: CTA.dieteMindset,
   },
   {
     id: "training-diete-mindset",
@@ -137,6 +143,7 @@ const COACHING: Plan[] = [
       tarifs.trainingDieteMindset.annual
     ),
     cta: "Commencer mon suivi",
+    href: CTA.trainingDieteMindset,
   },
 ];
 
@@ -178,6 +185,7 @@ const POSING: Plan = {
     "Suivi de ton évolution au fil des semaines",
   ],
   cta: "Commencer mon suivi",
+  href: CTA.posing,
 };
 
 /**
@@ -200,6 +208,7 @@ const SESSION_BLOCKS = [
       { name: "45 minutes", price: tarifs.cours45min, detail: null },
     ],
     cta: "Réserver une séance",
+    href: CTA.coursIndividuels,
   },
   {
     id: "packs-de-seances",
@@ -219,6 +228,7 @@ const SESSION_BLOCKS = [
       },
     ],
     cta: "Choisir mon pack",
+    href: CTA.packs,
   },
 ];
 
@@ -274,6 +284,43 @@ function Check() {
     >
       <path d="M4 12.5l5 5L20 6.5" />
     </svg>
+  );
+}
+
+/**
+ * A formule's button. An outside page such as SimplyBook opens in a new tab,
+ * like the booking link on /contact, so the tarifs are still there when the
+ * visitor comes back from it; a path on this site (the contact page) stays in
+ * this tab. Which one a button is depends on what is set for it in the CMS.
+ */
+function CtaLink({
+  href,
+  label,
+  className,
+  children,
+}: {
+  href: string;
+  label: string;
+  className: string;
+  children: ReactNode;
+}) {
+  if (!isExternal(href)) {
+    return (
+      <Link href={href} aria-label={label} className={className}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className={className}
+    >
+      {children}
+    </a>
   );
 }
 
@@ -422,13 +469,13 @@ function PlanCard({ plan }: { plan: Plan }) {
           did, the button sinks to the card's floor, and grid items stretching
           to the row's height put every card's floor on the same line. */}
       <div className="mt-auto pt-8">
-        <Link
-          href="/contact"
-          aria-label={`${plan.cta} : ${plan.title}`}
+        <CtaLink
+          href={plan.href}
+          label={`${plan.cta} : ${plan.title}`}
           className={primaryButtonClass}
         >
           {plan.cta}
-        </Link>
+        </CtaLink>
       </div>
     </article>
   );
@@ -470,13 +517,13 @@ function SessionBlock({ block }: { block: (typeof SESSION_BLOCKS)[number] }) {
       </ul>
 
       <div className="mt-auto pt-7">
-        <Link
-          href="/contact"
-          aria-label={`${block.cta} : ${block.title}`}
+        <CtaLink
+          href={block.href}
+          label={`${block.cta} : ${block.title}`}
           className={secondaryButtonClass}
         >
           {block.cta}
-        </Link>
+        </CtaLink>
       </div>
     </article>
   );
@@ -541,16 +588,17 @@ export function Services() {
           <div className="mt-10 grid grid-cols-1 gap-5 sm:gap-6 lg:mt-12 lg:grid-cols-2 lg:gap-7">
             <PlanCard plan={POSING} />
 
-            {/* TODO: swap for a competition photo when Anaïs has them — this
-                block is the posing section's image and should look like posing,
-                not like the coaching portrait reused. Decorative, so it is
-                hidden from assistive tech. */}
+            {/* The posing section's image, set from the CMS so Anaïs can put a
+                competition photo here in place of the coaching portrait it
+                starts with. Cropped to fill, anchored to the top so a head is
+                never what gets cut. Decorative, so it is hidden from assistive
+                tech. */}
             <div
               aria-hidden
               className={`relative aspect-[4/5] overflow-hidden rounded-2xl lg:aspect-auto ${cardSurface}`}
             >
               <Image
-                src="/anais.png"
+                src={POSING_PHOTO}
                 alt=""
                 fill
                 sizes="(max-width: 1024px) 92vw, 536px"

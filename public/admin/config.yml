@@ -1,14 +1,17 @@
 # Sveltia CMS — the editing interface at /admin.
 #
-# Deliberately narrow. Only four files are reachable from here, and every field
-# is typed: prices are number inputs, images go through an uploader. Nothing
-# else on the site can be reached, because nothing else is described below.
+# Deliberately narrow. Only the seven files below are reachable from here, and
+# every field is typed: prices are number inputs, images go through an uploader
+# (with no "paste a URL" option, since next/image would refuse an outside host
+# and fail the build), links are checked against a pattern. Nothing else on the
+# site can be reached, because nothing else is described below.
 #
 # What is NOT editable here, on purpose:
 #   - the legal notice and the privacy policy (they cross-reference each other
 #     and carry compliance obligations)
-#   - headings, the hero, navigation labels, the contact word sequence
-#     (composition, not content)
+#   - headings, the hero's text, button labels, navigation labels, the contact
+#     word sequence (composition, not content). The photos and where the main
+#     buttons lead are editable; the words around them are not.
 #   - the service feature lists (the training card claims to contain the diète
 #     card whole, and a build-time check enforces that — editing one list and
 #     not the other would fail the publish with an error nobody here can read)
@@ -137,6 +140,44 @@ collections:
             widget: string
             pattern: ['^https://', 'Doit commencer par https://']
 
+      # ─── Button links ──────────────────────────────────────────────────────
+      - name: boutons
+        label: Liens des boutons
+        file: content/boutons.json
+        icon: link
+        description: >-
+          Où mènent les principaux boutons du site. Une page du site commence
+          par / (la page contact : /contact). Une adresse d’un autre site, comme
+          une page SimplyBook, commence par https:// et s’ouvre dans un nouvel
+          onglet. Le lien du bouton « Choisir un créneau d’appel » de la page
+          contact se trouve dans Coordonnées.
+        fields:
+          - name: hero
+            label: Accueil, « Réserver mon appel découverte »
+            widget: string
+            pattern: &link
+              ['^(/\S*|https://\S+)$', 'Commence par / pour une page du site (exemple : /contact), ou par https:// pour un autre site. Sans espaces.']
+          - name: dieteMindset
+            label: Suivi diète & mindset, « Commencer mon suivi »
+            widget: string
+            pattern: *link
+          - name: trainingDieteMindset
+            label: Suivi training + diète & mindset, « Commencer mon suivi »
+            widget: string
+            pattern: *link
+          - name: posing
+            label: Suivi posing mensuel, « Commencer mon suivi »
+            widget: string
+            pattern: *link
+          - name: coursIndividuels
+            label: Cours individuels, « Réserver une séance »
+            widget: string
+            pattern: *link
+          - name: packs
+            label: Packs de séances, « Choisir mon pack »
+            widget: string
+            pattern: *link
+
       # ─── Video testimonials ────────────────────────────────────────────────
       - name: temoignages-video
         label: Témoignages en vidéo
@@ -179,9 +220,82 @@ collections:
                   Les guillemets sont ajoutés automatiquement, ne les saisis
                   pas.
 
+      # ─── Section photos ────────────────────────────────────────────────────
+      - name: photos
+        label: Photos des sections
+        file: content/photos.json
+        icon: image
+        description: >-
+          Les photos de l’accueil, de « Qui je suis » et du bloc posing de
+          « Mes accompagnements ». Les photos avant / après et les captures
+          d’avis sont dans l’entrée « Photos avant / après et avis ».
+        fields:
+          - name: hero
+            label: Accueil (haut de la page)
+            widget: object
+            fields:
+              - name: photo
+                label: Photo
+                widget: image
+                choose_url: false
+                hint: >-
+                  Idéalement un PNG détouré (sans fond), en portrait, comme la
+                  photo actuelle (1229 × 1387 pixels). Une photo avec un fond
+                  s’affiche comme un rectangle.
+              - name: alt
+                label: Description de la photo
+                widget: string
+                hint: &photoAlt >-
+                  Lue à voix haute par les lecteurs d’écran et affichée si la
+                  photo ne charge pas. Décris ce qu’on voit.
+              - name: silhouette
+                label: Silhouette derrière la photo (facultatif)
+                widget: image
+                required: false
+                choose_url: false
+                hint: >-
+                  L’aplat qui reprend exactement ta pose, juste derrière la
+                  photo. Si tu changes de photo sans silhouette assortie, vide
+                  ce champ : l’ancienne dépasserait autour de la nouvelle pose.
+
+          - name: whoAmI
+            label: Qui je suis
+            widget: object
+            fields:
+              - name: photo
+                label: Photo
+                widget: image
+                choose_url: false
+                hint: >-
+                  Au départ, la même photo que l’accueil : au défilement, tu
+                  sors de l’accueil par la droite et tu reviens ici par la
+                  gauche. Garde la même photo dans les deux pour conserver cet
+                  effet. Idéalement un PNG détouré (sans fond), en portrait.
+              - name: alt
+                label: Description de la photo
+                widget: string
+                hint: *photoAlt
+              - name: silhouette
+                label: Silhouette derrière la photo (facultatif)
+                widget: image
+                required: false
+                choose_url: false
+                hint: >-
+                  Ici en beige, pour ressortir sur le fond bleu nuit de la
+                  section. Si tu changes de photo sans silhouette assortie, vide
+                  ce champ : l’ancienne dépasserait autour de la nouvelle pose.
+
+          - name: posing
+            label: Bloc posing (à côté du suivi posing mensuel)
+            widget: image
+            choose_url: false
+            hint: >-
+              Recadrée automatiquement pour remplir le bloc, en gardant le haut
+              de l’image. Une photo en portrait convient le mieux.
+
       # ─── Photo galleries ───────────────────────────────────────────────────
       - name: galeries
-        label: Photos
+        label: Photos avant / après et avis
         file: content/galeries.json
         icon: photo_library
         description: >-
@@ -198,6 +312,7 @@ collections:
               - name: src
                 label: Image
                 widget: image
+                choose_url: false
               - name: alt
                 label: Description de l’image
                 widget: string
@@ -214,9 +329,33 @@ collections:
               - name: src
                 label: Image
                 widget: image
+                choose_url: false
               - name: alt
                 label: Résumé de l’avis
                 widget: string
                 hint: >-
                   Résume ce que dit la cliente. C’est le seul texte disponible
                   pour qui ne peut pas voir la capture.
+
+      # ─── Latest vlog ───────────────────────────────────────────────────────
+      - name: vlog
+        label: Dernier vlog
+        file: content/vlog.json
+        icon: video_library
+        description: >-
+          L’onglet « Dernier vlog » sur le bord droit de la page d’accueil. La
+          miniature et le lien vers YouTube se mettent à jour tout seuls à partir
+          de l’identifiant de la vidéo.
+        fields:
+          - name: youtubeId
+            label: Identifiant de la vidéo YouTube
+            widget: string
+            hint: >-
+              La partie après « v= » dans l’adresse YouTube. Pour
+              youtube.com/watch?v=sMHtrA3SmmM, saisis sMHtrA3SmmM
+            pattern:
+              ['^[A-Za-z0-9_-]{11}$', 'Un identifiant YouTube fait 11 caractères.']
+          - name: title
+            label: Titre de la vidéo
+            widget: string
+            hint: Recopie le titre tel qu’il apparaît sur YouTube.

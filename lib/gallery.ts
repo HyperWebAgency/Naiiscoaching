@@ -100,7 +100,11 @@ function measure(buffer: Buffer): { width: number; height: number } | null {
   return null;
 }
 
-function withSize({ src, alt }: { src: string; alt: string }): GalleryImage {
+/**
+ * Pairs a public path with its measured size. Exported for the section photos
+ * in `./photos`, which come from the CMS the same way these galleries do.
+ */
+export function withSize({ src, alt }: { src: string; alt: string }): GalleryImage {
   let size: { width: number; height: number } | null = null;
 
   try {
@@ -113,7 +117,7 @@ function withSize({ src, alt }: { src: string; alt: string }): GalleryImage {
 
   if (!size) {
     console.warn(
-      `[galerie] Impossible de lire les dimensions de ${src} — ` +
+      `[image] Impossible de lire les dimensions de ${src} — ` +
         `dimensions par défaut utilisées (${FALLBACK.width}×${FALLBACK.height}).`
     );
     size = FALLBACK;

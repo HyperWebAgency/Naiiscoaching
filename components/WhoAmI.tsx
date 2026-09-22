@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { RESULTS, REVIEWS } from "@/lib/gallery";
+import { WHO_AM_I_PHOTO } from "@/lib/photos";
 
 import { ImageCarousel } from "./ImageCarousel";
 import { ScrollFigure } from "./ScrollFigure";
@@ -72,23 +73,28 @@ export function WhoAmI() {
 
               Pulled up on desktop only. A transform rather than a margin, so
               she and the silhouette rise together into the section's top
-              padding without dragging the copy below them up too. */}
+              padding without dragging the copy below them up too.
+
+              Both images come from the CMS, like the hero's, and the
+              silhouette can be left out there. */}
           <div className="relative order-1 mx-auto w-full max-w-[300px] sm:max-w-[380px] lg:mx-0 lg:-translate-y-20 lg:max-w-[470px] xl:max-w-[520px]">
-            <Image
-              src="/hero-silhouette-beige.png"
-              alt=""
-              aria-hidden
-              width={1003}
-              height={1103}
-              sizes="(max-width: 1024px) 62vw, 28vw"
-              className="pointer-events-none absolute left-1/2 top-0 h-full w-auto max-w-none -translate-x-[52%] -translate-y-[1%] select-none"
-            />
+            {WHO_AM_I_PHOTO.silhouette && (
+              <Image
+                src={WHO_AM_I_PHOTO.silhouette.src}
+                alt=""
+                aria-hidden
+                width={WHO_AM_I_PHOTO.silhouette.width}
+                height={WHO_AM_I_PHOTO.silhouette.height}
+                sizes="(max-width: 1024px) 62vw, 28vw"
+                className="pointer-events-none absolute left-1/2 top-0 h-full w-auto max-w-none -translate-x-[52%] -translate-y-[1%] select-none"
+              />
+            )}
             <ScrollFigure mode="enterLeft" className="relative">
               <Image
-                src="/anais.png"
-                alt="Anaïs, coach sportive, contractant son biceps"
-                width={1229}
-                height={1387}
+                src={WHO_AM_I_PHOTO.photo.src}
+                alt={WHO_AM_I_PHOTO.photo.alt}
+                width={WHO_AM_I_PHOTO.photo.width}
+                height={WHO_AM_I_PHOTO.photo.height}
                 sizes="(max-width: 1024px) 62vw, 28vw"
                 className="h-auto w-full"
               />

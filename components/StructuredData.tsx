@@ -1,4 +1,9 @@
+import photos from "@/content/photos.json";
 import { PHONE_E164, SITE_DESCRIPTION, SITE_NAME, SITE_URL, SOCIAL } from "@/lib/site";
+
+// The hero photo, so this follows it when Anaïs replaces it from the CMS rather
+// than pointing at a file she may since have deleted.
+const IMAGE = new URL(photos.hero.photo, SITE_URL).href;
 
 /**
  * Schema.org structured data, as JSON-LD.
@@ -33,7 +38,7 @@ const graph = {
       name: SITE_NAME,
       description: SITE_DESCRIPTION,
       url: SITE_URL,
-      image: `${SITE_URL}/anais.png`,
+      image: IMAGE,
       telephone: PHONE_E164,
       // `sameAs` is what lets a search engine treat the accounts and the site as
       // one entity rather than three unconnected things with a similar name.
@@ -88,7 +93,7 @@ const graph = {
       "@id": `${SITE_URL}/#anais`,
       name: "Anaïs",
       jobTitle: "Coach sportive",
-      image: `${SITE_URL}/anais.png`,
+      image: IMAGE,
       worksFor: { "@id": `${SITE_URL}/#business` },
       knowsLanguage: "fr-FR",
     },
