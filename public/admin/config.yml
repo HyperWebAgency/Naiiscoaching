@@ -1,6 +1,6 @@
 # Sveltia CMS — the editing interface at /admin.
 #
-# Deliberately narrow. Only the seven files below are reachable from here, and
+# Deliberately narrow. Only the eight files below are reachable from here, and
 # every field is typed: prices are number inputs, images go through an uploader
 # (with no "paste a URL" option, since next/image would refuse an outside host
 # and fail the build), links are checked against a pattern. Nothing else on the
@@ -380,3 +380,30 @@ collections:
             label: Titre de la vidéo
             widget: string
             hint: Recopie le titre tel qu’il apparaît sur YouTube.
+
+      # ─── Vlog row ──────────────────────────────────────────────────────────
+      - name: vlogs
+        label: Vlogs
+        file: content/vlogs.json
+        icon: movie
+        description: >-
+          Les vidéos qui défilent dans la section « Mes vlogs », après les
+          témoignages. Colle simplement le lien de chaque vidéo YouTube : le
+          titre et la miniature sont récupérés tout seuls à chaque mise en
+          ligne du site. La première de la liste passe en premier ; fais
+          glisser pour changer l’ordre. Si la liste est vide, la section
+          disparaît.
+        fields:
+          - name: videos
+            label: Vidéos
+            label_singular: vidéo
+            widget: list
+            field:
+              name: url
+              label: Lien de la vidéo YouTube
+              widget: string
+              hint: >-
+                Sur YouTube : Partager, puis Copier le lien. Exemple :
+                https://youtu.be/INMUt33c1iU
+              pattern:
+                ['^(https://(www\.|m\.)?(youtube\.com/(watch\?(\S*&)?v=|shorts/|live/)|youtu\.be/)[A-Za-z0-9_-]{11}([?&#/]\S*)?|[A-Za-z0-9_-]{11})$', 'Colle le lien d’une vidéo YouTube (youtu.be/… ou youtube.com/watch?v=…).']

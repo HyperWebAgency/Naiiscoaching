@@ -269,6 +269,45 @@ html[data-view="dark"] .vlog-surface {
   }
 }
 
+/* The "Mes vlogs" row, drifting left forever.
+
+   The track holds two identical halves, and sliding it by exactly half its own
+   width lands the second half where the first began, so the jump back to 0 is
+   invisible. Percentages in `translate` are of the element itself, which is
+   what makes -50% mean "one half" whatever the number of cards. The duration
+   comes from the component, scaled to the card count, so the speed does not
+   change when videos are added.
+
+   It stops while someone is reading or aiming: under a mouse, and while a card
+   has keyboard focus. The hover pause is kept to devices that really hover; on
+   a phone `:hover` sticks after a tap and would freeze the row until the next
+   tap somewhere else. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+}
+
+@media (hover: hover) {
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
 /* The brand mark at the foot of the page dissolves as it descends, the way a
    sign painted on a wall fades where the light stops reaching it.
 

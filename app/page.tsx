@@ -4,6 +4,7 @@ import { LatestVlog } from "@/components/LatestVlog";
 import { Services } from "@/components/Services";
 import { RevealBlur } from "@/components/RevealBlur";
 import { Testimonials } from "@/components/Testimonials";
+import { Vlogs } from "@/components/Vlogs";
 import { WhoAmI } from "@/components/WhoAmI";
 
 export default function Home() {
@@ -18,6 +19,9 @@ export default function Home() {
             points at. */}
         <Services />
         <Testimonials />
+        {/* After the avis: the proof is settled, and this is her, week to week,
+            for anyone who wants to keep watching. */}
+        <Vlogs />
         <RevealBlur targetId="qui-je-suis" />
         {/* Home only. On /contact it would sit on top of the fullscreen word
             sequence, which is the one place the page wants no competition. */}

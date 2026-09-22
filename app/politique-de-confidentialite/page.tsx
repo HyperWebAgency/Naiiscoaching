@@ -22,7 +22,9 @@ export const metadata: Metadata = {
  * false. So every claim below is checked against the code:
  *
  *   - the contact form POSTs to Formspree, which forwards it by e-mail;
- *   - the two YouTube blocks are click-to-load facades on youtube-nocookie;
+ *   - the YouTube testimonials are click-to-load facades on youtube-nocookie,
+ *     and the vlog row and the vlog tab are plain links out, their thumbnails
+ *     served through the site's own image optimiser;
  *   - there is no analytics, no ad tag and no consent banner anywhere.
  *
  * If any of those three change, this page changes in the same commit.
@@ -286,10 +288,12 @@ export default function PolitiqueDeConfidentialitePage() {
           <section className={sectionClass}>
             <h2 className={h2Class}>7. Cookies et traceurs</h2>
             {/* Accurate as the site is built today: no analytics, no ad tags,
-                and both YouTube blocks are click-to-load facades pointed at
-                youtube-nocookie. Adding any measurement tool means this
-                paragraph stops being true and a consent banner starts being
-                required. */}
+                the YouTube testimonials are click-to-load facades pointed at
+                youtube-nocookie, and the vlogs are plain links whose thumbnails
+                come through the site's own image optimiser, so no visitor
+                request reaches YouTube before a click. Adding any measurement
+                tool means this paragraph stops being true and a consent banner
+                starts being required. */}
             <p className={pClass}>
               Ce site ne dépose aucun cookie de mesure d’audience, de publicité
               ou de traçage. Il n’affiche donc aucune bannière de consentement,
