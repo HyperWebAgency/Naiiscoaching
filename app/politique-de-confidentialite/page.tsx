@@ -48,7 +48,7 @@ const RESPONSABLE = "Anaïs Teck";
 const EMAIL = CONTACT_EMAIL;
 
 /** Kept beside the text it stamps, so editing the page is what updates it. */
-const DERNIERE_MISE_A_JOUR = "27 août 2026";
+const DERNIERE_MISE_A_JOUR = "22 septembre 2026";
 
 const sectionClass = "mt-14";
 
@@ -135,8 +135,8 @@ export default function PolitiqueDeConfidentialitePage() {
                 <strong className="font-semibold text-[#2d2a49]">
                   Prise de rendez-vous
                 </strong>{" "}
-                : les informations demandées par Calendly au moment de réserver
-                un créneau, collectées directement par cette plateforme.
+                : les informations demandées par SimplyBook.me au moment de
+                réserver un créneau, collectées directement par cette plateforme.
               </li>
               <li className={liClass}>
                 <strong className="font-semibold text-[#2d2a49]">
@@ -235,26 +235,33 @@ export default function PolitiqueDeConfidentialitePage() {
                 </li>
               )}
               <li className={liClass}>
-                <strong className="font-semibold text-[#2d2a49]">Calendly</strong>{" "}
+                <strong className="font-semibold text-[#2d2a49]">
+                  SimplyBook.me
+                </strong>{" "}
                 : prise de rendez-vous en visioconférence, dont les conditions
                 de traitement sont accessibles sur{" "}
                 <a
-                  href="https://calendly.com/privacy"
+                  href="https://simplybook.me/en/policy"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={inlineLinkClass}
                 >
-                  calendly.com
+                  simplybook.me
                 </a>
                 .
               </li>
             </ul>
             <p className={pClass}>
-              Ces prestataires sont établis aux États-Unis. Les transferts de
-              données qui en découlent sont encadrés par les clauses
-              contractuelles types de la Commission européenne et, le cas
-              échéant, par le cadre de protection des données UE–États-Unis
-              (Data Privacy Framework).
+              Vercel Inc.{FORMSPREE_ACTIVE ? " et Formspree sont" : " est"}{" "}
+              établi{FORMSPREE_ACTIVE ? "s" : ""}
+              {" "}
+              aux États-Unis&nbsp;; les transferts de données qui en découlent
+              sont encadrés par les
+              clauses contractuelles types de la Commission européenne et, le
+              cas échéant, par le cadre de protection des données UE–États-Unis
+              (Data Privacy Framework). SimplyBook.me applique ses propres
+              garanties de transfert, détaillées dans sa politique de
+              confidentialité.
             </p>
           </section>
 

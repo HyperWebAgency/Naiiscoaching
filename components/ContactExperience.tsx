@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-import { CALENDLY_URL, CONTACT_EMAIL, FORMSPREE_ENDPOINT } from "@/lib/site";
+import { BOOKING_URL, CONTACT_EMAIL, FORMSPREE_ENDPOINT } from "@/lib/site";
 
 // The arc: doubt first, then the work that answers it, then readiness.
 const WORDS = [
@@ -958,7 +958,7 @@ export function ContactExperience() {
                     </div>
 
                     <a
-                      href={CALENDLY_URL}
+                      href={BOOKING_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="rounded-full border border-[#f5eee8]/35 px-6 py-3 text-center text-[0.82rem] font-bold uppercase tracking-[0.1em] text-[#f5eee8] transition-colors duration-200 hover:border-[#f5eee8]"

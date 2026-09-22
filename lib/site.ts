@@ -35,8 +35,13 @@ export const PHONE_E164 = contact.phone;
 /** Where the contact form and the footer's "Me contacter" both send. */
 export const CONTACT_EMAIL = contact.email;
 
-/** The booking link behind "Choisir un créneau d'appel". */
-export const CALENDLY_URL = contact.calendly;
+/**
+ * The booking link behind "Choisir un créneau d'appel".
+ *
+ * SimplyBook.me, not Calendly — the name changed along with the provider, so a
+ * reader of this file does not have to know that history to trust what it says.
+ */
+export const BOOKING_URL = contact.booking;
 
 /**
  * Where the contact form posts.

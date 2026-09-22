@@ -132,8 +132,8 @@ collections:
             label: Lien YouTube
             widget: string
             pattern: ['^https://', 'Doit commencer par https://']
-          - name: calendly
-            label: Lien Calendly (prise de rendez-vous)
+          - name: booking
+            label: Lien de réservation (SimplyBook.me)
             widget: string
             pattern: ['^https://', 'Doit commencer par https://']
 
