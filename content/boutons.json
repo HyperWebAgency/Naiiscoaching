@@ -1,9 +1,9 @@
 {
-  "hero": "/contact",
-  "dieteMindset": "https://naiiscoaching.simplybook.me/v2/#membership",
-  "trainingDieteMindset": "https://naiiscoaching.simplybook.me/v2/#membership",
-  "posing": "/contact",
-  "posingComplet": "/contact",
+  "hero": "https://naiiscoaching.simplybook.me/v2/#book/category/1/count/1/",
+  "dieteMindset": "/contact",
+  "trainingDieteMindset": "/contact",
+  "posing": "https://naiiscoaching.simplybook.me/v2/#membership",
+  "posingComplet": "https://naiiscoaching.simplybook.me/v2/#membership",
   "coursIndividuels": "https://naiiscoaching.simplybook.me/v2/#book/category/2/count/1/",
   "packs": "https://naiiscoaching.simplybook.me/v2/#packages"
 }
