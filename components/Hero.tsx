@@ -39,7 +39,7 @@ export function Hero() {
             <h1 className="hero-in hero-in-1 mx-auto max-w-[19ch] text-balance text-center text-[2rem] font-bold leading-[1.1] tracking-[-0.02em] text-[#2d2a49] sm:text-[2.5rem] md:text-[3rem] lg:mx-0 lg:text-left lg:text-[2.6rem] xl:text-[3.1rem] 2xl:text-[3.5rem]">
               Un objectif.{" "}
               <span className="box-decoration-clone rounded-[0.14em] bg-[#2d2a49] px-[0.22em] py-[0.04em] text-[#f5eee8]">
-                Un pourquoi
+                Un&nbsp;pourquoi
               </span>{" "}
               suffisamment fort. Et les actions nécessaires pour aller jusqu’au
               bout.
