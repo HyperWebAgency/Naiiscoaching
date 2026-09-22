@@ -129,5 +129,5 @@ export function withSize({ src, alt }: { src: string; alt: string }): GalleryIma
 /** Avant/après cards, under "Qui je suis". */
 export const RESULTS: GalleryImage[] = galeries.results.map(withSize);
 
-/** Message screenshots, under "Témoignages". */
+/** Message screenshots, the second carousel under "Leurs résultats". */
 export const REVIEWS: GalleryImage[] = galeries.reviews.map(withSize);

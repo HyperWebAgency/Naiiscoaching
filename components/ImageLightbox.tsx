@@ -7,13 +7,12 @@ import type { GalleryImage } from "@/lib/gallery";
 
 /**
  * Full-screen lightbox opened from a thumbnail. Slides across the whole set it
- * is given — not just whichever rows a grid currently shows — so "Voir plus"
- * and browsing here stay two separate questions.
+ * is given, not just the slide the carousel was showing when it was tapped.
  *
- * Serves both galleries on the site: the message screenshots under Témoignages
- * and the avant/après cards under Qui je suis. Each image carries its own
- * measured size, so an upload that is not the usual 1279×1600 portrait still
- * gets the right box reserved for it.
+ * Serves both carousels under "Leurs résultats" in Qui je suis: the avant/après
+ * cards and the message screenshots. Each image carries its own measured size,
+ * so an upload that is not the usual 1279×1600 portrait still gets the right
+ * box reserved for it.
  */
 export function ImageLightbox({
   images,

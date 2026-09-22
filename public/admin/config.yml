@@ -320,9 +320,9 @@ collections:
         file: content/galeries.json
         icon: photo_library
         description: >-
-          Les photos avant / après de la section « Qui je suis » et les captures
-          d’avis de la section « Témoignages ». Format conseillé : portrait,
-          1279 × 1600 pixels.
+          Les photos avant / après et les captures d’avis, affichées en deux
+          carrousels sous « Leurs résultats », dans la section « Qui je suis ».
+          Format conseillé : portrait, 1279 × 1600 pixels.
         fields:
           - name: results
             label: Photos avant / après

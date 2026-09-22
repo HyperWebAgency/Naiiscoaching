@@ -39,7 +39,7 @@ function subscribe(onChange: () => void) {
  *
  * The list arrives as a prop because it is measured from the files on disk,
  * which only the server can do. Both rows under "Leurs résultats" use this: the
- * avant/après cards, and the message screenshots shared with Témoignages.
+ * avant/après cards, and the message screenshots.
  */
 export function ImageCarousel({
   images,

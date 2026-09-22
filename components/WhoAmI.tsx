@@ -194,8 +194,8 @@ export function WhoAmI() {
           </div>
 
           {/* Client results: the avant/après cards on top, and under them the
-              same message screenshots Témoignages shows, read from the same
-              list so an upload appears in both places. Under a biography they
+              message screenshots, which live here only (Témoignages keeps the
+              videos). Under a biography they
               need a label, or they read as decoration rather than as evidence.
               The carousels are their own client component, because paging and
               tapping a card to open it full screen both need JavaScript. */}
