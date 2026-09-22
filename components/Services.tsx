@@ -59,11 +59,16 @@ function annualFrom(monthly: number, annual: number): Annual {
 type Plan = {
   id: string;
   title: string;
-  /** Only the posing formule has one: the federations it prepares for. */
+  /** Only the posing formules have one: the federations they prepare for. */
   subtitle?: string;
   /** Marks the flagship: a firmer edge and the badge above it. */
   featured?: boolean;
-  monthly: number;
+  price: number;
+  /**
+   * What the price pays for, printed after it: "mois" for the suivis billed
+   * every month, "3 mois" for the fixed-term one paid once.
+   */
+  per: string;
   commitment: string;
   /** The paragraphs under "Cet accompagnement est fait pour toi si…". */
   intro: string[];
@@ -94,7 +99,8 @@ const COACHING: Plan[] = [
   {
     id: "diete-mindset",
     title: DIETE_MINDSET_TITLE,
-    monthly: tarifs.dieteMindset.monthly,
+    price: tarifs.dieteMindset.monthly,
+    per: "mois",
     commitment: `Engagement initial de 3 mois${NBSP}· puis reconduction tacite mensuelle`,
     intro: [
       "…tu souhaites atteindre tes objectifs physiques grâce à une stratégie nutritionnelle entièrement construite autour de toi, tout en travaillant sur tes habitudes, ta discipline et ton mindset.",
@@ -120,7 +126,8 @@ const COACHING: Plan[] = [
     id: "training-diete-mindset",
     title: "Suivi training + diète & mindset",
     featured: true,
-    monthly: tarifs.trainingDieteMindset.monthly,
+    price: tarifs.trainingDieteMindset.monthly,
+    per: "mois",
     commitment: `Engagement initial de 3 mois${NBSP}· puis reconduction tacite mensuelle`,
     intro: [
       "…tu souhaites ne rien laisser au hasard dans ta transformation. En me confiant à la fois ton entraînement, ta nutrition et l’accompagnement sur ton mindset, je garde une vision globale de ta progression et peux faire évoluer chaque paramètre en fonction des autres.",
@@ -168,30 +175,63 @@ for (const plan of COACHING) {
   }
 }
 
-const POSING: Plan = {
-  id: "posing-mensuel",
-  title: "Suivi posing mensuel",
-  subtitle: `Bikini & Fit Model${NBSP}· NPC`,
-  monthly: tarifs.posing.monthly,
-  commitment: "Sans engagement",
-  intro: [
-    "…tu souhaites progresser de manière régulière et travailler ton posing semaine après semaine, où que tu sois, avec un regard extérieur pour identifier précisément tes axes de progression.",
-  ],
-  features: [
-    "1 envoi par semaine comprenant une vidéo de ta routine + une vidéo de tes comparaisons",
-    "1 feedback vidéo personnalisé par semaine",
-    "Analyse de tes poses, transitions, fluidité et présentation générale",
-    "Axes de travail précis pour la semaine suivante",
-    "Suivi de ton évolution au fil des semaines",
-  ],
-  cta: "Commencer mon suivi",
-  href: CTA.posing,
-};
+/**
+ * The two posing suivis, shown side by side: the month-to-month one first,
+ * then the three-month one that adds the individual sessions. Her titles set
+ * the duration off with a dash; parentheses say the same without one, which is
+ * the house rule for visible copy.
+ */
+const POSING: Plan[] = [
+  {
+    id: "posing-mensuel",
+    title: "Suivi posing à distance (1 mois)",
+    subtitle: `Bikini & Fit Model${NBSP}· NPC`,
+    price: tarifs.posing.monthly,
+    per: "mois",
+    commitment: "Sans engagement",
+    intro: [
+      "…tu souhaites progresser de manière régulière et travailler ton posing semaine après semaine, où que tu sois, avec un regard extérieur pour identifier précisément tes axes de progression.",
+    ],
+    features: [
+      "1 envoi par semaine comprenant une vidéo de ta routine + une vidéo de tes comparaisons",
+      "1 feedback vidéo personnalisé par semaine",
+      "Analyse de tes poses, transitions, fluidité et présentation générale",
+      "Axes de travail précis pour la semaine suivante",
+      "Suivi de ton évolution au fil des semaines",
+    ],
+    cta: "Commencer mon suivi",
+    href: CTA.posing,
+  },
+  {
+    id: "posing-complet",
+    title: "Suivi posing complet (3 mois)",
+    subtitle: `Bikini & Fit Model${NBSP}· NPC`,
+    price: tarifs.posingComplet.total,
+    per: "3 mois",
+    commitment: "Sans renouvellement automatique",
+    intro: [
+      "…tu souhaites travailler ton posing en profondeur sur plusieurs mois, que tu sois en préparation de compétition ou en off-season, en combinant un suivi vidéo hebdomadaire et des cours individuels pour faire évoluer ton posing dans sa globalité.",
+    ],
+    features: [
+      "1 envoi vidéo par semaine comprenant une vidéo de ta routine + une vidéo de tes comparaisons",
+      "1 feedback vidéo personnalisé par semaine",
+      "1 cours individuel en visio de 30 min par mois, soit 3 cours au total",
+      "Analyse de tes poses, transitions, fluidité et présentation générale",
+      "Travail de la démarche et de la présence scénique",
+      "Adaptation du posing à ton physique et à son évolution",
+      "Axes de travail précis entre chaque feedback",
+    ],
+    cta: "Commencer mon suivi",
+    href: CTA.posingComplet,
+  },
+];
 
 /**
- * One-off posing work. Two blocks rather than one grid of four prices: a
+ * One-off posing work. Two blocks rather than one grid of five prices: a
  * 30-minute session and a six-session pack are different purchases, and the
- * pack's validity window has nowhere to go in a price tile.
+ * pack's validity window has nowhere to go in a price tile. Each single
+ * session carries a line on what that length is for, in her words, so the
+ * choice between them is about the need rather than the price.
  *
  * Each line's name and price are stacked rather than joined by a dash, which is
  * both the house rule and the only way the longer pack names fit a narrow
@@ -204,8 +244,22 @@ const SESSION_BLOCKS = [
     description:
       "Une séance individuelle en visio pour travailler ton posing à mes côtés : poses, transitions, fluidité, mise en valeur de ton physique et corrections adaptées à tes besoins.",
     items: [
-      { name: "30 minutes", price: tarifs.cours30min, detail: null },
-      { name: "45 minutes", price: tarifs.cours45min, detail: null },
+      {
+        name: "15 minutes",
+        price: tarifs.cours15min,
+        detail: "Pour une correction rapide et ciblée sur un posing déjà construit.",
+      },
+      {
+        name: "30 minutes",
+        price: tarifs.cours30min,
+        detail: "Pour travailler plusieurs points précis et faire évoluer ton posing.",
+      },
+      {
+        name: "60 minutes",
+        price: tarifs.cours60min,
+        detail:
+          "Pour apprendre les bases, construire ta routine ou reprendre ton posing en profondeur.",
+      },
     ],
     cta: "Réserver une séance",
     href: CTA.coursIndividuels,
@@ -349,9 +403,9 @@ function PlanCard({ plan }: { plan: Plan }) {
 
       <p className="mt-6 flex items-baseline gap-1.5">
         <span className="text-[2.5rem] font-extrabold leading-none tracking-[-0.02em]">
-          {euro(plan.monthly)}
+          {euro(plan.price)}
         </span>
-        <span className="text-[0.95rem] font-medium text-[#2d2a49]/55">/ mois</span>
+        <span className="text-[0.95rem] font-medium text-[#2d2a49]/55">/ {plan.per}</span>
       </p>
 
       <p className="mt-2.5 text-[0.8rem] leading-[1.5] text-[#2d2a49]/55">
@@ -585,14 +639,16 @@ export function Services() {
             </h3>
           </div>
 
+          {/* In the order Anaïs laid it out: the photo on the left with the
+              single sessions above the packs on the right, then the two suivis
+              side by side. */}
           <div className="mt-10 grid grid-cols-1 gap-5 sm:gap-6 lg:mt-12 lg:grid-cols-2 lg:gap-7">
-            <PlanCard plan={POSING} />
-
             {/* The posing section's image, set from the CMS so Anaïs can put a
                 competition photo here in place of the coaching portrait it
                 starts with. Cropped to fill, anchored to the top so a head is
-                never what gets cut. Decorative, so it is hidden from assistive
-                tech. */}
+                never what gets cut. From `lg` it drops its ratio and takes the
+                height of the two blocks beside it. Decorative, so it is hidden
+                from assistive tech. */}
             <div
               aria-hidden
               className={`relative aspect-[4/5] overflow-hidden rounded-2xl lg:aspect-auto ${cardSurface}`}
@@ -605,11 +661,19 @@ export function Services() {
                 className="object-cover object-top"
               />
             </div>
+
+            <div className="flex flex-col gap-5 sm:gap-6 lg:gap-7">
+              {SESSION_BLOCKS.map((block) => (
+                <SessionBlock key={block.id} block={block} />
+              ))}
+            </div>
           </div>
 
+          {/* Same row as the coaching pair: both cards take the row's height,
+              so the buttons land on one line. */}
           <div className="mt-5 grid grid-cols-1 gap-5 sm:gap-6 lg:mt-7 lg:grid-cols-2 lg:gap-7">
-            {SESSION_BLOCKS.map((block) => (
-              <SessionBlock key={block.id} block={block} />
+            {POSING.map((plan) => (
+              <PlanCard key={plan.id} plan={plan} />
             ))}
           </div>
         </div>

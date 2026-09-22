@@ -77,7 +77,7 @@ collections:
                 min: 1
 
           - name: posing
-            label: Suivi posing mensuel
+            label: Suivi posing à distance (1 mois)
             widget: object
             fields:
               - name: monthly
@@ -86,13 +86,28 @@ collections:
                 value_type: int
                 min: 1
 
-          - name: cours30min
-            label: Cours individuel — 30 minutes (€)
+          - name: posingComplet
+            label: Suivi posing complet (3 mois)
+            widget: object
+            fields:
+              - name: total
+                label: Prix pour les 3 mois, payés en une fois (€)
+                widget: number
+                value_type: int
+                min: 1
+
+          - name: cours15min
+            label: Cours individuel, 15 minutes (€)
             widget: number
             value_type: int
             min: 1
-          - name: cours45min
-            label: Cours individuel — 45 minutes (€)
+          - name: cours30min
+            label: Cours individuel, 30 minutes (€)
+            widget: number
+            value_type: int
+            min: 1
+          - name: cours60min
+            label: Cours individuel, 60 minutes (€)
             widget: number
             value_type: int
             min: 1
@@ -166,7 +181,11 @@ collections:
             widget: string
             pattern: *link
           - name: posing
-            label: Suivi posing mensuel, « Commencer mon suivi »
+            label: Suivi posing à distance (1 mois), « Commencer mon suivi »
+            widget: string
+            pattern: *link
+          - name: posingComplet
+            label: Suivi posing complet (3 mois), « Commencer mon suivi »
             widget: string
             pattern: *link
           - name: coursIndividuels
@@ -286,7 +305,7 @@ collections:
                   ce champ : l’ancienne dépasserait autour de la nouvelle pose.
 
           - name: posing
-            label: Bloc posing (à côté du suivi posing mensuel)
+            label: Bloc posing (à côté des cours individuels et des packs)
             widget: image
             choose_url: false
             hint: >-

@@ -36,7 +36,7 @@ const sentHeadline = (firstName: string) =>
     : "Je te recontacte très vite pour échanger sur ton projet.";
 
 /**
- * The four answers to "quel accompagnement t’intéresse ?", in her order. The
+ * The answers to "quel accompagnement t’intéresse ?", in her order. The
  * last one is the escape hatch, which is what lets the field be required: there
  * is always a true answer available, so nobody is forced to guess a formule to
  * get past it.
@@ -44,7 +44,8 @@ const sentHeadline = (firstName: string) =>
 const FORMULES = [
   "Suivi training + diète & mindset",
   "Suivi diète & mindset",
-  "Suivi posing à distance",
+  "Suivi posing à distance (1 mois)",
+  "Suivi posing complet (3 mois)",
   "Je ne sais pas encore, j’aimerais en discuter",
 ];
 

@@ -10,8 +10,12 @@
   "posing": {
     "monthly": 120
   },
+  "posingComplet": {
+    "total": 420
+  },
+  "cours15min": 30,
   "cours30min": 50,
-  "cours45min": 70,
+  "cours60min": 80,
   "pack3seances": 135,
   "pack6seances": 240
 }
