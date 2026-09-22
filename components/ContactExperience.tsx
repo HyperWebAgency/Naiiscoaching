@@ -44,7 +44,7 @@ const sentHeadline = (firstName: string) =>
 const FORMULES = [
   "Suivi training + diète & mindset",
   "Suivi diète & mindset",
-  "Suivi posing mensuel",
+  "Suivi posing à distance",
   "Je ne sais pas encore, j’aimerais en discuter",
 ];
 
