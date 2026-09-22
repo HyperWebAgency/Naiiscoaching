@@ -309,8 +309,10 @@ collections:
             widget: image
             choose_url: false
             hint: >-
-              Recadrée automatiquement pour remplir le bloc, en gardant le haut
-              de l’image. Une photo en portrait convient le mieux.
+              Affichée en entier, posée sur le bas du bloc. Idéalement une photo
+              détourée (PNG ou WebP sans fond), en pied et en portrait, comme
+              celle de la remise de prix. Une photo avec un fond s’affiche comme
+              un rectangle.
 
       # ─── Photo galleries ───────────────────────────────────────────────────
       - name: galeries

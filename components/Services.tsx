@@ -643,23 +643,28 @@ export function Services() {
               single sessions above the packs on the right, then the two suivis
               side by side. */}
           <div className="mt-10 grid grid-cols-1 gap-5 sm:gap-6 lg:mt-12 lg:grid-cols-2 lg:gap-7">
-            {/* The posing section's image, set from the CMS so Anaïs can put a
-                competition photo here in place of the coaching portrait it
-                starts with. Cropped to fill, anchored to the top so a head is
-                never what gets cut. From `lg` it drops its ratio and takes the
-                height of the two blocks beside it. Decorative, so it is hidden
-                from assistive tech. */}
+            {/* The posing section's image, set from the CMS. A full-length
+                cutout, like the hero's, so it is shown whole and standing on
+                the block's floor rather than cropped to fill: on a stage photo
+                the stance down to the heels is the point, and filling the
+                frame cut it off at the calves on desktop and at the thighs on a
+                phone. The inset keeps the top of the head off the card's edge.
+                Taller than 4:5 on a phone so the figure is not a sliver; from
+                `lg` it drops its ratio and takes the height of the two blocks
+                beside it. Decorative, so it is hidden from assistive tech. */}
             <div
               aria-hidden
-              className={`relative aspect-[4/5] overflow-hidden rounded-2xl lg:aspect-auto ${cardSurface}`}
+              className={`relative aspect-[3/5] overflow-hidden rounded-2xl sm:aspect-[4/5] lg:aspect-auto ${cardSurface}`}
             >
-              <Image
-                src={POSING_PHOTO}
-                alt=""
-                fill
-                sizes="(max-width: 1024px) 92vw, 536px"
-                className="object-cover object-top"
-              />
+              <div className="absolute inset-x-4 bottom-0 top-6">
+                <Image
+                  src={POSING_PHOTO}
+                  alt=""
+                  fill
+                  sizes="(max-width: 1024px) 92vw, 536px"
+                  className="object-contain object-bottom"
+                />
+              </div>
             </div>
 
             <div className="flex flex-col gap-5 sm:gap-6 lg:gap-7">

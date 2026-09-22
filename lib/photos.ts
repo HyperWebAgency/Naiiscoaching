@@ -39,7 +39,7 @@ export const HERO_PHOTO = section(photos.hero);
 export const WHO_AM_I_PHOTO = section(photos.whoAmI);
 
 /**
- * The block beside the posing formule. Cropped to fill its box, so it needs no
- * measured size, and decorative, so it has no alt.
+ * The block beside the posing sessions. Fitted whole into its box by CSS, so it
+ * needs no measured size, and decorative, so it has no alt.
  */
 export const POSING_PHOTO = photos.posing;
