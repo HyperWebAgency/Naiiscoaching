@@ -23,11 +23,12 @@ const cardWidth = "w-[260px] sm:w-[340px] lg:w-[380px]";
 
 function Card({ vlog, repeat }: { vlog: Vlog; repeat: boolean }) {
   return (
-    // A repeat is there to fill the loop, not to be read twice: out of the tab
-    // order and the accessibility tree, and dropped entirely when the loop is
-    // off under reduced motion.
+    // A repeat is there to fill the loop, not to be read twice: hidden from
+    // screen readers, skipped by Tab, and dropped entirely when the loop is off
+    // under reduced motion. It stays clickable, though. Most of what scrolls
+    // past is repeats, so a mouse lands on one far more often than not; `inert`
+    // would have hidden it just as well, but it also swallows the click.
     <li
-      inert={repeat}
       aria-hidden={repeat || undefined}
       className={`shrink-0 ${cardWidth} ${repeat ? "motion-reduce:hidden" : "motion-reduce:snap-start"}`}
     >
@@ -35,6 +36,7 @@ function Card({ vlog, repeat }: { vlog: Vlog; repeat: boolean }) {
         href={vlog.watchUrl}
         target="_blank"
         rel="noopener noreferrer"
+        tabIndex={repeat ? -1 : undefined}
         className="group block rounded-xl focus-visible:outline focus-visible:outline-2
                    focus-visible:outline-offset-4 focus-visible:outline-[#2d2a49]"
       >
@@ -131,7 +133,7 @@ export async function Vlogs() {
               <Card key={key} vlog={vlog} repeat={repeat} />
             ))}
           </ul>
-          <ul aria-hidden inert className="flex gap-5 pr-5 sm:gap-6 sm:pr-6 motion-reduce:hidden">
+          <ul aria-hidden className="flex gap-5 pr-5 sm:gap-6 sm:pr-6 motion-reduce:hidden">
             {set.map(({ vlog, key }) => (
               <Card key={key} vlog={vlog} repeat />
             ))}

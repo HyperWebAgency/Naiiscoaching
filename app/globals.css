@@ -281,7 +281,9 @@ html[data-view="dark"] .vlog-surface {
    It stops while someone is reading or aiming: under a mouse, and while a card
    has keyboard focus. The hover pause is kept to devices that really hover; on
    a phone `:hover` sticks after a tap and would freeze the row until the next
-   tap somewhere else. */
+   tap somewhere else. The focus pause is kept to keyboard focus for the same
+   reason: clicking a card focuses its link, and plain `:focus-within` would
+   leave the row frozen when the visitor comes back from YouTube. */
 @keyframes marquee {
   to {
     transform: translateX(-50%);
@@ -298,7 +300,7 @@ html[data-view="dark"] .vlog-surface {
   }
 }
 
-.marquee:focus-within .marquee-track {
+.marquee:has(:focus-visible) .marquee-track {
   animation-play-state: paused;
 }
 
