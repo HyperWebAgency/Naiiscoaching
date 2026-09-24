@@ -1,12 +1,12 @@
 {
   "results": [
     {
-      "src": "/avant-apres-1.webp",
-      "alt": "Résultat client : 4 mois d’accompagnement, de 67,5 kg à 58,5 kg, soit −9 kg."
-    },
-    {
       "src": "/avant-apres-2.webp",
       "alt": "Résultat cliente : transformation avant / après un accompagnement Naiis Coaching."
+    },
+    {
+      "src": "/avant-apres-1.webp",
+      "alt": "Résultat client : 4 mois d’accompagnement, de 67,5 kg à 58,5 kg, soit −9 kg."
     },
     {
       "src": "/avant-apres-3.webp",
@@ -14,7 +14,43 @@
     },
     {
       "src": "/avant-apres-4.webp",
-      "alt": "Résultat client : prise de masse musculaire avant / après un accompagnement Naiis Coaching."
+      "alt": "Résultat client : sèche avant / après un accompagnement Naiis Coaching."
+    },
+    {
+      "src": "/Maeva BRACHER.jpg",
+      "alt": "Résultat client : transformation avant / après un accompagnement Naiis Coaching."
+    },
+    {
+      "src": "/Aurélien GUASCH .jpg",
+      "alt": "Résultat client : 3 mois d’accompagnement, de 77 kg à 70 kg, soit −7 kg."
+    },
+    {
+      "src": "/Laeticia FRICHET .jpg",
+      "alt": "Résultat cliente : 1 an et demi d'accompagnement, -6,5 kg et 37,5 cm cumulés de perdus."
+    },
+    {
+      "src": "/Steven VANPEE .jpg",
+      "alt": "Résultat client : 6 mois d'accompagnement, -12,5 kg."
+    },
+    {
+      "src": "/Aziliz GLOZE.jpg",
+      "alt": "Résultat cliente : 3 mois accompagnement post partum, -4,5,kg."
+    },
+    {
+      "src": "/Enzo DUPONT.jpg",
+      "alt": "Résultat client : 6 mois d'accompagnement, -11kg."
+    },
+    {
+      "src": "/Lénarose WITZ.jpg",
+      "alt": "Résultat cliente : 3 mois d'accompagnement, recomposition corporelle."
+    },
+    {
+      "src": "/Sylvain TACHEAU.jpg",
+      "alt": "Résultat client : 6 mois d'accompagnement compétiteur, -3kg et optimisation des apports et performances."
+    },
+    {
+      "src": "/Céline BORGEAUD.jpg",
+      "alt": "Résultat cliente : 6 mois d'accompagnement, -7 kg."
     }
   ],
   "reviews": [
