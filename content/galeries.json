@@ -55,6 +55,10 @@
   ],
   "reviews": [
     {
+      "src": "/avis-5.webp",
+      "alt": "Témoignage : accompagnée pendant la préparation d’un concours, elle décrit un changement complet de routine alimentaire et sportive."
+    },
+    {
       "src": "/avis-2.webp",
       "alt": "Témoignage : perdue entre les régimes et les programmes trouvés en ligne avant le coaching, elle décrit un suivi entièrement personnalisé et une bien meilleure relation avec la nourriture."
     },
@@ -65,10 +69,6 @@
     {
       "src": "/avis-4.webp",
       "alt": "Témoignage : un poids maîtrisé tout en mangeant plus qu’au début, et des douleurs de genoux disparues après plusieurs opérations."
-    },
-    {
-      "src": "/avis-5.webp",
-      "alt": "Témoignage : accompagnée pendant la préparation d’un concours, elle décrit un changement complet de routine alimentaire et sportive."
     },
     {
       "src": "/avis-6.webp",
