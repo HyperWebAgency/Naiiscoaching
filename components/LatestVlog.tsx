@@ -33,7 +33,7 @@ const THUMB_FALLBACK = `https://i.ytimg.com/vi/${VLOG.id}/mqdefault.jpg`;
 
 // The panel's own width. The closed state translates the whole assembly by
 // exactly this, which parks the panel off-screen and leaves only the tab.
-const PANEL_W = "min(78vw,300px)";
+const PANEL_W = "min(78vw,18.75rem)"; // rem, like its class: the site scales past the laptop
 
 export function LatestVlog() {
   const [open, setOpen] = useState(false);
@@ -94,7 +94,7 @@ export function LatestVlog() {
         // otherwise Tab lands on a link nobody can see.
         inert={!open}
         aria-hidden={!open}
-        className="vlog-surface w-[min(78vw,300px)] shrink-0 p-3"
+        className="vlog-surface w-[min(78vw,18.75rem)] shrink-0 p-3"
       >
         <a
           href={WATCH_URL}
@@ -109,7 +109,7 @@ export function LatestVlog() {
               alt=""
               width={1280}
               height={720}
-              sizes="300px"
+              sizes="(min-width: 1537px) 19vw, 300px"
               className="h-auto w-full transition-transform duration-300 group-hover:scale-[1.03]"
             />
           </span>

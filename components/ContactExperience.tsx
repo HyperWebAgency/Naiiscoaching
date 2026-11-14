@@ -509,11 +509,11 @@ export function ContactExperience() {
         {showForm && (
           <Link
             href="/"
-            className="group absolute left-6 top-[62px] z-20 inline-flex items-center gap-2
+            className="group absolute left-6 top-[3.875rem] z-20 inline-flex items-center gap-2
                        text-[0.72rem] font-medium uppercase tracking-[0.08em] text-[#f5eee8]/50
                        transition-colors duration-200 hover:text-[#f5eee8]
                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-                       focus-visible:outline-[#f5eee8] md:top-[96px]"
+                       focus-visible:outline-[#f5eee8] md:top-[6rem]"
           >
             <svg
               viewBox="0 0 24 24"
@@ -524,7 +524,7 @@ export function ContactExperience() {
               strokeWidth={2}
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-[14px] w-[14px] shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5"
+              className="h-[0.875rem] w-[0.875rem] shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5"
             >
               <path d="M19 12H5" />
               <path d="M12 19l-7-7 7-7" />
@@ -587,7 +587,7 @@ export function ContactExperience() {
           {isFinal && !showForm && (
             <span
               aria-hidden
-              className="intro-rule mt-8 h-[2px] w-[120px] sm:w-[180px]"
+              className="intro-rule mt-8 h-[0.125rem] w-[7.5rem] sm:w-[11.25rem]"
               style={{ backgroundColor: CREAM }}
             />
           )}
@@ -597,7 +597,7 @@ export function ContactExperience() {
             content decides for itself. The column above re-centres as it opens,
             which is what carries the word upward. */}
         <div
-          className="intro-form-row grid w-full max-w-[440px] transition-[grid-template-rows] duration-[750ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+          className="intro-form-row grid w-full max-w-[27.5rem] transition-[grid-template-rows] duration-[750ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{ gridTemplateRows: showForm ? "1fr" : "0fr" }}
         >
           <div className="overflow-hidden">

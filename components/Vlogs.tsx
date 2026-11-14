@@ -19,7 +19,7 @@ const MIN_CARDS_PER_SET = 8;
  */
 const SECONDS_PER_CARD = 8;
 
-const cardWidth = "w-[260px] sm:w-[340px] lg:w-[380px]";
+const cardWidth = "w-[16.25rem] sm:w-[21.25rem] lg:w-[23.75rem]";
 
 function Card({ vlog, repeat }: { vlog: Vlog; repeat: boolean }) {
   return (
@@ -47,7 +47,7 @@ function Card({ vlog, repeat }: { vlog: Vlog; repeat: boolean }) {
             src={vlog.thumbnail}
             alt=""
             fill
-            sizes="(max-width: 640px) 260px, (max-width: 1024px) 340px, 380px"
+            sizes="(max-width: 640px) 260px, (max-width: 1024px) 340px, (min-width: 1537px) 25vw, 380px"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]
                        motion-reduce:transition-none"
           />

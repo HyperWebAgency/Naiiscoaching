@@ -117,7 +117,7 @@ export function MobileMenu({
       {/* Padded clear of the wordmark, which stays painted on top of this
           panel rather than being covered by it — the brand holds still while
           the menu fills in behind it. */}
-      <div className="flex h-full flex-col px-8 pb-10 pt-[104px]">
+      <div className="flex h-full flex-col px-8 pb-10 pt-[6.5rem]">
         {/* `flex-1` plus centring rather than `justify-between` on the parent:
             pinned to the top, the links left roughly two fifths of a phone
             screen empty between themselves and the social row. Centred in

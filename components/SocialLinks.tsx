@@ -27,7 +27,7 @@ export const SOCIAL_ICONS = [
  * One list, positioned two ways.
  *
  * From `xl` up it lifts out of the flow into the fixed navbar's band: `top-8`
- * plus `h-[46px]` reproduce the header's `pt-8` and row height, so
+ * plus `h-[2.875rem]` reproduce the header's `pt-8` and row height, so
  * `items-center` lands the icons on exactly the pill's centre line — the hero
  * starts at the top of the document, so the two share an origin.
  *
@@ -46,7 +46,7 @@ export function SocialLinks({ className = "" }: { className?: string }) {
   return (
     <ul
       className={`hero-in hero-in-5 hidden items-center gap-1 md:flex sm:gap-2
-                  xl:absolute xl:right-4 xl:top-8 xl:h-[46px] ${className}`}
+                  xl:absolute xl:right-4 xl:top-8 xl:h-[2.875rem] ${className}`}
     >
       {SOCIAL_ICONS.map((icon) => (
         <li key={icon.name}>
@@ -66,7 +66,7 @@ export function SocialLinks({ className = "" }: { className?: string }) {
               viewBox="0 0 24 24"
               aria-hidden
               focusable="false"
-              className="h-[17px] w-[17px] fill-current sm:h-[18px] sm:w-[18px] lg:h-5 lg:w-5"
+              className="h-[1.0625rem] w-[1.0625rem] fill-current sm:h-[1.125rem] sm:w-[1.125rem] lg:h-5 lg:w-5"
             >
               <path d={icon.path} />
             </svg>

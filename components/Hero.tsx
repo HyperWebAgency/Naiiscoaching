@@ -26,7 +26,7 @@ export function Hero() {
           below clears the header it shares a breakpoint with, with room to
           spare. From `lg` the layout is two columns and the headline has the
           left one to itself, so it needs no reserved band. */}
-      <div className="mx-auto grid min-h-svh max-w-[1400px] grid-cols-1 items-center gap-5 px-6 pt-[88px] pb-8 [@media(max-height:700px)_and_(max-width:640px)]:gap-2 [@media(max-height:700px)_and_(max-width:640px)]:pt-[80px] [@media(max-height:700px)_and_(max-width:640px)]:pb-3 sm:gap-6 sm:pb-12 md:pt-[104px] lg:grid-cols-2 lg:gap-10 lg:px-12 lg:py-0">
+      <div className="mx-auto grid min-h-svh max-w-[87.5rem] grid-cols-1 items-center gap-5 px-6 pt-[5.5rem] pb-8 [@media(max-height:700px)_and_(max-width:640px)]:gap-2 [@media(max-height:700px)_and_(max-width:640px)]:pt-[5rem] [@media(max-height:700px)_and_(max-width:640px)]:pb-3 sm:gap-6 sm:pb-12 md:pt-[6.5rem] lg:grid-cols-2 lg:gap-10 lg:px-12 lg:py-0">
         {/* `contents` drops this wrapper below lg so the headline and the button
             become grid items in their own right and the photo can sit between
             them. From lg up the wrapper reappears and regroups them left. */}
@@ -62,7 +62,7 @@ export function Hero() {
             <p className="hero-in hero-in-4 flex items-center gap-2 text-[0.8rem] font-medium text-[#2d2a49]/70">
               <span
                 aria-hidden
-                className="h-[7px] w-[7px] shrink-0 rounded-full bg-[#3a9e63]"
+                className="h-[0.4375rem] w-[0.4375rem] shrink-0 rounded-full bg-[#3a9e63]"
               />
               Places disponibles
             </p>
@@ -78,7 +78,7 @@ export function Hero() {
               behind at a small offset and reads as a graphic echo of her.
               It is matched to the photo's height, then nudged left 2%. Both
               come from the CMS, and the silhouette can be left out there. */}
-          <div className="relative w-full max-w-[210px] [@media(max-height:700px)_and_(max-width:640px)]:max-w-[125px] sm:max-w-[280px] md:max-w-[340px] lg:max-w-[510px] xl:max-w-[580px] 2xl:max-w-[650px]">
+          <div className="relative w-full max-w-[13.125rem] [@media(max-height:700px)_and_(max-width:640px)]:max-w-[7.8125rem] sm:max-w-[17.5rem] md:max-w-[21.25rem] lg:max-w-[31.875rem] xl:max-w-[36.25rem] 2xl:max-w-[40.625rem]">
             {HERO_PHOTO.silhouette && (
               <Image
                 src={HERO_PHOTO.silhouette.src}

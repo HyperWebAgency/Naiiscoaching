@@ -18,23 +18,23 @@ const SIZE_PRESETS: Record<
   { button: string; mainClass: string; trailClass: string; main: number; trail: number }
 > = {
   sm: {
-    button: "px-[28px] py-[14px] text-[14px]",
-    mainClass: "w-[56px] h-[56px]",
-    trailClass: "w-[36px] h-[36px]",
+    button: "px-[1.75rem] py-[0.875rem] text-[0.875rem]",
+    mainClass: "w-[3.5rem] h-[3.5rem]",
+    trailClass: "w-[2.25rem] h-[2.25rem]",
     main: 56,
     trail: 36,
   },
   md: {
-    button: "px-[40px] py-[19px] text-[16px]",
-    mainClass: "w-[72px] h-[72px]",
-    trailClass: "w-[48px] h-[48px]",
+    button: "px-[2.5rem] py-[1.1875rem] text-[1rem]",
+    mainClass: "w-[4.5rem] h-[4.5rem]",
+    trailClass: "w-[3rem] h-[3rem]",
     main: 72,
     trail: 48,
   },
   lg: {
-    button: "px-[52px] py-[24px] text-[18px]",
-    mainClass: "w-[92px] h-[92px]",
-    trailClass: "w-[60px] h-[60px]",
+    button: "px-[3.25rem] py-[1.5rem] text-[1.125rem]",
+    mainClass: "w-[5.75rem] h-[5.75rem]",
+    trailClass: "w-[3.75rem] h-[3.75rem]",
     main: 92,
     trail: 60,
   },
@@ -365,7 +365,7 @@ export function BlobButton({
       type={type}
       className={[
         "relative isolate overflow-hidden rounded-full bg-[#2d2a49] text-[#f5eee8] font-semibold tracking-[0.01em]",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-[#f5eee8]",
+        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[0.1875rem] focus-visible:outline-[#f5eee8]",
         preset.button,
         className,
       ]

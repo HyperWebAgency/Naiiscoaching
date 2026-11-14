@@ -598,7 +598,7 @@ export function Services() {
       id="services"
       className="scroll-mt-24 overflow-hidden bg-[#f5eee8] px-6 py-20 sm:py-24 lg:px-12 lg:py-32"
     >
-      <div className="mx-auto max-w-[1120px]">
+      <div className="mx-auto max-w-[70rem]">
         <h2 className="text-center font-extrabold uppercase leading-[0.95] tracking-[-0.035em] text-[clamp(2rem,7vw,4rem)] text-[#2d2a49]">
           Mes accompagnements
         </h2>

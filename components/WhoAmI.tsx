@@ -58,7 +58,7 @@ export function WhoAmI() {
     >
       {/* Top-aligned rather than centred: both columns now carry a full stack of
           content, so they should start on the same line. */}
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-14 lg:grid-cols-2 lg:gap-16">
+      <div className="mx-auto grid max-w-[87.5rem] grid-cols-1 items-start gap-14 lg:grid-cols-2 lg:gap-16">
         {/* Left: her, then who the work is for.
             `contents` below `lg` so the photo and the pitch stop being one
             block and become grid items in their own right — which is what lets
@@ -77,7 +77,7 @@ export function WhoAmI() {
 
               Both images come from the CMS, like the hero's, and the
               silhouette can be left out there. */}
-          <div className="relative order-1 mx-auto w-full max-w-[300px] sm:max-w-[380px] lg:mx-0 lg:-translate-y-20 lg:max-w-[470px] xl:max-w-[520px]">
+          <div className="relative order-1 mx-auto w-full max-w-[18.75rem] sm:max-w-[23.75rem] lg:mx-0 lg:-translate-y-20 lg:max-w-[29.375rem] xl:max-w-[32.5rem]">
             {WHO_AM_I_PHOTO.silhouette && (
               <Image
                 src={WHO_AM_I_PHOTO.silhouette.src}

@@ -64,7 +64,7 @@ export function Footer() {
       // clip, any overshoot would put the whole page into horizontal scroll.
       className="relative overflow-hidden bg-[#2d2a49] px-6 pt-20 pb-6 lg:px-12 lg:pt-28"
     >
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-[87.5rem]">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr] lg:gap-6">
           <div>
             {/* Solid here rather than the navbar's stroked pair. Up there the

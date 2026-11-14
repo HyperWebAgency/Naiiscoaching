@@ -36,7 +36,7 @@ const ROTATE_MS = 10_000;
 const SWAP_BASE =
   "col-start-1 row-start-1 transition-[opacity,translate,filter] duration-300 " +
   "ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none";
-const SWAP_HIDDEN = "pointer-events-none opacity-0 translate-y-2 blur-[5px]";
+const SWAP_HIDDEN = "pointer-events-none opacity-0 translate-y-2 blur-[0.3125rem]";
 
 /**
  * One slide: the click-to-load facade above, the written pull-out below.
@@ -97,7 +97,7 @@ function Slide({
               }
               alt={testimonial.alt}
               fill
-              sizes="(max-width: 900px) 92vw, 860px"
+              sizes="(max-width: 900px) 92vw, (min-width: 1537px) 56vw, 860px"
               className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             />
 
@@ -229,7 +229,7 @@ export function VideoTestimonials({ className = "" }: { className?: string }) {
     <section
       aria-roledescription="carrousel"
       aria-label="Témoignages en vidéo"
-      className={`mx-auto w-full max-w-[860px] ${className}`}
+      className={`mx-auto w-full max-w-[53.75rem] ${className}`}
     >
       <div
         ref={trackRef}
@@ -304,7 +304,7 @@ export function VideoTestimonials({ className = "" }: { className?: string }) {
               onClick={() => goTo(i)}
               aria-label={`Voir le témoignage de ${testimonial.name}`}
               aria-current={i === index ? "true" : undefined}
-              className="flex h-8 w-8 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-[#2d2a49]"
+              className="flex h-8 w-8 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-0.375rem] focus-visible:outline-[#2d2a49]"
             >
               <span
                 aria-hidden

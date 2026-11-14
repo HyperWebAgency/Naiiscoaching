@@ -25,7 +25,7 @@ export function Testimonials() {
       id="temoignages"
       className="relative bg-[#f5eee8] px-6 py-24 scroll-mt-24 sm:py-28 lg:py-32 lg:px-12"
     >
-      <div className="mx-auto flex max-w-[1400px] flex-col">
+      <div className="mx-auto flex max-w-[87.5rem] flex-col">
         {/* Her copy, verbatim: the heading names the section, the line under it
             makes the argument. Uppercasing is left to CSS so screen readers are
             not handed a string of capitals to spell out. */}

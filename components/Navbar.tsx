@@ -200,10 +200,10 @@ export function Navbar() {
   // Shared by both link kinds so they stay identical. The current route is the
   // one item at full strength; the rest sit back at 70%.
   const linkClass = (current: boolean) =>
-    `block cursor-inherit whitespace-nowrap rounded-full px-[8px] py-[5px] font-medium
+    `block cursor-inherit whitespace-nowrap rounded-full px-[0.5rem] py-[0.3125rem] font-medium
     tracking-[0.02em] transition-colors duration-200
     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-    sm:px-[10px] md:px-[12px] ${
+    sm:px-[0.625rem] md:px-[0.75rem] ${
       dark
         ? `hover:bg-[#2d2a49]/10 hover:text-[#2d2a49] focus-visible:outline-[#2d2a49] ${
             current ? "text-[#2d2a49]" : "text-[#2d2a49]/70"
@@ -291,7 +291,7 @@ export function Navbar() {
             aria-expanded={menuOpen}
             aria-controls="menu-panel"
             aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-            className={`pointer-events-auto flex h-[38px] w-[38px] items-center justify-center
+            className={`pointer-events-auto flex h-[2.375rem] w-[2.375rem] items-center justify-center
                        rounded-full transition-colors duration-300 md:hidden
                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
                        ${
@@ -304,17 +304,17 @@ export function Navbar() {
                 CSS properties rather than folding them into `transform`, so the
                 inline values below compose with each other instead of the last
                 one winning — and each can be transitioned by name. */}
-            <span aria-hidden className="flex flex-col items-center gap-[5px]">
+            <span aria-hidden className="flex flex-col items-center gap-[0.3125rem]">
               <span
-                className="block h-[2px] w-[18px] rounded-full bg-current transition-[translate,rotate,opacity,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                className="block h-[0.125rem] w-[1.125rem] rounded-full bg-current transition-[translate,rotate,opacity,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                 style={menuOpen ? { translate: "0 7px", rotate: "45deg" } : undefined}
               />
               <span
-                className="block h-[2px] w-[18px] rounded-full bg-current transition-[translate,rotate,opacity,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                className="block h-[0.125rem] w-[1.125rem] rounded-full bg-current transition-[translate,rotate,opacity,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                 style={menuOpen ? { opacity: 0, scale: "0 1" } : undefined}
               />
               <span
-                className="block h-[2px] w-[18px] rounded-full bg-current transition-[translate,rotate,opacity,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                className="block h-[0.125rem] w-[1.125rem] rounded-full bg-current transition-[translate,rotate,opacity,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                 style={menuOpen ? { translate: "0 -7px", rotate: "-45deg" } : undefined}
               />
             </span>
@@ -323,8 +323,8 @@ export function Navbar() {
           <ul
             className={`hidden items-center rounded-full pointer-events-auto transition-colors duration-300 md:flex
                      ${dark ? "bg-[#f5eee8]" : "bg-[#2d2a49] ring-1 ring-[#f5eee8]/20"}
-                     md:h-[38px] md:gap-[5px] md:px-[13px] md:text-[0.76rem]
-                     lg:h-[43px] lg:px-[17px]`}
+                     md:h-[2.375rem] md:gap-[0.3125rem] md:px-[0.8125rem] md:text-[0.76rem]
+                     lg:h-[2.6875rem] lg:px-[1.0625rem]`}
           >
             {NAV_LINKS.map((link) => {
               const current = !link.inPage && pathname === link.href;

@@ -15,6 +15,13 @@
 
   html {
     height: 100%;
+    /* Tailwind sizes are in rem, and so are this site's own values, so this
+       one size scales the whole site. It stays the browser's 16px up to the
+       1536 x 840 laptop window the site was designed on: phones, tablets and
+       laptops are unchanged. Past it, it grows with the window, by width and
+       by height, whichever is the smaller step: a 27" (2560 x 1353) shows the
+       laptop's layout x1.61; an ultra-wide is held back by its height. */
+    font-size: max(100%, min(100vw / 96, 100vh / 52.5));
   }
 
   html,
@@ -73,8 +80,8 @@
   }
 
   ::-webkit-scrollbar {
-    width: 11px;
-    height: 11px;
+    width: 0.6875rem;
+    height: 0.6875rem;
   }
 
   ::-webkit-scrollbar-track {
@@ -83,10 +90,10 @@
 
   ::-webkit-scrollbar-thumb {
     background-color: #2d2a49;
-    border-radius: 999px;
+    border-radius: 62.4375rem;
     /* Transparent border + content-box clip insets the thumb, so it reads as a
        slim pill rather than filling the whole gutter. */
-    border: 3px solid transparent;
+    border: 0.1875rem solid transparent;
     background-clip: content-box;
   }
 
@@ -171,7 +178,7 @@
 @keyframes hero-in {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(0.875rem);
   }
   to {
     opacity: 1;
@@ -236,7 +243,7 @@
   color: var(--vlog-fg);
   /* Inset, so it reads as a hairline edge without adding to the element's box
      the way a real border would. */
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--vlog-fg) 25%, transparent);
+  box-shadow: inset 0 0 0 0.0625rem color-mix(in srgb, var(--vlog-fg) 25%, transparent);
   transition:
     background-color 300ms ease,
     color 300ms ease,
@@ -355,13 +362,13 @@ html[data-view="dark"] .vlog-surface {
    is faster and accelerates away. A single symmetric transition makes the
    close feel like it is dragging its feet. */
 .menu-panel {
-  clip-path: circle(0px at var(--menu-x, 50%) var(--menu-y, 44px));
+  clip-path: circle(0 at var(--menu-x, 50%) var(--menu-y, 2.75rem));
   transition: clip-path 380ms cubic-bezier(0.4, 0, 1, 1);
   pointer-events: none;
 }
 
 .menu-panel[data-open="true"] {
-  clip-path: circle(var(--menu-r, 150vmax) at var(--menu-x, 50%) var(--menu-y, 44px));
+  clip-path: circle(var(--menu-r, 150vmax) at var(--menu-x, 50%) var(--menu-y, 2.75rem));
   transition: clip-path 620ms cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: auto;
 }
@@ -372,8 +379,8 @@ html[data-view="dark"] .vlog-surface {
 @keyframes menu-item-in {
   from {
     opacity: 0;
-    transform: translateY(22px);
-    filter: blur(10px);
+    transform: translateY(1.375rem);
+    filter: blur(0.625rem);
   }
   to {
     opacity: 1;
@@ -402,8 +409,8 @@ html[data-view="dark"] .vlog-surface {
 @keyframes intro-word {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(0.96);
-    filter: blur(6px);
+    transform: translateY(0.5rem) scale(0.96);
+    filter: blur(0.375rem);
   }
   to {
     opacity: 1;
@@ -440,7 +447,7 @@ html[data-view="dark"] .vlog-surface {
 @keyframes intro-form-in {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(1.125rem);
   }
   to {
     opacity: 1;

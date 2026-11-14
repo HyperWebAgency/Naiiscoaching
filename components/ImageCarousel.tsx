@@ -221,7 +221,7 @@ export function ImageCarousel({
                 onClick={() => goTo(p)}
                 aria-label={`Page ${p + 1} sur ${pageCount}`}
                 aria-current={p === page ? "true" : undefined}
-                className="flex h-8 w-8 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-[#f5eee8]"
+                className="flex h-8 w-8 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-0.375rem] focus-visible:outline-[#f5eee8]"
               >
                 <span
                   aria-hidden
