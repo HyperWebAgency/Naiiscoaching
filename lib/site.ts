@@ -8,17 +8,15 @@ import contact from "@/content/contact.json";
  * agree on this — a mismatch is read by search engines as conflicting signals
  * about which URL is the real one, so they all read it from here.
  *
- * The fallback is the current Vercel deployment, which is where the site
- * actually lives today. It has to be a URL that resolves: `metadataBase` builds
- * the absolute Open Graph image URL from it, so a domain nobody owns means
- * every link preview asks for an image that isn't there.
- *
- * TODO: when a real domain is bought, set NEXT_PUBLIC_SITE_URL in the Vercel
- * project rather than editing this line. It is read at build time, so the
- * change needs a redeploy to take effect.
+ * The fallback is the site's own domain, served by the Vercel project (the
+ * bare naiiscoaching.fr redirects to www). It has to be a URL that resolves:
+ * `metadataBase` builds the absolute Open Graph image URL from it. It was
+ * naiiscoaching.vercel.app until November 2026, a name that answers 404, so
+ * the sitemap, robots.txt, canonical links and link previews all pointed at
+ * a dead host. NEXT_PUBLIC_SITE_URL still overrides it (read at build time).
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://naiiscoaching.vercel.app"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.naiiscoaching.fr"
 ).replace(/\/+$/, "");
 
 export const SITE_NAME = "Naiis Coaching";
